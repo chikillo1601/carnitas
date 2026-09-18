@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Carnitas Lanzamiento</title>
+<meta name="description" content="Carnitas - Sándwiches y costillas BBQ ahumadas. Pedidos por WhatsApp. Barriga llena, corazón contento.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Fraunces:ital,opsz,wght@0,9..144,440;0,9..144,600;1,9..144,500;1,9..144,600&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --char:#100b09;
+    --char-raised:#1c130f;
+    --char-line:rgba(243,236,226,.13);
+    --ember:#ef5b25;
+    --ember-deep:#a8321a;
+    --gold:#d9a24b;
+    --smoke:#a89a8e;
+    --paper:#f3ece2;
+    --paper-dim:rgba(243,236,226,.68);
+    --shadow:0 20px 50px -20px rgba(0,0,0,.7);
+  }
+
+  *,*::before,*::after{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  body{
+    margin:0;
+    background:var(--char);
+    color:var(--paper);
+    font-family:'Archivo',system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  img{ max-width:100%; display:block; }
+  a{ color:inherit; }
+  h1,h2,h3,p{ margin:0; }
+  button{ font-family:inherit; }
+
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior:auto; }
+    *,*::before,*::after{ animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important; }
+  }
+
+  .grain{
+    position:fixed; inset:0; pointer-events:none; z-index:80;
+    opacity:.045; mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .page{ max-width:760px; margin:0 auto; position:relative; }
+
+  .eyebrow{
+    font-family:'Bebas Neue',sans-serif;
+    letter-spacing:.18em;
+    font-size:.92rem;
+    color:var(--ember);
+    text-transform:uppercase;
+  }
+
+  .focus-ring:focus-visible{
+    outline:2px solid var(--gold);
+    outline-offset:3px;
+    border-radius:4px;
+  }
+
+  /* ---------- CTA buttons ---------- */
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center;
+    gap:.5rem;
+    min-height:56px;
+    padding:0 1.7rem;
+    border-radius:999px;
+    font-family:'Bebas Neue',sans-serif;
+    font-size:1.15rem;
+    letter-spacing:.05em;
+    border:none;
+    cursor:pointer;
+    text-decoration:none;
+    width:100%;
+    transition:transform .18s ease, box-shadow .18s ease, filter .18s ease;
+  }
+  .btn:active{ transform:scale(.98); }
+  .btn-primary{
+    background:linear-gradient(135deg,var(--ember),var(--ember-deep));
+    color:var(--paper);
+    box-shadow:0 14px 34px -14px rgba(239,91,37,.65);
+  }
+  .btn-primary:hover{ filter:brightness(1.08); box-shadow:0 18px 40px -14px rgba(239,91,37,.8); }
+  .btn-ghost{
+    background:transparent;
+    color:var(--paper);
+    border:1.5px solid var(--char-line);
+  }
+  .btn-ghost:hover{ border-color:var(--gold); color:var(--gold); }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    position:relative;
+    padding:3.4rem 1.4rem 3rem;
+    text-align:center;
+    overflow:hidden;
+    border-bottom:1px solid var(--char-line);
+  }
+  .hero-glow{
+    position:absolute; inset:-20% -10% auto -10%; height:130%;
+    background:
+      radial-gradient(closest-side, rgba(239,91,37,.34), transparent 70%) 20% 15% / 60% 60% no-repeat,
+      radial-gradient(closest-side, rgba(217,162,75,.24), transparent 70%) 80% 30% / 55% 55% no-repeat;
+    filter:blur(30px);
+    animation:drift 16s ease-in-out infinite alternate;
+    pointer-events:none;
+  }
+  @keyframes drift{
+    from{ transform:translateY(0) scale(1); }
+    to{ transform:translateY(18px) scale(1.06); }
+  }
+  .hero-inner{ position:relative; z-index:2; }
+  .hero .eyebrow{ display:inline-block; margin-bottom:1.1rem; }
+  .wordmark{
+    font-family:'Bebas Neue',sans-serif;
+    font-size:clamp(3.6rem,17vw,6.4rem);
+    line-height:.88;
+    letter-spacing:.02em;
+    color:var(--paper);
+    text-wrap:balance;
+  }
+  .wordmark .accent{ color:var(--ember); }
+  .kicker{
+    font-family:'Bebas Neue',sans-serif;
+    font-size:1.05rem;
+    letter-spacing:.22em;
+    color:var(--smoke);
+    margin-top:.4rem;
+  }
+  .tagline{
+    font-family:'Fraunces',serif;
+    font-style:italic;
+    font-weight:500;
+    font-size:clamp(1.35rem,5vw,1.9rem);
+    color:var(--paper);
+    margin:1.7rem auto 0;
+    max-width:26ch;
+    text-wrap:balance;
+  }
+  .stock-pill{
+    display:inline-flex; flex-direction:column; align-items:center;
+    gap:.55rem;
+    margin:2.1rem auto 0;
+    padding:1.1rem 1.6rem;
+    background:var(--char-raised);
+    border:1px solid var(--char-line);
+    border-radius:18px;
+    box-shadow:var(--shadow);
+  }
+  .stock-pill .label{
+    font-family:'Bebas Neue',sans-serif;
+    font-size:.85rem;
+    letter-spacing:.16em;
+    color:var(--gold);
+  }
+  .stock-pill .items{
+    display:flex; gap:1.4rem;
+    font-family:'Bebas Neue',sans-serif;
+    font-size:1.05rem;
+    letter-spacing:.03em;
+    color:var(--paper);
+  }
+
+  .hero-actions{
+    display:flex; flex-direction:column; gap:.75rem;
+    margin-top:2rem;
+    max-width:360px;
+    margin-left:auto; margin-right:auto;
+  }
+
+  /* ---------- Ticker ---------- */
+  .ticker{
+    background:var(--char-raised);
+    border-bottom:1px solid var(--char-line);
+    overflow:hidden;
+    white-space:nowrap;
+    padding:.65rem 0;
+  }
+  .ticker-track{
+    display:inline-flex;
+    animation:scroll-left 22s linear infinite;
+  }
+  @keyframes scroll-left{
+    from{ transform:translateX(0); }
+    to{ transform:translateX(-50%); }
+  }
+  .ticker span{
+    font-family:'Bebas Neue',sans-serif;
+    font-size:.85rem;
+    letter-spacing:.14em;
+    color:var(--smoke);
+    padding:0 1.1rem;
+  }
+  .ticker span.hot{ color:var(--ember); }
+
+  /* ---------- Section shell ---------- */
+  section{ padding:3.4rem 1.4rem; }
+  .section-head{ text-align:center; margin-bottom:2.1rem; }
+  .section-title{
+    font-family:'Bebas Neue',sans-serif;
+    font-size:clamp(1.9rem,7vw,2.5rem);
+    letter-spacing:.03em;
+    margin-top:.35rem;
+    text-wrap:balance;
+  }
+  .section-note{
+    font-family:'Fraunces',serif;
+    font-style:italic;
+    color:var(--paper-dim);
+    font-size:1.05rem;
+    margin-top:.5rem;
+  }
+
+  /* ---------- Products ---------- */
+  .products{ background:var(--char); }
+  .product-list{ display:flex; flex-direction:column; gap:1.6rem; }
+  .product-card{
+    background:var(--char-raised);
+    border:1px solid var(--char-line);
+    border-radius:22px;
+    overflow:hidden;
+    box-shadow:var(--shadow);
+  }
+  .product-photo{
+    position:relative;
+    aspect-ratio:16/10;
+    display:flex; align-items:center; justify-content:center;
+    overflow:hidden;
+  }
+  .product-photo.texas{ background:radial-gradient(120% 140% at 30% 20%, #7a2412, #2c0f08 75%); }
+  .product-photo.bistek{ background:radial-gradient(120% 140% at 30% 20%, #b3711f, #3a1c08 75%); }
+  .product-photo.azteca{ background:radial-gradient(120% 140% at 30% 20%, #6b4a1a, #1f1608 75%); }
+  .product-photo.costillas{ background:radial-gradient(120% 140% at 30% 20%, #c73a12, #2b0f08 75%); }
+  .product-photo.malteada{ background:radial-gradient(120% 140% at 30% 20%, #6b3a5c, #1f1420 75%); }
+  .product-photo svg{ width:34%; height:34%; opacity:.92; position:relative; z-index:2; }
+  .product-photo::after{
+    content:'';
+    position:absolute; inset:0;
+    background:linear-gradient(to top, rgba(16,11,9,.75), transparent 55%);
+  }
+  .product-photo .watermark{
+    position:absolute; bottom:-.35em; left:50%; transform:translateX(-50%);
+    font-family:'Fraunces',serif; font-weight:600; font-style:italic;
+    font-size:3.6rem; color:rgba(243,236,226,.08);
+    white-space:nowrap; z-index:1;
+  }
+  .product-body{ padding:1.5rem 1.5rem 1.7rem; }
+  .product-tag{
+    font-family:'Bebas Neue',sans-serif;
+    font-size:.8rem; letter-spacing:.16em;
+    color:var(--gold); text-transform:uppercase;
+  }
+  .product-name{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    font-size:1.55rem;
+    margin-top:.3rem;
+  }
+  .product-copy{
+    color:var(--paper-dim);
+    font-size:.98rem;
+    line-height:1.55;
+    margin-top:.6rem;
+    max-width:56ch;
+  }
+
+  .price-row{
+    display:flex; align-items:center; justify-content:space-between;
+    gap:1rem; flex-wrap:wrap;
+    margin-top:1.3rem;
+    padding-top:1.1rem;
+    border-top:1px dashed var(--char-line);
+  }
+  .price-now{
+    font-family:'Bebas Neue',sans-serif;
+    font-size:2rem;
+    font-variant-numeric:tabular-nums;
+    color:var(--paper);
+  }
+  .price-now small{ font-size:.9rem; color:var(--smoke); letter-spacing:.08em; }
+  .coke-toggle{
+    display:inline-flex; align-items:center; gap:.55rem;
+    font-size:.9rem; color:var(--paper-dim);
+    cursor:pointer; user-select:none;
+  }
+  .switch{
+    position:relative; width:40px; height:24px;
+    background:rgba(243,236,226,.14);
+    border-radius:999px;
+    transition:background .2s ease;
+    flex:none;
+  }
+  .switch::after{
+    content:''; position:absolute; top:3px; left:3px;
+    width:18px; height:18px; border-radius:50%;
+    background:var(--paper);
+    transition:transform .2s ease;
+  }
+  .coke-toggle input{ position:absolute; opacity:0; width:1px; height:1px; }
+  .coke-toggle input:checked ~ .switch{ background:var(--ember); }
+  .coke-toggle input:checked ~ .switch::after{ transform:translateX(16px); }
+  .coke-toggle input:focus-visible ~ .switch{ outline:2px solid var(--gold); outline-offset:2px; }
+
+  .protein-picker{ display:inline-flex; gap:.4rem; margin-top:1rem; }
+  .protein-btn{
+    padding:.5rem 1.1rem;
+    border-radius:999px;
+    border:1px solid var(--char-line);
+    background:var(--char);
+    color:var(--paper-dim);
+    font-family:'Archivo',sans-serif; font-weight:600; font-size:.85rem;
+    cursor:pointer;
+    transition:background .15s ease, color .15s ease, border-color .15s ease;
+  }
+  .protein-btn.active{
+    background:var(--ember);
+    border-color:var(--ember);
+    color:var(--paper);
+  }
+  .protein-btn:disabled{
+    opacity:.4;
+    cursor:not-allowed;
+  }
+
+  .add-row{ margin-top:1.2rem; }
+
+  .soon-badge{
+    position:absolute; top:.9rem; right:.9rem; z-index:3;
+    background:var(--char);
+    border:1px solid var(--gold);
+    color:var(--gold);
+    font-family:'Bebas Neue',sans-serif;
+    font-size:.7rem; letter-spacing:.1em;
+    padding:.35rem .7rem;
+    border-radius:999px;
+  }
+  .soon-row{ margin-top:1.3rem; padding-top:1.1rem; border-top:1px dashed var(--char-line); }
+  .soon-pill{
+    display:inline-block;
+    font-family:'Bebas Neue',sans-serif;
+    font-size:.95rem; letter-spacing:.05em;
+    color:var(--smoke);
+    border:1px dashed var(--char-line);
+    padding:.6rem 1.2rem;
+    border-radius:999px;
+  }
+
+  .stepper{
+    display:inline-flex; align-items:center;
+    border:1px solid var(--char-line); border-radius:999px;
+    overflow:hidden;
+  }
+  .stepper button{
+    width:42px; height:42px;
+    background:var(--char); color:var(--paper);
+    border:none; font-family:'Bebas Neue',sans-serif; font-size:1.3rem;
+    cursor:pointer; transition:background .15s ease;
+  }
+  .stepper button:hover{ background:var(--ember); }
+  .stepper button:active{ transform:scale(.95); }
+  .stepper .qty-value{
+    display:inline-block; width:38px; text-align:center;
+    font-family:'Bebas Neue',sans-serif; font-size:1.1rem;
+    font-variant-numeric:tabular-nums;
+  }
+  .stepper.mini button{ width:32px; height:32px; font-size:1rem; }
+  .stepper.mini .qty-value{ width:28px; font-size:.95rem; }
+
+  /* ---------- Pricing tags ---------- */
+  .pricing{ background:var(--char-raised); border-top:1px solid var(--char-line); border-bottom:1px solid var(--char-line); }
+  .tag-row{ display:flex; flex-direction:column; gap:1rem; align-items:center; }
+  .tag{
+    position:relative;
+    width:100%; max-width:380px;
+    background:var(--char);
+    border:1px solid var(--char-line);
+    clip-path:polygon(0 0,84% 0,100% 50%,84% 100%,0 100%);
+    padding:1.05rem 2.6rem 1.05rem 1.5rem;
+    display:flex; align-items:center; justify-content:space-between;
+    box-shadow:var(--shadow);
+  }
+  .tag::before{
+    content:''; position:absolute; right:13%; top:50%; transform:translateY(-50%);
+    width:9px; height:9px; border-radius:50%;
+    background:var(--char); border:1px solid var(--char-line);
+  }
+  .tag .tag-label{
+    font-family:'Archivo',sans-serif; font-weight:600;
+    font-size:.98rem; color:var(--paper-dim);
+  }
+  .tag .tag-price{
+    font-family:'Bebas Neue',sans-serif;
+    font-size:1.7rem; color:var(--gold);
+    font-variant-numeric:tabular-nums;
+  }
+
+  /* ---------- Stock ---------- */
+  .stock{ background:var(--char); }
+  .stock-grid{ display:flex; flex-direction:column; gap:1.2rem; }
+  .stock-card{
+    background:var(--char-raised);
+    border:1px solid var(--char-line);
+    border-radius:20px;
+    padding:1.5rem;
+    box-shadow:var(--shadow);
+  }
+  .stock-top{ display:flex; align-items:baseline; }
+  .stock-name{ font-family:'Bebas Neue',sans-serif; font-size:1.15rem; letter-spacing:.05em; }
+  .stock-badge{
+    margin-top:.9rem;
+    font-family:'Bebas Neue',sans-serif;
+    letter-spacing:.1em;
+    font-size:1rem;
+    color:var(--ember);
+  }
+  .stock-meta{ margin-top:.6rem; font-size:.85rem; color:var(--smoke); }
+
+  .urgency-note{
+    margin-top:1.6rem; text-align:center;
+    font-family:'Fraunces',serif; font-style:italic;
+    color:var(--paper-dim); font-size:1.02rem;
+    max-width:42ch; margin-left:auto; margin-right:auto;
+  }
+
+  /* ---------- Final CTA ---------- */
+  .final-cta{
+    text-align:center;
+    background:
+      radial-gradient(120% 100% at 50% 0%, rgba(239,91,37,.22), transparent 60%),
+      var(--char-raised);
+    border-top:1px solid var(--char-line);
+  }
+  .final-cta .wordmark{ font-size:clamp(2.4rem,12vw,3.6rem); }
+  .final-cta .kicker{ margin-top:.2rem; }
+  .final-list{
+    display:flex; flex-direction:column; gap:.35rem;
+    margin:1.6rem 0 .4rem;
+    font-family:'Bebas Neue',sans-serif;
+    font-size:1.15rem; letter-spacing:.04em;
+    color:var(--paper);
+  }
+  .final-note{ color:var(--smoke); font-size:.9rem; margin-bottom:1.8rem; letter-spacing:.04em; }
+
+  /* ---------- Footer ---------- */
+  footer{
+    padding:2.6rem 1.4rem 3rem;
+    text-align:center;
+    background:var(--char);
+  }
+  .social-row{ display:flex; justify-content:center; gap:1rem; margin-bottom:1.4rem; }
+  .social-icon{
+    width:46px; height:46px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    background:var(--char-raised);
+    border:1px solid var(--char-line);
+    transition:border-color .18s ease, transform .18s ease;
+  }
+  .social-icon:hover{ border-color:var(--gold); transform:translateY(-2px); }
+  .social-icon svg{ width:20px; height:20px; fill:var(--paper); }
+  .slogan{
+    font-family:'Fraunces',serif; font-style:italic; font-weight:500;
+    color:var(--paper-dim); font-size:1.05rem;
+  }
+  .fine-print{ margin-top:1rem; color:var(--smoke); font-size:.78rem; letter-spacing:.04em; }
+
+  /* ---------- Carrito ---------- */
+  .cart-bar{
+    position:fixed; left:0; right:0; bottom:0; z-index:70;
+    background:var(--char-raised);
+    border-top:1px solid var(--char-line);
+    box-shadow:0 -18px 40px -20px rgba(0,0,0,.75);
+  }
+  .cart-bar-inner{
+    max-width:760px; margin:0 auto;
+    padding:.85rem 1.2rem calc(.85rem + env(safe-area-inset-bottom,0px));
+  }
+  .cart-summary{
+    width:100%; display:flex; align-items:center; gap:.9rem;
+    background:none; border:none; color:var(--paper); cursor:pointer;
+    padding:0 0 .7rem; font-family:'Bebas Neue',sans-serif; font-size:1.05rem; letter-spacing:.04em;
+  }
+  .cart-summary #cart-total{ color:var(--gold); font-variant-numeric:tabular-nums; margin-left:auto; }
+  .cart-chevron{ color:var(--smoke); font-size:.8rem; transition:transform .2s ease; }
+  .cart-summary[aria-expanded="true"] .cart-chevron{ transform:rotate(180deg); }
+  .cart-detail{
+    max-height:38vh; overflow-y:auto;
+    border-top:1px dashed var(--char-line);
+    padding-top:.7rem; margin-bottom:.7rem;
+    display:flex; flex-direction:column; gap:.5rem;
+  }
+  .cart-line{
+    display:flex; flex-direction:column; gap:.4rem;
+    font-size:.9rem; color:var(--paper-dim);
+    padding-bottom:.6rem;
+    border-bottom:1px solid var(--char-line);
+  }
+  .cart-line:last-child{ border-bottom:none; padding-bottom:0; }
+  .cart-line-info{ display:flex; justify-content:space-between; align-items:baseline; gap:.6rem; }
+  .cart-line-info strong{ color:var(--paper); font-weight:600; font-size:.88rem; }
+  .cart-line-price{ font-size:.78rem; color:var(--smoke); white-space:nowrap; }
+  .cart-line-controls{ display:flex; align-items:center; justify-content:space-between; }
+  .cart-line-subtotal{ font-family:'Bebas Neue',sans-serif; color:var(--gold); font-variant-numeric:tabular-nums; }
+
+  @media (min-width:640px){
+    .hero{ padding:5rem 2rem 4rem; }
+    section{ padding:4.6rem 2rem; }
+    .hero-actions{ flex-direction:row; max-width:460px; }
+    .product-list{ }
+    .tag-row{ flex-direction:row; justify-content:center; flex-wrap:wrap; }
+    .tag{ width:auto; min-width:230px; }
+    .stock-grid{ flex-direction:row; }
+    .stock-card{ flex:1; }
+  }
+
+  [hidden]{ display:none !important; }
+</style>
+</head>
+<body>
+
+<div class="grain" aria-hidden="true"></div>
+
+<div class="page">
+
+  <!-- ============ HERO ============ -->
+  <header class="hero" id="inicio">
+    <div class="hero-glow" aria-hidden="true"></div>
+    <div class="hero-inner">
+      <p class="eyebrow">🔥 Primer Lanzamiento</p>
+      <h1 class="wordmark">CARNITAS<span class="accent">.</span></h1>
+      <p class="kicker">PRODUCTOS DE LANZAMIENTO 🔥</p>
+      <p class="tagline">"Barriga llena, corazón contento"</p>
+
+      <div class="stock-pill">
+        <span class="label">Disponibilidad limitada</span>
+        <div class="items">
+          <span>🥪 Sándwiches</span>
+          <span>·</span>
+          <span>🍖 Costillas BBQ</span>
+        </div>
+        <span class="stock-badge" style="margin-top:0">Stock hasta agotar existencias</span>
+      </div>
+
+      <div class="hero-actions">
+        <a class="btn btn-ghost focus-ring" href="#productos">🔥 VER PRODUCTOS</a>
+        <a class="btn btn-primary focus-ring" id="hero-wa-btn" href="#" target="_blank" rel="noopener">PEDIR POR WHATSAPP</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============ TICKER ============ -->
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker-track">
+      <span class="hot">🔥 PRIMER LANZAMIENTO</span><span>PRODUCCIÓN LIMITADA</span><span class="hot">DISPONIBLE HASTA AGOTAR EXISTENCIAS</span><span>PIDE AHORA 🔥</span><span>🥤 MALTEADAS PRÓXIMAMENTE</span>
+      <span class="hot">🔥 PRIMER LANZAMIENTO</span><span>PRODUCCIÓN LIMITADA</span><span class="hot">DISPONIBLE HASTA AGOTAR EXISTENCIAS</span><span>PIDE AHORA 🔥</span><span>🥤 MALTEADAS PRÓXIMAMENTE</span>
+    </div>
+  </div>
+
+  <!-- ============ PRODUCTOS ============ -->
+  <section class="products" id="productos">
+    <div class="section-head">
+      <p class="eyebrow">🔥 Productos de lanzamiento</p>
+      <h2 class="section-title">Elige tu sabor.<br>Elige tu proteína.</h2>
+    </div>
+
+    <div class="product-list">
+
+      <!-- Texas BBQ -->
+      <article class="product-card">
+        <div class="product-photo texas" aria-hidden="true">
+          <span class="watermark">texas</span>
+          <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#f3ece2" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M8 26c0-6 5-11 11-11h26c6 0 11 5 11 11"/>
+            <path d="M6 26h52a2 2 0 0 1 2 2v2a6 6 0 0 1-6 6H10a6 6 0 0 1-6-6v-2a2 2 0 0 1 2-2Z"/>
+            <path d="M10 38l3 12h38l3-12"/>
+            <path d="M18 30q4 4 8 0M30 30q4 4 8 0M42 30q4 4 8 0"/>
+          </svg>
+        </div>
+        <div class="product-body">
+          <p class="product-tag">Ahumado estilo texano</p>
+          <h3 class="product-name">🥪 Texas BBQ</h3>
+          <p class="product-copy">Carne bañada en salsa BBQ ahumada, cebolla caramelizada, queso, lechuga y un toque de salsa picante — todo entre pan artesanal.</p>
+
+          <div class="protein-picker" role="group" aria-label="Elegir proteína del Texas BBQ">
+            <button type="button" class="protein-btn active focus-ring" id="protein-texas-res" onclick="setProtein('texas','RES')">🐄 Res</button>
+            <button type="button" class="protein-btn focus-ring" id="protein-texas-cerdo" onclick="setProtein('texas','CERDO')">🐖 Cerdo</button>
+          </div>
+
+          <div class="price-row">
+            <div class="price-now" id="price-texas">$15.000<br><small>PRECIO</small></div>
+            <label class="coke-toggle">
+              <input type="checkbox" id="drink-texas" onchange="updateDrink('texas')">
+              <span class="switch" aria-hidden="true"></span>
+              <span>+ 🥤 Gaseosa</span>
+            </label>
+          </div>
+
+          <div class="add-row">
+            <button type="button" class="btn btn-primary focus-ring" onclick="addToCart('texas')">🔥 AGREGAR AL CARRITO</button>
+          </div>
+        </div>
+      </article>
+
+      <!-- Bistek -->
+      <article class="product-card">
+        <div class="product-photo bistek" aria-hidden="true">
+          <span class="watermark">bistek</span>
+          <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#f3ece2" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M8 26c0-6 5-11 11-11h26c6 0 11 5 11 11"/>
+            <path d="M6 26h52a2 2 0 0 1 2 2v2a6 6 0 0 1-6 6H10a6 6 0 0 1-6-6v-2a2 2 0 0 1 2-2Z"/>
+            <path d="M10 38l3 12h38l3-12"/>
+            <path d="M18 30q4 4 8 0M30 30q4 4 8 0M42 30q4 4 8 0"/>
+          </svg>
+        </div>
+        <div class="product-body">
+          <p class="product-tag">A la plancha</p>
+          <h3 class="product-name">🥪 Bistek</h3>
+          <p class="product-copy">Carne con sabor ahumado, hogao colombiano, cebolla caramelizada, lechuga, huevo y queso, en pan artesanal. El sándwich criollo de toda la vida.</p>
+
+          <div class="protein-picker" role="group" aria-label="Elegir proteína del Bistek">
+            <button type="button" class="protein-btn active focus-ring" id="protein-bistek-res" onclick="setProtein('bistek','RES')">🐄 Res</button>
+            <button type="button" class="protein-btn focus-ring" id="protein-bistek-cerdo" onclick="setProtein('bistek','CERDO')">🐖 Cerdo</button>
+          </div>
+
+          <div class="price-row">
+            <div class="price-now" id="price-bistek">$15.000<br><small>PRECIO</small></div>
+            <label class="coke-toggle">
+              <input type="checkbox" id="drink-bistek" onchange="updateDrink('bistek')">
+              <span class="switch" aria-hidden="true"></span>
+              <span>+ 🥤 Gaseosa</span>
+            </label>
+          </div>
+
+          <div class="add-row">
+            <button type="button" class="btn btn-primary focus-ring" onclick="addToCart('bistek')">🔥 AGREGAR AL CARRITO</button>
+          </div>
+        </div>
+      </article>
+
+      <!-- Azteca -->
+      <article class="product-card">
+        <div class="product-photo azteca" aria-hidden="true">
+          <span class="watermark">azteca</span>
+          <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#f3ece2" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M8 26c0-6 5-11 11-11h26c6 0 11 5 11 11"/>
+            <path d="M6 26h52a2 2 0 0 1 2 2v2a6 6 0 0 1-6 6H10a6 6 0 0 1-6-6v-2a2 2 0 0 1 2-2Z"/>
+            <path d="M10 38l3 12h38l3-12"/>
+            <path d="M18 30q4 4 8 0M30 30q4 4 8 0M42 30q4 4 8 0"/>
+          </svg>
+        </div>
+        <div class="product-body">
+          <p class="product-tag">Toque mexicano</p>
+          <h3 class="product-name">🥪 Azteca</h3>
+          <p class="product-copy">Carne con sabor ahumado, pico de gallo, guacamole, nachos, queso y lechuga, en pan artesanal. Picante, fresco y con personalidad.</p>
+
+          <div class="protein-picker" role="group" aria-label="Elegir proteína del Azteca">
+            <button type="button" class="protein-btn active focus-ring" id="protein-azteca-res" onclick="setProtein('azteca','RES')">🐄 Res</button>
+            <button type="button" class="protein-btn focus-ring" id="protein-azteca-cerdo" onclick="setProtein('azteca','CERDO')">🐖 Cerdo</button>
+          </div>
+
+          <div class="price-row">
+            <div class="price-now" id="price-azteca">$15.000<br><small>PRECIO</small></div>
+            <label class="coke-toggle">
+              <input type="checkbox" id="drink-azteca" onchange="updateDrink('azteca')">
+              <span class="switch" aria-hidden="true"></span>
+              <span>+ 🥤 Gaseosa</span>
+            </label>
+          </div>
+
+          <div class="add-row">
+            <button type="button" class="btn btn-primary focus-ring" onclick="addToCart('azteca')">🔥 AGREGAR AL CARRITO</button>
+          </div>
+        </div>
+      </article>
+
+      <!-- Costillas BBQ -->
+      <article class="product-card">
+        <div class="product-photo costillas" aria-hidden="true">
+          <span class="watermark">bbq</span>
+          <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#f3ece2" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 10c8 0 8 8 16 8s8-8 16-8"/>
+            <path d="M14 12v40M22 12v36M30 12v40M38 12v36M46 12v40"/>
+          </svg>
+        </div>
+        <div class="product-body">
+          <p class="product-tag">Costilla BBQ</p>
+          <h3 class="product-name">🍖 Costillas de Cerdo BBQ</h3>
+          <p class="product-copy">Costilla de cerdo en salsa BBQ ahumada, acompañada de tortillas de maíz o papas. Para comer con las manos, sin apuro.</p>
+
+          <div class="protein-picker" role="group" aria-label="Elegir acompañamiento de las costillas">
+            <button type="button" class="protein-btn active focus-ring" id="side-costillas-tortillas" onclick="setSide('costillas','TORTILLAS')">🌽 Tortillas de maíz</button>
+            <button type="button" class="protein-btn focus-ring" id="side-costillas-papas" onclick="setSide('costillas','PAPAS')" disabled title="No disponible en el pre-lanzamiento">🍟 Papas (próximamente)</button>
+          </div>
+
+          <div class="price-row">
+            <div class="price-now" id="price-costillas">$30.000<br><small>PRECIO</small></div>
+            <label class="coke-toggle">
+              <input type="checkbox" id="drink-costillas" onchange="updateDrink('costillas')">
+              <span class="switch" aria-hidden="true"></span>
+              <span>+ 🥤 Gaseosa</span>
+            </label>
+          </div>
+
+          <div class="add-row">
+            <button type="button" class="btn btn-primary focus-ring" onclick="addToCart('costillas')">🔥 AGREGAR AL CARRITO</button>
+          </div>
+        </div>
+      </article>
+
+      <!-- Malteadas (próximamente) -->
+      <article class="product-card">
+        <div class="product-photo malteada" aria-hidden="true">
+          <span class="watermark">pronto</span>
+          <span class="soon-badge">PRÓXIMAMENTE</span>
+          <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#f3ece2" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 16h24l-3.5 34a4 4 0 0 1-4 3.6h-9a4 4 0 0 1-4-3.6L20 16Z"/>
+            <path d="M18 16h28"/>
+            <path d="M38 12l8-6"/>
+            <path d="M25 24h14M24 32h16M25 40h14"/>
+          </svg>
+        </div>
+        <div class="product-body">
+          <p class="product-tag">Nueva incorporación</p>
+          <h3 class="product-name">🥤 Malteadas</h3>
+          <p class="product-copy">Cremosas y heladas. La próxima incorporación a la carta de Carnitas — muy pronto.</p>
+
+          <div class="soon-row">
+            <span class="soon-pill">🔜 Muy pronto disponibles</span>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ============ PRECIOS ============ -->
+  <section class="pricing" id="precios">
+    <div class="section-head">
+      <p class="eyebrow">Precios oficiales</p>
+      <h2 class="section-title">Sin sorpresas.<br>Un solo precio.</h2>
+    </div>
+    <div class="tag-row">
+      <div class="tag">
+        <span class="tag-label">🥪 Sándwich</span>
+        <span class="tag-price">$15.000</span>
+      </div>
+      <div class="tag">
+        <span class="tag-label">🥪 + 🥤 Gaseosa</span>
+        <span class="tag-price">$20.000</span>
+      </div>
+      <div class="tag">
+        <span class="tag-label">🍖 Costillas BBQ</span>
+        <span class="tag-price">$30.000</span>
+      </div>
+      <div class="tag">
+        <span class="tag-label">🍖 + 🥤 Gaseosa</span>
+        <span class="tag-price">$35.000</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ DISPONIBILIDAD ============ -->
+  <section class="stock" id="disponibilidad">
+    <div class="section-head">
+      <p class="eyebrow">🔥 Disponibilidad de lanzamiento</p>
+      <h2 class="section-title">Esto es lo que hay.<br>No hay más.</h2>
+    </div>
+
+    <div class="stock-grid">
+      <div class="stock-card">
+        <div class="stock-top">
+          <span class="stock-name">🥪 Sándwiches</span>
+        </div>
+        <p class="stock-badge">STOCK HASTA AGOTAR EXISTENCIAS</p>
+        <p class="stock-meta">Res + Cerdo — stock compartido entre ambos sabores.</p>
+      </div>
+
+      <div class="stock-card">
+        <div class="stock-top">
+          <span class="stock-name">🍖 Costillas BBQ</span>
+        </div>
+        <p class="stock-badge">STOCK HASTA AGOTAR EXISTENCIAS</p>
+        <p class="stock-meta">Porciones individuales, cocción limitada del día.</p>
+      </div>
+    </div>
+
+    <p class="urgency-note">Disponible hasta agotar existencias. Sin urgencia falsa: esto es exactamente lo que hay para este primer lanzamiento.</p>
+  </section>
+
+  <!-- ============ CTA FINAL ============ -->
+  <section class="final-cta" id="pedir">
+    <h2 class="wordmark">CARNITAS</h2>
+    <p class="kicker">PRIMER LANZAMIENTO</p>
+    <div class="final-list">
+      <span>🥪 SÁNDWICHES</span>
+      <span>🍖 COSTILLAS BBQ</span>
+    </div>
+    <p class="final-note">DISPONIBLE HASTA AGOTAR EXISTENCIAS</p>
+    <a class="btn btn-primary focus-ring" id="final-wa-btn" style="max-width:360px;margin:0 auto" href="#" target="_blank" rel="noopener">🔥 PEDIR POR WHATSAPP</a>
+  </section>
+
+  <!-- ============ FOOTER / REDES ============ -->
+  <footer>
+    <div class="social-row">
+      <a class="social-icon focus-ring" id="ig-link" href="#" target="_blank" rel="noopener" aria-label="Instagram de Carnitas">
+        <svg viewBox="0 0 24 24"><path d="M12 2.2c3.2 0 3.6 0 4.8.07 1.2.06 2 .24 2.7.52.7.28 1.3.66 1.9 1.26.6.6.98 1.2 1.26 1.9.28.7.46 1.5.52 2.7.06 1.2.07 1.6.07 4.8s0 3.6-.07 4.8c-.06 1.2-.24 2-.52 2.7-.28.7-.66 1.3-1.26 1.9-.6.6-1.2.98-1.9 1.26-.7.28-1.5.46-2.7.52-1.2.06-1.6.07-4.8.07s-3.6 0-4.8-.07c-1.2-.06-2-.24-2.7-.52-.7-.28-1.3-.66-1.9-1.26-.6-.6-.98-1.2-1.26-1.9-.28-.7-.46-1.5-.52-2.7C2.2 15.6 2.2 15.2 2.2 12s0-3.6.07-4.8c.06-1.2.24-2 .52-2.7.28-.7.66-1.3 1.26-1.9.6-.6 1.2-.98 1.9-1.26.7-.28 1.5-.46 2.7-.52C8.4 2.2 8.8 2.2 12 2.2Zm0 3.1a6.7 6.7 0 1 0 0 13.4 6.7 6.7 0 0 0 0-13.4Zm0 11a4.3 4.3 0 1 1 0-8.6 4.3 4.3 0 0 1 0 8.6Zm7-11.3a1.57 1.57 0 1 1-3.14 0 1.57 1.57 0 0 1 3.14 0Z"/></svg>
+      </a>
+      <a class="social-icon focus-ring" id="tt-link" href="#" target="_blank" rel="noopener" aria-label="TikTok de Carnitas">
+        <svg viewBox="0 0 24 24"><path d="M16.6 2h-3.2v13.7a3 3 0 1 1-2.6-3v-3.2a6.2 6.2 0 1 0 5.8 6.2V8.6a7.4 7.4 0 0 0 4.3 1.4V6.8a4.3 4.3 0 0 1-4.3-4.3Z"/></svg>
+      </a>
+      <a class="social-icon focus-ring" id="wa-link" href="#" target="_blank" rel="noopener" aria-label="WhatsApp de Carnitas">
+        <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2Zm0 18.2a8.1 8.1 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.4-.7-1.7-.8-.2-.1-.4-.1-.6.1-.2.2-.6.8-.8 1-.1.2-.3.2-.5.1-.2-.1-1-.4-1.9-1.2-.7-.6-1.2-1.4-1.3-1.6-.1-.2 0-.4.1-.5.1-.1.2-.3.4-.4.1-.1.2-.3.2-.4.1-.2 0-.3 0-.4C10.3 9.9 9.9 9 9.7 8.5c-.2-.4-.4-.4-.6-.4h-.5c-.2 0-.4.1-.7.3-.2.2-.9.9-.9 2.1 0 1.2.9 2.4 1 2.6.1.2 1.8 2.7 4.3 3.8.6.3 1.1.4 1.4.5.6.2 1.2.2 1.6.1.5-.1 1.4-.6 1.6-1.1.2-.5.2-1 .1-1.1-.1-.1-.2-.2-.5-.3Z"/></svg>
+      </a>
+    </div>
+    <p class="slogan">"Barriga llena, corazón contento"</p>
+    <p class="fine-print">© <span id="year"></span> CARNITAS. Pedidos únicamente por WhatsApp.</p>
+  </footer>
+
+</div>
+
+<!-- ============ CARRITO (barra fija móvil) ============ -->
+<div class="cart-bar" id="cart-bar" hidden>
+  <div class="cart-bar-inner">
+    <button type="button" class="cart-summary focus-ring" id="cart-toggle" aria-expanded="false">
+      <span id="cart-count">0 artículos</span>
+      <span id="cart-total">$0</span>
+      <span class="cart-chevron" aria-hidden="true">▲</span>
+    </button>
+    <div class="cart-detail" id="cart-detail" hidden></div>
+    <a class="btn btn-primary focus-ring" id="cart-checkout-btn" href="#" target="_blank" rel="noopener">🔥 PEDIR POR WHATSAPP</a>
+  </div>
+</div>
+
+<script>
+  /* =========================================================
+     CARNITAS CONFIG — edita solo lo de aquí abajo.
+     Todo lo demás en la página se actualiza solo con estos valores.
+     ========================================================= */
+  const CARNITAS_CONFIG = {
+    BRAND_NAME: "CARNITAS",
+
+    // Número de WhatsApp en formato internacional, SIN "+" y sin espacios.
+    // Ejemplo Colombia: 573001234567
+    WHATSAPP_NUMBER: "573124228657",
+
+    INSTAGRAM_URL: "https://www.instagram.com/carnitas.co",
+    TIKTOK_URL: "CAMBIAR_AQUI_TU_TIKTOK",
+
+    // Stock disponible AHORA MISMO. Bájalo manualmente a medida que vendas.
+    // Es solo para tu referencia: no se muestra en la página ni en el mensaje de WhatsApp.
+    SANDWICH_STOCK: 30,
+    RIBS_STOCK: 4,
+
+    // Precios oficiales en pesos colombianos (COP), sin puntos ni símbolos.
+    SANDWICH_PRICE: 15000,
+    RIBS_PRICE: 30000,
+    DRINK_PRICE: 5000, // se suma al agregar gaseosa a cualquier producto
+  };
+  /* ========================================================= */
+
+  function cop(n){ return '$' + n.toLocaleString('es-CO'); }
+
+  function buildWaLink(message){
+    return `https://wa.me/${CARNITAS_CONFIG.WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+  }
+
+  function generalMessage(){
+    return `Hola ${CARNITAS_CONFIG.BRAND_NAME} 👋🔥\nVi el lanzamiento y quiero hacer un pedido.\n¿Qué tienen disponible?`;
+  }
+
+  /* ---------- Carrito: líneas independientes por producto ----------
+     Cada clic en "AGREGAR AL CARRITO" toma la proteína y la gaseosa
+     seleccionadas EN ESE MOMENTO para ese producto y las guarda como
+     su propia línea. Así puedes pedir, por ejemplo, un Azteca de res
+     sin gaseosa y otro Azteca de cerdo con gaseosa en el mismo pedido:
+     cambias la selección entre un clic y otro y quedan como líneas separadas. */
+  let cartLines = []; // { key, item, protein, drink, side, qty }
+  const proteinState = { texas: 'RES', bistek: 'RES', azteca: 'RES' };
+  const sideState = { costillas: 'TORTILLAS' }; // acompañamiento de las costillas
+  const SANDWICH_NAMES = { texas: 'TEXAS BBQ', bistek: 'BISTEK', azteca: 'AZTECA' };
+
+  function setProtein(item, protein){
+    proteinState[item] = protein;
+    document.getElementById('protein-' + item + '-res').classList.toggle('active', protein === 'RES');
+    document.getElementById('protein-' + item + '-cerdo').classList.toggle('active', protein === 'CERDO');
+  }
+
+  // Papas está deshabilitado para el pre-lanzamiento (ver botón en el HTML),
+  // así que por ahora esto solo se usa con 'TORTILLAS'. Cuando actives las papas,
+  // basta con quitar el atributo disabled del botón — esta función ya queda lista.
+  function setSide(item, side){
+    sideState[item] = side;
+    document.getElementById('side-' + item + '-tortillas').classList.toggle('active', side === 'TORTILLAS');
+    const papasBtn = document.getElementById('side-' + item + '-papas');
+    if (papasBtn) papasBtn.classList.toggle('active', side === 'PAPAS');
+  }
+
+  function lineUnitPrice(item, drink){
+    const base = item === 'costillas' ? CARNITAS_CONFIG.RIBS_PRICE : CARNITAS_CONFIG.SANDWICH_PRICE;
+    return base + (drink ? CARNITAS_CONFIG.DRINK_PRICE : 0);
+  }
+
+  function lineLabel(item, protein, drink, side){
+    if (item === 'costillas') {
+      const sideLabel = side === 'PAPAS' ? 'con papas' : 'con tortillas de maíz';
+      return '🍖 COSTILLAS DE CERDO BBQ (' + sideLabel + ')' + (drink ? ' + 🥤 GASEOSA' : '');
+    }
+    return '🥪 ' + SANDWICH_NAMES[item] + ' (' + protein + ')' + (drink ? ' + 🥤 GASEOSA' : '');
+  }
+
+  // El botón "AGREGAR AL CARRITO" toma la configuración actual de la tarjeta
+  // (proteína/acompañamiento + gaseosa) y la agrega como línea propia del pedido.
+  function addToCart(item){
+    const protein = item === 'costillas' ? null : proteinState[item];
+    const side = item === 'costillas' ? sideState.costillas : null;
+    const drink = document.getElementById('drink-' + item).checked;
+    const key = item + '|' + (protein || side || '-') + '|' + (drink ? 'D' : 'N');
+    const existing = cartLines.find(l => l.key === key);
+    if (existing) {
+      existing.qty += 1;
+    } else {
+      cartLines.push({ key, item, protein, drink, side, qty: 1 });
+    }
+    renderCart();
+  }
+
+  // Suma o resta una unidad a una línea ya agregada; en 0 se quita del pedido.
+  function adjustLine(key, delta){
+    const line = cartLines.find(l => l.key === key);
+    if (!line) return;
+    line.qty += delta;
+    if (line.qty <= 0) cartLines = cartLines.filter(l => l.key !== key);
+    renderCart();
+  }
+
+  function cartMessage(totalPrice){
+    const c = CARNITAS_CONFIG;
+    const lines = cartLines.map(l =>
+      `${l.qty}x ${lineLabel(l.item, l.protein, l.drink, l.side)} — ${cop(l.qty * lineUnitPrice(l.item, l.drink))}`
+    ).join('\n');
+    return `Hola ${c.BRAND_NAME} 👋🔥\nQuiero hacer este pedido:\n\n${lines}\n\nTOTAL:\n${cop(totalPrice)}`;
+  }
+
+  function renderCart(){
+    const totalQty = cartLines.reduce((s, l) => s + l.qty, 0);
+    const totalPrice = cartLines.reduce((s, l) => s + l.qty * lineUnitPrice(l.item, l.drink), 0);
+
+    const bar = document.getElementById('cart-bar');
+    bar.hidden = totalQty === 0;
+
+    if (totalQty > 0) {
+      document.getElementById('cart-count').textContent = totalQty + (totalQty === 1 ? ' artículo' : ' artículos');
+      document.getElementById('cart-total').textContent = cop(totalPrice);
+
+      document.getElementById('cart-detail').innerHTML = cartLines.map(l => {
+        const unit = lineUnitPrice(l.item, l.drink);
+        return `<div class="cart-line">
+          <div class="cart-line-info">
+            <strong>${lineLabel(l.item, l.protein, l.drink, l.side)}</strong>
+            <span class="cart-line-price">${cop(unit)} c/u</span>
+          </div>
+          <div class="cart-line-controls">
+            <div class="stepper mini">
+              <button type="button" aria-label="Quitar uno" onclick="adjustLine('${l.key}',-1)">−</button>
+              <span class="qty-value">${l.qty}</span>
+              <button type="button" aria-label="Agregar uno" onclick="adjustLine('${l.key}',1)">+</button>
+            </div>
+            <span class="cart-line-subtotal">${cop(l.qty * unit)}</span>
+          </div>
+        </div>`;
+      }).join('');
+
+      document.getElementById('cart-checkout-btn').href = buildWaLink(cartMessage(totalPrice));
+    }
+
+    syncCartSpacing();
+  }
+
+  // Reserva espacio al final de la página para que la barra fija no tape el footer.
+  function syncCartSpacing(){
+    const bar = document.getElementById('cart-bar');
+    document.body.style.paddingBottom = bar.hidden ? '' : (bar.offsetHeight + 16) + 'px';
+  }
+
+  document.getElementById('cart-toggle').addEventListener('click', () => {
+    const btn = document.getElementById('cart-toggle');
+    const detail = document.getElementById('cart-detail');
+    const expanded = btn.getAttribute('aria-expanded') === 'true';
+    btn.setAttribute('aria-expanded', String(!expanded));
+    detail.hidden = expanded;
+    syncCartSpacing();
+  });
+
+  function updateDrink(item){
+    const drink = document.getElementById('drink-' + item).checked;
+    const price = lineUnitPrice(item, drink);
+    document.getElementById('price-' + item).innerHTML = cop(price) + '<br><small>PRECIO</small>';
+  }
+
+  function paint(){
+    const c = CARNITAS_CONFIG;
+    document.getElementById('ig-link').href = c.INSTAGRAM_URL;
+    document.getElementById('tt-link').href = c.TIKTOK_URL;
+    document.getElementById('wa-link').href = buildWaLink(generalMessage());
+    document.getElementById('hero-wa-btn').href = buildWaLink(generalMessage());
+    document.getElementById('final-wa-btn').href = buildWaLink(generalMessage());
+    document.getElementById('year').textContent = new Date().getFullYear();
+  }
+
+  paint();
+
+  // Entrada suave de las secciones al hacer scroll
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObserver' in window) {
+    const revealables = document.querySelectorAll('.product-card, .stock-card, .tag');
+    revealables.forEach(el => { el.style.opacity = '0'; el.style.transform = 'translateY(14px)'; el.style.transition = 'opacity .6s ease, transform .6s ease'; });
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    revealables.forEach(el => io.observe(el));
+  }
+</script>
+
+</body>
+</html>
