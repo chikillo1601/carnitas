@@ -611,6 +611,58 @@
   }
   .checkout-cancel:hover{ color:var(--gold); }
 
+  /* ---------- Cuenta regresiva ---------- */
+  .countdown{ margin:1.8rem auto 0; max-width:360px; }
+  .countdown-label{
+    font-family:'Bebas Neue',sans-serif; letter-spacing:.14em; font-size:1rem;
+    color:var(--gold);
+  }
+  .countdown-digits{ display:flex; justify-content:center; gap:.6rem; margin-top:.7rem; }
+  .countdown-digits > div{
+    flex:1; max-width:78px;
+    background:var(--char-raised); border:1px solid var(--char-line); border-radius:14px;
+    padding:.6rem 0 .5rem; box-shadow:var(--shadow);
+  }
+  .countdown-digits b{
+    display:block; font-family:'Bebas Neue',sans-serif; font-weight:400;
+    font-size:2.3rem; line-height:1; color:var(--paper); font-variant-numeric:tabular-nums;
+  }
+  .countdown-digits small{ display:block; margin-top:.25rem; font-size:.62rem; letter-spacing:.14em; color:var(--smoke); }
+  .countdown.is-open .countdown-label{ color:var(--ember); font-size:1.15rem; }
+
+  /* ---------- Adicionales dentro de la tarjeta ---------- */
+  .addon-chips{ margin-top:1rem; }
+  .addon-chips-title{ font-size:.85rem; font-weight:600; color:var(--paper-dim); }
+  .addon-chips-title span{ font-weight:400; color:var(--smoke); }
+  .chip-row{ display:flex; flex-wrap:wrap; gap:.4rem; margin-top:.5rem; }
+  .chip{ position:relative; cursor:pointer; }
+  .chip input{ position:absolute; opacity:0; width:1px; height:1px; }
+  .chip span{
+    display:inline-block; padding:.4rem .8rem;
+    background:var(--char); color:var(--paper-dim);
+    border:1px solid var(--char-line); border-radius:999px;
+    font-size:.78rem; font-weight:600; white-space:nowrap;
+    transition:background .15s ease, color .15s ease, border-color .15s ease;
+  }
+  .chip input:checked + span{ background:var(--ember); border-color:var(--ember); color:var(--paper); }
+  .chip input:checked + span::before{ content:'✓ '; }
+  .chip input:focus-visible + span{ outline:2px solid var(--gold); outline-offset:2px; }
+
+  /* ---------- Stock ---------- */
+  .stock-left{ margin:0 0 .7rem; text-align:center; font-family:'Bebas Neue',sans-serif; letter-spacing:.08em; font-size:1.05rem; color:var(--gold); }
+  .stock-left.low{ color:var(--ember); }
+  .stock-left.out{ color:var(--smoke); }
+  .btn:disabled, .btn[aria-disabled="true"]{
+    opacity:.55; cursor:not-allowed; filter:grayscale(.5); box-shadow:none;
+  }
+  .btn:disabled:active, .btn[aria-disabled="true"]:active{ transform:none; }
+  .closed-note{ margin:0 0 .6rem; font-size:.82rem; color:var(--paper-dim); text-align:center; }
+  .stock-error{
+    margin:0; padding:.7rem .9rem; border-radius:12px;
+    background:rgba(239,91,37,.14); border:1px solid var(--ember);
+    font-size:.88rem; line-height:1.4;
+  }
+
   .cart-bar.pulse{ animation:cart-pulse .45s ease; }
   @keyframes cart-pulse{
     0%{ box-shadow:0 -18px 40px -20px rgba(0,0,0,.75); }
@@ -656,6 +708,16 @@
       <h1 class="wordmark">CARNITAS<span class="accent">.</span></h1>
       <p class="kicker">PRODUCTOS DE LANZAMIENTO 🔥</p>
       <p class="tagline">"Barriga llena, corazón contento"</p>
+
+      <div class="countdown" id="countdown" role="timer" aria-label="Cuenta regresiva para la apertura">
+        <p class="countdown-label" id="countdown-label"></p>
+        <div class="countdown-digits" id="countdown-digits">
+          <div id="cd-days-box" hidden><b id="cd-d">0</b><small id="cd-days-unit">DÍAS</small></div>
+          <div><b id="cd-h">00</b><small>HORAS</small></div>
+          <div><b id="cd-m">00</b><small>MIN</small></div>
+          <div><b id="cd-s">00</b><small>SEG</small></div>
+        </div>
+      </div>
 
       <div class="stock-pill">
         <span class="label">Disponibilidad limitada</span>
@@ -710,6 +772,8 @@
             <button type="button" class="protein-btn focus-ring" id="pickles-texas-sin" onclick="setPickles('texas',false)">Sin pepinillos</button>
           </div>
 
+          <div class="addon-chips" data-item="texas"></div>
+
           <div class="price-row">
             <div class="price-now" id="price-texas">$15.000<br><small>PRECIO</small></div>
             <label class="coke-toggle">
@@ -720,7 +784,8 @@
           </div>
 
           <div class="add-row">
-            <button type="button" class="btn btn-primary focus-ring" onclick="addToCart('texas')">🔥 AGREGAR AL CARRITO</button>
+            <p class="stock-left" data-stock="sandwiches" hidden></p>
+            <button type="button" class="btn btn-primary focus-ring" id="add-texas" onclick="addToCart('texas')">🔥 AGREGAR AL CARRITO</button>
           </div>
         </div>
       </article>
@@ -740,6 +805,8 @@
             <button type="button" class="protein-btn focus-ring" id="protein-bistek-cerdo" onclick="setProtein('bistek','CERDO')">🐖 Cerdo</button>
           </div>
 
+          <div class="addon-chips" data-item="bistek"></div>
+
           <div class="price-row">
             <div class="price-now" id="price-bistek">$15.000<br><small>PRECIO</small></div>
             <label class="coke-toggle">
@@ -750,7 +817,8 @@
           </div>
 
           <div class="add-row">
-            <button type="button" class="btn btn-primary focus-ring" onclick="addToCart('bistek')">🔥 AGREGAR AL CARRITO</button>
+            <p class="stock-left" data-stock="sandwiches" hidden></p>
+            <button type="button" class="btn btn-primary focus-ring" id="add-bistek" onclick="addToCart('bistek')">🔥 AGREGAR AL CARRITO</button>
           </div>
         </div>
       </article>
@@ -770,6 +838,8 @@
             <button type="button" class="protein-btn focus-ring" id="protein-azteca-cerdo" onclick="setProtein('azteca','CERDO')">🐖 Cerdo</button>
           </div>
 
+          <div class="addon-chips" data-item="azteca"></div>
+
           <div class="price-row">
             <div class="price-now" id="price-azteca">$15.000<br><small>PRECIO</small></div>
             <label class="coke-toggle">
@@ -780,7 +850,8 @@
           </div>
 
           <div class="add-row">
-            <button type="button" class="btn btn-primary focus-ring" onclick="addToCart('azteca')">🔥 AGREGAR AL CARRITO</button>
+            <p class="stock-left" data-stock="sandwiches" hidden></p>
+            <button type="button" class="btn btn-primary focus-ring" id="add-azteca" onclick="addToCart('azteca')">🔥 AGREGAR AL CARRITO</button>
           </div>
         </div>
       </article>
@@ -810,7 +881,8 @@
           </div>
 
           <div class="add-row">
-            <button type="button" class="btn btn-primary focus-ring" onclick="addToCart('costillas')">🔥 AGREGAR AL CARRITO</button>
+            <p class="stock-left" data-stock="ribs" hidden></p>
+            <button type="button" class="btn btn-primary focus-ring" id="add-costillas" onclick="addToCart('costillas')">🔥 AGREGAR AL CARRITO</button>
           </div>
         </div>
       </article>
@@ -893,7 +965,7 @@
         <div class="stock-top">
           <span class="stock-name">🥪 Sándwiches</span>
         </div>
-        <p class="stock-badge">STOCK HASTA AGOTAR EXISTENCIAS</p>
+        <p class="stock-badge" data-stock-badge="sandwiches">STOCK HASTA AGOTAR EXISTENCIAS</p>
         <p class="stock-meta">Res + Cerdo — stock compartido entre ambos sabores.</p>
       </div>
 
@@ -901,7 +973,7 @@
         <div class="stock-top">
           <span class="stock-name">🍖 Costillas BBQ</span>
         </div>
-        <p class="stock-badge">STOCK HASTA AGOTAR EXISTENCIAS</p>
+        <p class="stock-badge" data-stock-badge="ribs">STOCK HASTA AGOTAR EXISTENCIAS</p>
         <p class="stock-meta">Porciones individuales, cocción limitada del día.</p>
       </div>
     </div>
@@ -951,6 +1023,7 @@
     <div class="cart-detail" id="cart-detail" hidden>
       <div id="cart-lines"></div>
     </div>
+    <p class="closed-note" id="closed-note" hidden>⏳ Arma tu pedido desde ya: podrás enviarlo cuando abramos.</p>
     <button type="button" class="btn btn-primary focus-ring" id="cart-checkout-btn">🔥 HACER MI PEDIDO POR WHATSAPP</button>
   </div>
 </div>
@@ -961,6 +1034,7 @@
 <dialog class="checkout" id="checkout-dialog" aria-labelledby="checkout-title">
   <form id="checkout-form" novalidate>
     <h2 class="checkout-title" id="checkout-title">Confirma tu pedido</h2>
+    <p class="stock-error" id="err-stock" role="alert" hidden></p>
 
     <div class="order-summary">
       <ul id="checkout-lines"></ul>
@@ -1002,7 +1076,7 @@
       <textarea id="checkout-notes" rows="2" maxlength="300" placeholder="Ej: sin cebolla, el queso extra va en el Texas…"></textarea>
     </label>
 
-    <button type="submit" class="btn btn-primary focus-ring">🔥 ENVIAR PEDIDO POR WHATSAPP</button>
+    <button type="submit" class="btn btn-primary focus-ring" id="checkout-submit">🔥 ENVIAR PEDIDO POR WHATSAPP</button>
     <p class="send-hint">Se abrirá WhatsApp con tu pedido listo. Solo falta que le des enviar.</p>
     <button type="button" class="checkout-cancel focus-ring" id="checkout-cancel">Volver al carrito</button>
   </form>
@@ -1023,10 +1097,20 @@
     INSTAGRAM_URL: "https://www.instagram.com/carnitas.co",
     TIKTOK_URL: "CAMBIAR_AQUI_TU_TIKTOK",
 
-    // Stock disponible AHORA MISMO. Bájalo manualmente a medida que vendas.
-    // Es solo para tu referencia: no se muestra en la página ni en el mensaje de WhatsApp.
-    SANDWICH_STOCK: 30,
+    // Hora de apertura del servicio, con zona horaria de Colombia (-05:00).
+    // Antes de esta hora se puede armar el pedido, pero no enviarlo por WhatsApp.
+    OPENING_AT: "2026-09-19T16:00:00-05:00",
+
+    // Stock inicial de lanzamiento. Los sándwiches son un solo stock compartido
+    // entre Texas BBQ, Bistek y Azteca. Baja con cada pedido que el cliente envía por WhatsApp.
+    SANDWICH_STOCK: 25,
     RIBS_STOCK: 4,
+
+    // URL de tu Firebase Realtime Database (ej: "https://carnitas-abc12-default-rtdb.firebaseio.com").
+    // CON la URL: el stock es compartido y baja para todos los clientes al mismo tiempo.
+    // SIN la URL (vacío): el stock solo baja en el celular de cada cliente (sirve para probar,
+    // NO para vender). Pasos en CONFIGURAR-STOCK.md.
+    STOCK_DB_URL: "https://carnitas-7aafe-default-rtdb.firebaseio.com",
 
     // Precios oficiales en pesos colombianos (COP), sin puntos ni símbolos.
     SANDWICH_PRICE: 15000,
@@ -1037,7 +1121,7 @@
     // Datos para transferir (ej: "Nequi 300 123 4567 · a nombre de Carnitas").
     // Si lo llenas, el cliente lo ve al elegir "Transferencia". Si lo dejas vacío,
     // se le avisa que le enviarás los datos por WhatsApp.
-    TRANSFER_INFO: "Llave 0093315587 · Nequi 312 422 8657",
+    TRANSFER_INFO: "",
   };
   /* ========================================================= */
 
@@ -1101,58 +1185,267 @@
     if (papasBtn) papasBtn.classList.toggle('active', side === 'PAPAS');
   }
 
-  function lineUnitPrice(item, drink){
+  // extras = cuántos adicionales lleva pegados el sándwich (cada uno cuesta ADDON_PRICE).
+  function lineUnitPrice(item, drink, extras = 0){
     if (isAddon(item)) return CARNITAS_CONFIG.ADDON_PRICE;
     const base = item === 'costillas' ? CARNITAS_CONFIG.RIBS_PRICE : CARNITAS_CONFIG.SANDWICH_PRICE;
-    return base + (drink ? CARNITAS_CONFIG.DRINK_PRICE : 0);
+    return base + (drink ? CARNITAS_CONFIG.DRINK_PRICE : 0) + extras * CARNITAS_CONFIG.ADDON_PRICE;
   }
 
-  function lineLabel(item, protein, drink, side, pickles){
+  function lineLabel(item, protein, drink, side, pickles, addons = []){
     if (isAddon(item)) {
       const a = ADDONS[item.slice(6)];
       return '➕ ' + a.emoji + ' ' + a.label;
     }
+    const extras = addons.map(id => ' + ' + ADDONS[id].emoji + ' ' + ADDONS[id].label).join('');
     if (item === 'costillas') {
       const sideLabel = side === 'PAPAS' ? 'con papas' : 'con tortillas de maíz';
       return '🍖 COSTILLAS DE CERDO BBQ (' + sideLabel + ')' + (drink ? ' + 🥤 GASEOSA' : '');
     }
     const detail = item === 'texas' ? protein + ', ' + (pickles ? 'CON' : 'SIN') + ' PEPINILLOS' : protein;
-    return '🥪 ' + SANDWICH_NAMES[item] + ' (' + detail + ')' + (drink ? ' + 🥤 GASEOSA' : '');
+    return '🥪 ' + SANDWICH_NAMES[item] + ' (' + detail + ')' + (drink ? ' + 🥤 GASEOSA' : '') + extras;
+  }
+
+  // Adicionales marcados en la tarjeta de un sándwich, siempre en el mismo orden
+  // (así "queso + huevo" y "huevo + queso" cuentan como la misma línea).
+  function selectedAddons(item){
+    const checked = [...document.querySelectorAll('#addons-' + item + ' input:checked')].map(i => i.value);
+    return Object.keys(ADDONS).filter(id => checked.includes(id));
   }
 
   // El botón "AGREGAR AL CARRITO" toma la configuración actual de la tarjeta
-  // (proteína/acompañamiento + gaseosa) y la agrega como línea propia del pedido.
+  // (proteína/acompañamiento + gaseosa + adicionales) y la agrega como línea propia del pedido.
   function addToCart(item){
     const protein = item === 'costillas' ? null : proteinState[item];
     const side = item === 'costillas' ? sideState.costillas : null;
     const drink = document.getElementById('drink-' + item).checked;
     const pickles = item === 'texas' ? pickleState.texas : null;
-    commitLine(item, protein, side, drink, pickles);
+    const addons = item === 'costillas' ? [] : selectedAddons(item);
+    commitLine(item, protein, side, drink, pickles, addons);
   }
 
   function addAddon(id){
-    commitLine('addon:' + id, null, null, false, null);
+    commitLine('addon:' + id, null, null, false, null, []);
   }
 
   // Suma una unidad a la línea que coincide (o la crea) y avisa al cliente.
-  function commitLine(item, protein, side, drink, pickles){
-    const key = lineKey(item, protein, side, drink, pickles);
+  function commitLine(item, protein, side, drink, pickles, addons){
+    if (!canAdd(item)) return;
+    const key = lineKey(item, protein, side, drink, pickles, addons);
     const existing = cartLines.find(l => l.key === key);
     if (existing) {
       existing.qty += 1;
     } else {
-      cartLines.push({ key, item, protein, drink, side, pickles, qty: 1 });
+      cartLines.push({ key, item, protein, drink, side, pickles, addons, qty: 1 });
     }
     renderCart();
-    showToast('✓ ' + lineLabel(item, protein, drink, side, pickles).replace(/ \(.*?\)/, '') + ' agregado');
+    showToast('✓ ' + lineLabel(item, protein, drink, side, pickles, addons).replace(/ \(.*?\)/, '') + ' agregado');
     const bar = document.getElementById('cart-bar');
     bar.classList.remove('pulse');
     void bar.offsetWidth;
     bar.classList.add('pulse');
   }
 
-  function lineKey(item, protein, side, drink, pickles){
-    return item + '|' + (protein || side || '-') + '|' + (drink ? 'D' : 'N') + (pickles === null ? '' : '|' + (pickles ? 'P' : 'S'));
+  function lineKey(item, protein, side, drink, pickles, addons){
+    return item + '|' + (protein || side || '-') + '|' + (drink ? 'D' : 'N')
+      + (pickles === null ? '' : '|' + (pickles ? 'P' : 'S'))
+      + (addons && addons.length ? '|+' + addons.join(',') : '');
+  }
+
+  /* ---------- Stock ----------
+     Sándwiches (Texas, Bistek, Azteca) comparten un solo stock; las costillas tienen el suyo.
+     Los adicionales, gaseosas y demás no descuentan stock.
+     El stock baja UNA vez, al tocar "Enviar pedido por WhatsApp" (ver reserveStock). */
+  const stock = { sandwiches: null, ribs: null }; // null = todavía no se sabe
+  const stockTypeOf = item => item === 'costillas' ? 'ribs' : Object.hasOwn(SANDWICH_NAMES, item) ? 'sandwiches' : null;
+
+  function cartCounts(){
+    const counts = { sandwiches: 0, ribs: 0 };
+    cartLines.forEach(l => { const t = stockTypeOf(l.item); if (t) counts[t] += l.qty; });
+    return counts;
+  }
+
+  const stockWords = { sandwiches: ['sándwich', 'sándwiches'], ribs: ['costilla', 'costillas'] };
+  const stockAmount = (type, n) => n + ' ' + stockWords[type][n === 1 ? 0 : 1];
+
+  // ¿Se puede sumar una unidad más de este producto sin pasarse del stock?
+  function canAdd(item){
+    const type = stockTypeOf(item);
+    if (!type || stock[type] === null) return true;
+    if (cartCounts()[type] < stock[type]) return true;
+    showToast(stock[type] === 0 ? '😔 Ya se agotaron: ' + stockWords[type][1] : (stock[type] === 1 ? 'Solo queda ' : 'Solo quedan ') + stockAmount(type, stock[type]), 2600);
+    return false;
+  }
+
+  const LOCAL_STOCK_KEY = 'carnitas_stock_v1';
+  const stockDbUrl = () => (CARNITAS_CONFIG.STOCK_DB_URL || '').trim().replace(/\/+$/, '');
+  let localStock = null;
+
+  // Modo sin servidor (STOCK_DB_URL vacío): el stock vive solo en este navegador. Sirve para probar.
+  function readLocalStock(){
+    if (localStock) return localStock;
+    let saved = null;
+    try {
+      const d = JSON.parse(localStorage.getItem(LOCAL_STOCK_KEY) || 'null');
+      if (d && Number.isInteger(d.sandwiches) && Number.isInteger(d.ribs) && d.sandwiches >= 0 && d.ribs >= 0) saved = d;
+    } catch (e) { /* sin almacenamiento */ }
+    localStock = saved || { sandwiches: CARNITAS_CONFIG.SANDWICH_STOCK, ribs: CARNITAS_CONFIG.RIBS_STOCK };
+    return localStock;
+  }
+  function writeLocalStock(){
+    try { localStorage.setItem(LOCAL_STOCK_KEY, JSON.stringify(localStock)); } catch (e) { /* ignorar */ }
+  }
+
+  async function dbFetch(path, options = {}){
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 8000);
+    try {
+      return await fetch(stockDbUrl() + path, { ...options, signal: ctrl.signal, cache: 'no-store' });
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
+  // Lee el stock actual (del servidor compartido, o del navegador en modo prueba).
+  async function refreshStock(){
+    try {
+      if (stockDbUrl()) {
+        const res = await dbFetch('/stock.json');
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const d = await res.json();
+        if (!d || !Number.isInteger(d.sandwiches) || !Number.isInteger(d.ribs)) throw new Error('El stock no está creado en la base de datos');
+        stock.sandwiches = Math.max(0, d.sandwiches);
+        stock.ribs = Math.max(0, d.ribs);
+      } else {
+        const s = readLocalStock();
+        stock.sandwiches = s.sandwiches;
+        stock.ribs = s.ribs;
+      }
+    } catch (e) {
+      console.warn('[stock] No se pudo leer el stock:', e.message); // se conserva lo último que se supo
+    }
+    renderStock();
+  }
+
+  // Descuenta del stock lo que lleva el pedido. Devuelve { ok: true } o { ok: false } si ya no alcanza.
+  // Con servidor, el descuento es atómico (increment de Firebase) y las reglas de la base de datos
+  // rechazan cualquier resultado negativo, así dos clientes no pueden comprar la misma última unidad.
+  async function reserveStock(counts){
+    if (counts.sandwiches === 0 && counts.ribs === 0) return { ok: true };
+
+    if (!stockDbUrl()) {
+      const s = readLocalStock();
+      if (counts.sandwiches > s.sandwiches || counts.ribs > s.ribs) { await refreshStock(); return { ok: false }; }
+      s.sandwiches -= counts.sandwiches;
+      s.ribs -= counts.ribs;
+      writeLocalStock();
+      await refreshStock();
+      return { ok: true };
+    }
+
+    const body = {};
+    for (const type of ['sandwiches', 'ribs']) {
+      if (counts[type] > 0) body[type] = { '.sv': { increment: -counts[type] } };
+    }
+    try {
+      const res = await dbFetch('/stock.json', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+      if (res.ok) { refreshStock(); return { ok: true }; }
+      if (res.status === 401 || res.status === 403) { await refreshStock(); return { ok: false }; } // rechazado: no alcanza
+      throw new Error('HTTP ' + res.status);
+    } catch (e) {
+      // Sin conexión con el servidor: no se le niega el pedido al cliente (el stock no se descontó).
+      console.warn('[stock] No se pudo descontar el stock:', e.message);
+      return { ok: true, unverified: true };
+    }
+  }
+
+  // Si el stock bajó por debajo de lo que hay en el carrito, recorta el pedido (desde el final).
+  function clampCartToStock(){
+    let changed = false;
+    for (const type of ['sandwiches', 'ribs']) {
+      if (stock[type] === null) continue;
+      let excess = cartCounts()[type] - stock[type];
+      for (let i = cartLines.length - 1; i >= 0 && excess > 0; i--) {
+        const l = cartLines[i];
+        if (stockTypeOf(l.item) !== type) continue;
+        const cut = Math.min(excess, l.qty);
+        l.qty -= cut;
+        excess -= cut;
+        changed = true;
+      }
+    }
+    cartLines = cartLines.filter(l => l.qty > 0);
+    return changed;
+  }
+
+  const STOCK_LOW = 5; // desde aquí se muestra "¡Últimos!"
+  const STOCK_CHIP = {
+    sandwiches: n => n === 0 ? '😔 Agotados' : n === 1 ? '🔥 ¡Último sándwich!' : n <= STOCK_LOW ? `🔥 ¡Últimos ${n}!` : `🔥 Quedan ${n} sándwiches`,
+    ribs:       n => n === 0 ? '😔 Agotadas' : n === 1 ? '🔥 ¡Última porción!'  : n <= STOCK_LOW ? `🔥 ¡Últimas ${n} porciones!` : `🔥 Quedan ${n} porciones`,
+  };
+  const STOCK_ITEMS = { sandwiches: ['texas', 'bistek', 'azteca'], ribs: ['costillas'] };
+
+  // Pinta el stock en las tarjetas, en la sección de disponibilidad y en los botones de agregar.
+  function renderStock(){
+    for (const type of ['sandwiches', 'ribs']) {
+      const n = stock[type];
+      document.querySelectorAll(`[data-stock="${type}"]`).forEach(el => {
+        el.hidden = n === null;
+        if (n === null) return;
+        el.textContent = STOCK_CHIP[type](n);
+        el.classList.toggle('low', n > 0 && n <= STOCK_LOW);
+        el.classList.toggle('out', n === 0);
+      });
+      document.querySelectorAll(`[data-stock-badge="${type}"]`).forEach(el => {
+        if (n === null) return;
+        el.textContent = n === 0 ? 'AGOTADO' : 'QUEDAN ' + n;
+      });
+      STOCK_ITEMS[type].forEach(item => {
+        const btn = document.getElementById('add-' + item);
+        btn.disabled = n === 0;
+        btn.textContent = n === 0 ? '😔 AGOTADO' : '🔥 AGREGAR AL CARRITO';
+      });
+    }
+  }
+
+  /* ---------- Cuenta regresiva de apertura ---------- */
+  let openingTs = Date.parse(CARNITAS_CONFIG.OPENING_AT);
+  const isOpen = () => !Number.isFinite(openingTs) || Date.now() >= openingTs;
+  const BOGOTA = { timeZone: 'America/Bogota' };
+  const pad2 = n => String(n).padStart(2, '0');
+
+  function openingTimeLabel(){
+    return new Date(openingTs).toLocaleTimeString('es-CO', { ...BOGOTA, hour: 'numeric', minute: '2-digit' }).toUpperCase();
+  }
+
+  function openingDayLabel(){
+    const ymd = d => d.toLocaleDateString('en-CA', BOGOTA);
+    const opening = ymd(new Date(openingTs));
+    if (opening === ymd(new Date())) return 'HOY';
+    if (opening === ymd(new Date(Date.now() + 864e5))) return 'MAÑANA';
+    return new Date(openingTs).toLocaleDateString('es-CO', { ...BOGOTA, weekday: 'long', day: 'numeric', month: 'long' }).toUpperCase();
+  }
+
+  let wasOpen = null;
+  function tickCountdown(){
+    const open = isOpen();
+    const box = document.getElementById('countdown');
+    box.classList.toggle('is-open', open);
+    document.getElementById('countdown-digits').hidden = open;
+    if (open) {
+      document.getElementById('countdown-label').textContent = '🔥 ¡YA ESTAMOS ABIERTOS! HAZ TU PEDIDO';
+    } else {
+      const left = Math.max(0, Math.floor((openingTs - Date.now()) / 1000));
+      const days = Math.floor(left / 86400);
+      document.getElementById('cd-days-box').hidden = days === 0;
+      document.getElementById('cd-d').textContent = days;
+      document.getElementById('cd-days-unit').textContent = days === 1 ? 'DÍA' : 'DÍAS';
+      document.getElementById('cd-h').textContent = pad2(Math.floor(left % 86400 / 3600));
+      document.getElementById('cd-m').textContent = pad2(Math.floor(left % 3600 / 60));
+      document.getElementById('cd-s').textContent = pad2(left % 60);
+      document.getElementById('countdown-label').textContent = '⏳ ABRIMOS ' + openingDayLabel() + ' A LAS ' + openingTimeLabel();
+    }
+    if (open !== wasOpen) { wasOpen = open; renderCart(); } // habilita o bloquea los botones de enviar
   }
 
   /* ---------- Aviso al agregar ---------- */
@@ -1191,10 +1484,11 @@
         const side = isRibs ? (l.side === 'PAPAS' ? 'PAPAS' : 'TORTILLAS') : null;
         const drink = !addon && l.drink === true;
         const pickles = l.item === 'texas' ? l.pickles !== false : null;
-        const key = lineKey(l.item, protein, side, drink, pickles);
+        const addons = isSandwich && Array.isArray(l.addons) ? Object.keys(ADDONS).filter(id => l.addons.includes(id)) : [];
+        const key = lineKey(l.item, protein, side, drink, pickles, addons);
         const existing = cartLines.find(x => x.key === key);
         if (existing) existing.qty = Math.min(99, existing.qty + qty);
-        else cartLines.push({ key, item: l.item, protein, drink, side, pickles, qty });
+        else cartLines.push({ key, item: l.item, protein, drink, side, pickles, addons, qty });
       });
       if (typeof data.notes === 'string') orderNotes = data.notes.slice(0, 300);
       if (typeof data.name === 'string') deliveryName = data.name.slice(0, 60);
@@ -1207,6 +1501,7 @@
   function adjustLine(key, delta){
     const line = cartLines.find(l => l.key === key);
     if (!line) return;
+    if (delta > 0 && !canAdd(line.item)) return;
     line.qty += delta;
     if (line.qty <= 0) cartLines = cartLines.filter(l => l.key !== key);
     renderCart();
@@ -1215,7 +1510,7 @@
   function cartMessage(totalPrice){
     const c = CARNITAS_CONFIG;
     const lines = cartLines.map(l =>
-      `${l.qty}x ${lineLabel(l.item, l.protein, l.drink, l.side, l.pickles)} — ${cop(l.qty * lineUnitPrice(l.item, l.drink))}`
+      `${l.qty}x ${lineLabel(l.item, l.protein, l.drink, l.side, l.pickles, l.addons)} — ${cop(l.qty * lineUnitPrice(l.item, l.drink, l.addons.length))}`
     ).join('\n');
     let payText = PAYMENT_LABELS[deliveryPayment];
     if (deliveryPayment === 'EFECTIVO' && deliveryCash > 0) {
@@ -1229,7 +1524,7 @@
   }
 
   function cartTotal(){
-    return cartLines.reduce((s, l) => s + l.qty * lineUnitPrice(l.item, l.drink), 0);
+    return cartLines.reduce((s, l) => s + l.qty * lineUnitPrice(l.item, l.drink, l.addons.length), 0);
   }
 
   /* ---------- Paso previo a WhatsApp: resumen, nombre, dirección y pago ---------- */
@@ -1254,12 +1549,17 @@
       : '📲 Te enviaremos los datos de la cuenta por WhatsApp para que hagas la transferencia.';
   }
 
-  function openCheckout(){
-    if (cartLines.length === 0) return;
+  function renderCheckoutSummary(){
     document.getElementById('checkout-lines').innerHTML = cartLines.map(l =>
-      `<li><span>${l.qty}× ${lineLabel(l.item, l.protein, l.drink, l.side, l.pickles)}</span><span>${cop(l.qty * lineUnitPrice(l.item, l.drink))}</span></li>`
+      `<li><span>${l.qty}× ${lineLabel(l.item, l.protein, l.drink, l.side, l.pickles, l.addons)}</span><span>${cop(l.qty * lineUnitPrice(l.item, l.drink, l.addons.length))}</span></li>`
     ).join('');
     document.getElementById('checkout-total').textContent = cop(cartTotal());
+  }
+
+  function openCheckout(){
+    if (cartLines.length === 0 || !isOpen()) return;
+    renderCheckoutSummary();
+    document.getElementById('err-stock').hidden = true;
     nameInput.value = deliveryName;
     addressInput.value = deliveryAddress;
     notesInput.value = orderNotes;
@@ -1292,8 +1592,19 @@
     cashInput.value = digits ? cop(Number(digits)) : '';
   });
 
-  document.getElementById('checkout-form').addEventListener('submit', (e) => {
+  const submitBtn = document.getElementById('checkout-submit');
+  let submitting = false;
+
+  function setSubmitting(on){
+    submitting = on;
+    submitBtn.disabled = on;
+    submitBtn.textContent = on ? 'CONFIRMANDO…' : '🔥 ENVIAR PEDIDO POR WHATSAPP';
+  }
+
+  document.getElementById('checkout-form').addEventListener('submit', async (e) => {
     e.preventDefault();
+    if (submitting) return;
+    if (!isOpen()) { checkoutDialog.close(); return; }
     const name = nameInput.value.trim();
     const address = addressInput.value.trim();
     const paymentInput = checkoutDialog.querySelector('input[name="payment"]:checked');
@@ -1317,21 +1628,59 @@
     orderNotes = notesInput.value;
     saveCart();
 
-    const a = document.createElement('a');
-    a.href = buildWaLink(cartMessage(total));
-    a.target = '_blank';
-    a.rel = 'noopener';
-    a.click();
+    // Se abre la pestaña de WhatsApp ya, dentro del toque del cliente, para que el
+    // navegador no la bloquee; luego se confirma el stock y se le pone el enlace.
+    const waTab = window.open('about:blank', '_blank');
+    setSubmitting(true);
+    const result = await reserveStock(cartCounts());
+    setSubmitting(false);
+
+    if (!result.ok) {
+      if (waTab) waTab.close();
+      showStockConflict();
+      return;
+    }
+
+    const url = buildWaLink(cartMessage(total));
+    if (waTab) { waTab.opener = null; waTab.location.href = url; }
+    else { window.location.href = url; }
+
+    // El pedido ya salió y el stock ya se descontó: se vacía el carrito para no descontarlo dos veces.
+    cartLines = [];
+    renderCart();
     checkoutDialog.close();
     showToast('Se abrió WhatsApp: solo falta que le des enviar 🔥', 5000);
   });
+
+  // Alguien más se llevó producto mientras el cliente armaba su pedido.
+  function showStockConflict(){
+    const before = cartCounts();
+    clampCartToStock();
+    const msg = document.getElementById('err-stock');
+    if (stock.sandwiches === null || stock.ribs === null) {
+      msg.textContent = 'No pudimos confirmar el stock. Intenta de nuevo en un momento.';
+    } else {
+      const parts = [];
+      if (before.sandwiches > stock.sandwiches) parts.push(stockAmount('sandwiches', stock.sandwiches));
+      if (before.ribs > stock.ribs) parts.push(stockAmount('ribs', stock.ribs));
+      msg.textContent = '¡Se agotó mientras pedías! Ahora solo hay ' + (parts.join(' y ') || 'menos unidades') + '. Ajustamos tu pedido: revísalo y vuelve a enviarlo.';
+    }
+    msg.hidden = false;
+    renderCart();
+    if (cartLines.length === 0) {
+      checkoutDialog.close();
+      showToast('😔 Se agotó todo lo que tenías en el pedido', 4000);
+    } else {
+      renderCheckoutSummary();
+    }
+  }
 
   document.getElementById('checkout-cancel').addEventListener('click', () => checkoutDialog.close());
   // Clic en el fondo oscuro también cierra.
   checkoutDialog.addEventListener('click', (e) => { if (e.target === checkoutDialog) checkoutDialog.close(); });
   document.getElementById('cart-checkout-btn').addEventListener('click', openCheckout);
   document.getElementById('final-cta-btn').addEventListener('click', (e) => {
-    if (cartLines.length > 0) { e.preventDefault(); openCheckout(); }
+    if (cartLines.length > 0) { e.preventDefault(); openCheckout(); } // cerrado: openCheckout no hace nada
   });
 
   function renderCart(){
@@ -1347,8 +1696,7 @@
       orderNotes = '';
       finalBtn.textContent = '🔥 ARMAR MI PEDIDO';
       finalBtn.href = '#productos';
-      finalBtn.removeAttribute('target');
-      finalBtn.removeAttribute('rel');
+      finalBtn.removeAttribute('aria-disabled');
     }
 
     if (totalQty > 0) {
@@ -1356,10 +1704,10 @@
       document.getElementById('cart-total').textContent = cop(totalPrice);
 
       document.getElementById('cart-lines').innerHTML = cartLines.map(l => {
-        const unit = lineUnitPrice(l.item, l.drink);
+        const unit = lineUnitPrice(l.item, l.drink, l.addons.length);
         return `<div class="cart-line">
           <div class="cart-line-info">
-            <strong>${lineLabel(l.item, l.protein, l.drink, l.side, l.pickles)}</strong>
+            <strong>${lineLabel(l.item, l.protein, l.drink, l.side, l.pickles, l.addons)}</strong>
             <span class="cart-line-price">${cop(unit)} c/u</span>
           </div>
           <div class="cart-line-controls">
@@ -1373,8 +1721,16 @@
         </div>`;
       }).join('');
 
-      finalBtn.textContent = '🔥 HACER MI PEDIDO POR WHATSAPP';
+      // Antes de la hora de apertura se puede armar el pedido, pero no enviarlo.
+      const open = isOpen();
+      const sendLabel = open ? '🔥 HACER MI PEDIDO POR WHATSAPP' : '🔒 PEDIDOS DESDE LAS ' + openingTimeLabel();
+      const cartBtn = document.getElementById('cart-checkout-btn');
+      cartBtn.disabled = !open;
+      cartBtn.textContent = sendLabel;
+      document.getElementById('closed-note').hidden = open;
+      finalBtn.textContent = sendLabel;
       finalBtn.href = '#pedir';
+      finalBtn.setAttribute('aria-disabled', String(!open));
     }
 
     saveCart();
@@ -1400,7 +1756,8 @@
 
   function updateDrink(item){
     const drink = document.getElementById('drink-' + item).checked;
-    const price = lineUnitPrice(item, drink);
+    const extras = item === 'costillas' ? 0 : selectedAddons(item).length;
+    const price = lineUnitPrice(item, drink, extras);
     document.getElementById('price-' + item).innerHTML = cop(price) + '<br><small>PRECIO</small>';
   }
 
@@ -1416,12 +1773,36 @@
         <span class="addon-price">${cop(c.ADDON_PRICE)}</span>
         <button type="button" class="addon-add focus-ring" onclick="addAddon('${id}')" aria-label="Agregar ${a.label} al carrito">+ AGREGAR</button>
       </div>`).join('');
+
+    // Adicionales dentro de cada tarjeta de sándwich (se suman al precio de ese sándwich).
+    document.querySelectorAll('.addon-chips').forEach(box => {
+      const item = box.dataset.item;
+      box.id = 'addons-' + item;
+      box.setAttribute('role', 'group');
+      box.setAttribute('aria-label', 'Adicionales del ' + SANDWICH_NAMES[item]);
+      box.innerHTML = `<p class="addon-chips-title">Adicionales <span>(+${cop(c.ADDON_PRICE)} c/u)</span></p>
+        <div class="chip-row">` + Object.entries(ADDONS).map(([id, a]) =>
+        `<label class="chip"><input type="checkbox" value="${id}" onchange="updateDrink('${item}')"><span>${a.emoji} ${a.label}</span></label>`
+      ).join('') + '</div>';
+    });
   }
 
   paint();
 
   loadCart();
   renderCart();
+
+  tickCountdown();
+  setInterval(tickCountdown, 1000);
+
+  refreshStock().then(() => {
+    // Si lo que quedó guardado en el carrito ya no alcanza, se ajusta al stock real.
+    if (clampCartToStock()) { renderCart(); showToast('Ajustamos tu pedido al stock disponible', 3500); }
+  });
+  if (stockDbUrl()) {
+    setInterval(refreshStock, 20000);
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) refreshStock(); });
+  }
 
   // Entrada suave de las secciones al hacer scroll
   if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObserver' in window) {
