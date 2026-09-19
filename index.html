@@ -507,10 +507,43 @@
   .cart-line-controls{ display:flex; align-items:center; justify-content:space-between; }
   .cart-line-subtotal{ font-family:'Bebas Neue',sans-serif; color:var(--gold); font-variant-numeric:tabular-nums; }
 
+  .cart-detail #cart-lines{ display:flex; flex-direction:column; gap:.5rem; }
+  .cart-notes{ display:flex; flex-direction:column; gap:.4rem; margin-top:.4rem; font-size:.82rem; color:var(--smoke); }
+  .cart-notes textarea{
+    width:100%; resize:vertical;
+    background:var(--char); color:var(--paper);
+    border:1px solid var(--char-line); border-radius:12px;
+    padding:.6rem .75rem;
+    font-family:'Archivo',sans-serif; font-size:.9rem;
+  }
+  .cart-notes textarea:focus-visible{ outline:2px solid var(--gold); outline-offset:2px; }
+  .cart-notes-link{
+    display:block; width:100%; margin:0 0 .7rem;
+    background:none; border:none; padding:0; text-align:left;
+    color:var(--smoke); font-size:.85rem; cursor:pointer; text-decoration:underline;
+  }
+  .cart-notes-link:hover{ color:var(--gold); }
+  .cart-bar.pulse{ animation:cart-pulse .45s ease; }
+  @keyframes cart-pulse{
+    0%{ box-shadow:0 -18px 40px -20px rgba(0,0,0,.75); }
+    40%{ box-shadow:0 -10px 34px -6px rgba(239,91,37,.75); }
+    100%{ box-shadow:0 -18px 40px -20px rgba(0,0,0,.75); }
+  }
+
+  .toast{
+    position:fixed; left:50%; z-index:75;
+    transform:translateX(-50%);
+    max-width:calc(100% - 2rem);
+    background:var(--paper); color:var(--char);
+    font-family:'Archivo',sans-serif; font-weight:600; font-size:.9rem;
+    padding:.65rem 1.1rem; border-radius:999px;
+    box-shadow:var(--shadow);
+    pointer-events:none;
+  }
+
   @media (min-width:640px){
     .hero{ padding:5rem 2rem 4rem; }
     section{ padding:4.6rem 2rem; }
-    .hero-actions{ flex-direction:row; max-width:460px; }
     .product-list{ }
     .tag-row{ flex-direction:row; justify-content:center; flex-wrap:wrap; }
     .tag{ width:auto; min-width:230px; }
@@ -547,8 +580,7 @@
       </div>
 
       <div class="hero-actions">
-        <a class="btn btn-ghost focus-ring" href="#productos">🔥 VER PRODUCTOS</a>
-        <a class="btn btn-primary focus-ring" id="hero-wa-btn" href="#" target="_blank" rel="noopener">PEDIR POR WHATSAPP</a>
+        <a class="btn btn-primary focus-ring" href="#productos">🔥 VER LA CARTA</a>
       </div>
     </div>
   </header>
@@ -556,8 +588,8 @@
   <!-- ============ TICKER ============ -->
   <div class="ticker" aria-hidden="true">
     <div class="ticker-track">
-      <span class="hot">🔥 PRIMER LANZAMIENTO</span><span>PRODUCCIÓN LIMITADA</span><span class="hot">DISPONIBLE HASTA AGOTAR EXISTENCIAS</span><span>PIDE AHORA 🔥</span><span>🥤 MALTEADAS PRÓXIMAMENTE</span>
-      <span class="hot">🔥 PRIMER LANZAMIENTO</span><span>PRODUCCIÓN LIMITADA</span><span class="hot">DISPONIBLE HASTA AGOTAR EXISTENCIAS</span><span>PIDE AHORA 🔥</span><span>🥤 MALTEADAS PRÓXIMAMENTE</span>
+      <span class="hot">🔥 PRIMER LANZAMIENTO</span><span>PRODUCCIÓN LIMITADA</span><span class="hot">DISPONIBLE HASTA AGOTAR EXISTENCIAS</span><span>ELIGE TU SABOR 🔥</span><span>🥤 MALTEADAS PRÓXIMAMENTE</span>
+      <span class="hot">🔥 PRIMER LANZAMIENTO</span><span>PRODUCCIÓN LIMITADA</span><span class="hot">DISPONIBLE HASTA AGOTAR EXISTENCIAS</span><span>ELIGE TU SABOR 🔥</span><span>🥤 MALTEADAS PRÓXIMAMENTE</span>
     </div>
   </div>
 
@@ -801,7 +833,7 @@
       <span>🍖 COSTILLAS BBQ</span>
     </div>
     <p class="final-note">DISPONIBLE HASTA AGOTAR EXISTENCIAS</p>
-    <a class="btn btn-primary focus-ring" id="final-wa-btn" style="max-width:360px;margin:0 auto" href="#" target="_blank" rel="noopener">🔥 PEDIR POR WHATSAPP</a>
+    <a class="btn btn-primary focus-ring" id="final-cta-btn" style="max-width:360px;margin:0 auto" href="#productos">🔥 ARMAR MI PEDIDO</a>
   </section>
 
   <!-- ============ FOOTER / REDES ============ -->
@@ -831,10 +863,19 @@
       <span id="cart-total">$0</span>
       <span class="cart-chevron" aria-hidden="true">▲</span>
     </button>
-    <div class="cart-detail" id="cart-detail" hidden></div>
-    <a class="btn btn-primary focus-ring" id="cart-checkout-btn" href="#" target="_blank" rel="noopener">🔥 PEDIR POR WHATSAPP</a>
+    <div class="cart-detail" id="cart-detail" hidden>
+      <div id="cart-lines"></div>
+      <label class="cart-notes">
+        <span>📝 Notas del pedido (opcional)</span>
+        <textarea id="cart-notes" rows="2" maxlength="300" placeholder="Ej: sin cebolla, dirección, hora de entrega…"></textarea>
+      </label>
+    </div>
+    <button type="button" class="cart-notes-link focus-ring" id="cart-notes-link">📝 Añadir notas (opcional)</button>
+    <a class="btn btn-primary focus-ring" id="cart-checkout-btn" href="#" target="_blank" rel="noopener">🔥 HACER MI PEDIDO POR WHATSAPP</a>
   </div>
 </div>
+
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
 <script>
   /* =========================================================
@@ -870,7 +911,7 @@
   }
 
   function generalMessage(){
-    return `Hola ${CARNITAS_CONFIG.BRAND_NAME} 👋🔥\nVi el lanzamiento y quiero hacer un pedido.\n¿Qué tienen disponible?`;
+    return `Hola ${CARNITAS_CONFIG.BRAND_NAME} 👋🔥\nVi el lanzamiento y tengo una duda.`;
   }
 
   /* ---------- Carrito: líneas independientes por producto ----------
@@ -880,6 +921,8 @@
      sin gaseosa y otro Azteca de cerdo con gaseosa en el mismo pedido:
      cambias la selección entre un clic y otro y quedan como líneas separadas. */
   let cartLines = []; // { key, item, protein, drink, side, qty }
+  let orderNotes = '';
+  const CART_STORAGE_KEY = 'carnitas_cart_v1';
   const proteinState = { texas: 'RES', bistek: 'RES', azteca: 'RES' };
   const sideState = { costillas: 'TORTILLAS' }; // acompañamiento de las costillas
   const SANDWICH_NAMES = { texas: 'TEXAS BBQ', bistek: 'BISTEK', azteca: 'AZTECA' };
@@ -919,7 +962,7 @@
     const protein = item === 'costillas' ? null : proteinState[item];
     const side = item === 'costillas' ? sideState.costillas : null;
     const drink = document.getElementById('drink-' + item).checked;
-    const key = item + '|' + (protein || side || '-') + '|' + (drink ? 'D' : 'N');
+    const key = lineKey(item, protein, side, drink);
     const existing = cartLines.find(l => l.key === key);
     if (existing) {
       existing.qty += 1;
@@ -927,6 +970,56 @@
       cartLines.push({ key, item, protein, drink, side, qty: 1 });
     }
     renderCart();
+    showToast('✓ ' + lineLabel(item, protein, drink, side).replace(/ \(.*?\)/, '') + ' agregado');
+    const bar = document.getElementById('cart-bar');
+    bar.classList.remove('pulse');
+    void bar.offsetWidth;
+    bar.classList.add('pulse');
+  }
+
+  function lineKey(item, protein, side, drink){
+    return item + '|' + (protein || side || '-') + '|' + (drink ? 'D' : 'N');
+  }
+
+  /* ---------- Aviso al agregar ---------- */
+  let toastTimer;
+  function showToast(text){
+    const toast = document.getElementById('toast');
+    const bar = document.getElementById('cart-bar');
+    toast.textContent = text;
+    toast.style.bottom = (bar.offsetHeight + 12) + 'px';
+    toast.hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { toast.hidden = true; }, 1800);
+  }
+
+  /* ---------- Persistencia: el carrito sobrevive a recargas ---------- */
+  function saveCart(){
+    try {
+      localStorage.setItem(CART_STORAGE_KEY, JSON.stringify({ lines: cartLines, notes: orderNotes }));
+    } catch (e) { /* sin almacenamiento: el carrito funciona igual, solo no se guarda */ }
+  }
+
+  // Valida lo guardado y reconstruye cada línea: no se confía en el contenido del storage.
+  function loadCart(){
+    try {
+      const data = JSON.parse(localStorage.getItem(CART_STORAGE_KEY) || 'null');
+      if (!data || !Array.isArray(data.lines)) return;
+      data.lines.forEach(l => {
+        if (!l || !(Object.hasOwn(SANDWICH_NAMES, l.item) || l.item === 'costillas')) return;
+        const qty = Number.isInteger(l.qty) ? l.qty : 0;
+        if (qty < 1 || qty > 99) return;
+        const isRibs = l.item === 'costillas';
+        const protein = isRibs ? null : (l.protein === 'CERDO' ? 'CERDO' : 'RES');
+        const side = isRibs ? (l.side === 'PAPAS' ? 'PAPAS' : 'TORTILLAS') : null;
+        const drink = l.drink === true;
+        const key = lineKey(l.item, protein, side, drink);
+        const existing = cartLines.find(x => x.key === key);
+        if (existing) existing.qty = Math.min(99, existing.qty + qty);
+        else cartLines.push({ key, item: l.item, protein, drink, side, qty });
+      });
+      if (typeof data.notes === 'string') orderNotes = data.notes.slice(0, 300);
+    } catch (e) { /* datos dañados: se ignoran */ }
   }
 
   // Suma o resta una unidad a una línea ya agregada; en 0 se quita del pedido.
@@ -943,7 +1036,8 @@
     const lines = cartLines.map(l =>
       `${l.qty}x ${lineLabel(l.item, l.protein, l.drink, l.side)} — ${cop(l.qty * lineUnitPrice(l.item, l.drink))}`
     ).join('\n');
-    return `Hola ${c.BRAND_NAME} 👋🔥\nQuiero hacer este pedido:\n\n${lines}\n\nTOTAL:\n${cop(totalPrice)}`;
+    const notes = orderNotes.trim() ? `\n\n📝 Notas:\n${orderNotes.trim()}` : '';
+    return `Hola ${c.BRAND_NAME} 👋🔥\nQuiero hacer este pedido:\n\n${lines}\n\nTOTAL:\n${cop(totalPrice)}${notes}`;
   }
 
   function renderCart(){
@@ -953,11 +1047,22 @@
     const bar = document.getElementById('cart-bar');
     bar.hidden = totalQty === 0;
 
+    const finalBtn = document.getElementById('final-cta-btn');
+    if (totalQty === 0) {
+      // Sin pedido armado, el CTA final lleva a la carta, nunca a WhatsApp.
+      orderNotes = '';
+      document.getElementById('cart-notes').value = '';
+      finalBtn.textContent = '🔥 ARMAR MI PEDIDO';
+      finalBtn.href = '#productos';
+      finalBtn.removeAttribute('target');
+      finalBtn.removeAttribute('rel');
+    }
+
     if (totalQty > 0) {
       document.getElementById('cart-count').textContent = totalQty + (totalQty === 1 ? ' artículo' : ' artículos');
       document.getElementById('cart-total').textContent = cop(totalPrice);
 
-      document.getElementById('cart-detail').innerHTML = cartLines.map(l => {
+      document.getElementById('cart-lines').innerHTML = cartLines.map(l => {
         const unit = lineUnitPrice(l.item, l.drink);
         return `<div class="cart-line">
           <div class="cart-line-info">
@@ -975,9 +1080,15 @@
         </div>`;
       }).join('');
 
-      document.getElementById('cart-checkout-btn').href = buildWaLink(cartMessage(totalPrice));
+      const waLink = buildWaLink(cartMessage(totalPrice));
+      document.getElementById('cart-checkout-btn').href = waLink;
+      finalBtn.textContent = '🔥 HACER MI PEDIDO POR WHATSAPP';
+      finalBtn.href = waLink;
+      finalBtn.target = '_blank';
+      finalBtn.rel = 'noopener';
     }
 
+    saveCart();
     syncCartSpacing();
   }
 
@@ -987,13 +1098,26 @@
     document.body.style.paddingBottom = bar.hidden ? '' : (bar.offsetHeight + 16) + 'px';
   }
 
-  document.getElementById('cart-toggle').addEventListener('click', () => {
-    const btn = document.getElementById('cart-toggle');
-    const detail = document.getElementById('cart-detail');
-    const expanded = btn.getAttribute('aria-expanded') === 'true';
-    btn.setAttribute('aria-expanded', String(!expanded));
-    detail.hidden = expanded;
+  function setCartExpanded(expanded){
+    document.getElementById('cart-toggle').setAttribute('aria-expanded', String(expanded));
+    document.getElementById('cart-detail').hidden = !expanded;
+    document.getElementById('cart-notes-link').hidden = expanded;
     syncCartSpacing();
+  }
+
+  document.getElementById('cart-toggle').addEventListener('click', () => {
+    const expanded = document.getElementById('cart-toggle').getAttribute('aria-expanded') === 'true';
+    setCartExpanded(!expanded);
+  });
+
+  document.getElementById('cart-notes-link').addEventListener('click', () => {
+    setCartExpanded(true);
+    document.getElementById('cart-notes').focus();
+  });
+
+  document.getElementById('cart-notes').addEventListener('input', (e) => {
+    orderNotes = e.target.value;
+    renderCart();
   });
 
   function updateDrink(item){
@@ -1007,12 +1131,14 @@
     document.getElementById('ig-link').href = c.INSTAGRAM_URL;
     document.getElementById('tt-link').href = c.TIKTOK_URL;
     document.getElementById('wa-link').href = buildWaLink(generalMessage());
-    document.getElementById('hero-wa-btn').href = buildWaLink(generalMessage());
-    document.getElementById('final-wa-btn').href = buildWaLink(generalMessage());
     document.getElementById('year').textContent = new Date().getFullYear();
   }
 
   paint();
+
+  loadCart();
+  document.getElementById('cart-notes').value = orderNotes;
+  renderCart();
 
   // Entrada suave de las secciones al hacer scroll
   if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObserver' in window) {
