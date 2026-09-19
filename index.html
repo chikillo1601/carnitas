@@ -1048,6 +1048,13 @@
     </label>
 
     <label class="field">
+      <span class="field-label">📞 Número de celular</span>
+      <input type="text" id="checkout-phone" inputmode="numeric" autocomplete="tel-national" maxlength="13" aria-describedby="err-phone" placeholder="Ej: 300 123 4567">
+      <span class="field-help">Para que el domiciliario te pueda llamar.</span>
+      <span class="field-error" id="err-phone" hidden></span>
+    </label>
+
+    <label class="field">
       <span class="field-label">📍 Dirección de entrega</span>
       <textarea id="checkout-address" rows="2" maxlength="200" autocomplete="street-address" aria-describedby="err-address" placeholder="Barrio, calle o carrera, número, apto o casa, referencias…"></textarea>
       <span class="field-error" id="err-address" hidden>Escribe la dirección de entrega.</span>
@@ -1145,6 +1152,7 @@
   let cartLines = []; // { key, item, protein, drink, side, qty }
   let orderNotes = '';
   let deliveryName = '';
+  let deliveryPhone = ''; // 10 dígitos, sin espacios
   let deliveryCash = 0; // con cuánto paga en efectivo (0 = no lo indicó); no se guarda
   let deliveryAddress = '';
   let deliveryPayment = ''; // 'EFECTIVO' | 'TRANSFERENCIA'
@@ -1464,7 +1472,7 @@
   /* ---------- Persistencia: el carrito sobrevive a recargas ---------- */
   function saveCart(){
     try {
-      localStorage.setItem(CART_STORAGE_KEY, JSON.stringify({ lines: cartLines, notes: orderNotes, name: deliveryName, address: deliveryAddress, payment: deliveryPayment }));
+      localStorage.setItem(CART_STORAGE_KEY, JSON.stringify({ lines: cartLines, notes: orderNotes, name: deliveryName, phone: deliveryPhone, address: deliveryAddress, payment: deliveryPayment }));
     } catch (e) { /* sin almacenamiento: el carrito funciona igual, solo no se guarda */ }
   }
 
@@ -1493,6 +1501,7 @@
       });
       if (typeof data.notes === 'string') orderNotes = data.notes.slice(0, 300);
       if (typeof data.name === 'string') deliveryName = data.name.slice(0, 60);
+      if (typeof data.phone === 'string' && /^3\d{9}$/.test(data.phone)) deliveryPhone = data.phone;
       if (typeof data.address === 'string') deliveryAddress = data.address.slice(0, 200);
       if (Object.hasOwn(PAYMENT_LABELS, data.payment)) deliveryPayment = data.payment;
     } catch (e) { /* datos dañados: se ignoran */ }
@@ -1519,7 +1528,7 @@
         ? ' (valor exacto)'
         : ` — paga con ${cop(deliveryCash)} (cambio: ${cop(deliveryCash - totalPrice)})`;
     }
-    const delivery = `\n\n👤 Nombre:\n${deliveryName.trim()}\n\n📍 Dirección de entrega:\n${deliveryAddress.trim()}\n\n💳 Forma de pago:\n${payText}`;
+    const delivery = `\n\n👤 Nombre:\n${deliveryName.trim()}\n\n📞 Celular:\n${formatPhone(deliveryPhone)}\n\n📍 Dirección de entrega:\n${deliveryAddress.trim()}\n\n💳 Forma de pago:\n${payText}`;
     const notes = orderNotes.trim() ? `\n\n📝 Notas:\n${orderNotes.trim()}` : '';
     return `Hola ${c.BRAND_NAME} 👋🔥\nQuiero hacer este pedido:\n\n${lines}\n\nTOTAL:\n${cop(totalPrice)}${delivery}${notes}`;
   }
@@ -1531,6 +1540,17 @@
   /* ---------- Paso previo a WhatsApp: resumen, nombre, dirección y pago ---------- */
   const checkoutDialog = document.getElementById('checkout-dialog');
   const nameInput = document.getElementById('checkout-name');
+  const phoneInput = document.getElementById('checkout-phone');
+
+  // Celular colombiano: 10 dígitos que empiezan por 3. Acepta que peguen "+57 300 123 4567".
+  function phoneDigits(text){
+    let d = text.replace(/\D/g, '');
+    if (d.length === 12 && d.startsWith('57')) d = d.slice(2);
+    return d.slice(0, 10);
+  }
+  function formatPhone(d){
+    return [d.slice(0, 3), d.slice(3, 6), d.slice(6, 10)].filter(Boolean).join(' ');
+  }
   const addressInput = document.getElementById('checkout-address');
   const cashInput = document.getElementById('checkout-cash');
   const notesInput = document.getElementById('checkout-notes');
@@ -1562,6 +1582,7 @@
     renderCheckoutSummary();
     document.getElementById('err-stock').hidden = true;
     nameInput.value = deliveryName;
+    phoneInput.value = formatPhone(deliveryPhone);
     addressInput.value = deliveryAddress;
     notesInput.value = orderNotes;
     cashInput.value = '';
@@ -1573,7 +1594,7 @@
   }
 
   function showCheckoutErrors(errs){
-    const fields = { name: nameInput, address: addressInput, cash: cashInput };
+    const fields = { name: nameInput, phone: phoneInput, address: addressInput, cash: cashInput };
     for (const [key, input] of Object.entries(fields)) {
       const msg = errs[key];
       const el = document.getElementById('err-' + key);
@@ -1586,6 +1607,9 @@
   }
 
   paymentRadios().forEach(r => r.addEventListener('change', syncPaymentPanel));
+
+  // Al escribir el celular se va agrupando: 3001234567 → 300 123 4567
+  phoneInput.addEventListener('input', () => { phoneInput.value = formatPhone(phoneDigits(phoneInput.value)); });
 
   // Al escribir el efectivo se va dando formato de pesos: 50000 → $50.000
   cashInput.addEventListener('input', () => {
@@ -1613,16 +1637,19 @@
     const cash = paymentInput && paymentInput.value === 'EFECTIVO' ? Number(cashInput.value.replace(/\D/g, '')) : 0;
 
     const errs = {};
+    const phone = phoneDigits(phoneInput.value);
     if (name.length < 2) errs.name = 'Escribe tu nombre.';
+    if (!/^3\d{9}$/.test(phone)) errs.phone = 'Escribe un celular de 10 dígitos que empiece por 3 (ej: 300 123 4567).';
     if (address.length < 6) errs.address = 'Escribe la dirección de entrega.';
     if (!paymentInput) errs.payment = 'Elige cómo vas a pagar.';
     if (cash > 0 && cash < total) errs.cash = 'Debe ser al menos el total del pedido (' + cop(total) + ').';
     showCheckoutErrors(errs);
 
-    const firstBad = errs.name ? nameInput : errs.address ? addressInput : errs.payment ? paymentRadios()[0] : errs.cash ? cashInput : null;
+    const firstBad = errs.name ? nameInput : errs.phone ? phoneInput : errs.address ? addressInput : errs.payment ? paymentRadios()[0] : errs.cash ? cashInput : null;
     if (firstBad) { firstBad.focus(); return; }
 
     deliveryName = name;
+    deliveryPhone = phone;
     deliveryAddress = address;
     deliveryPayment = paymentInput.value;
     deliveryCash = cash;
