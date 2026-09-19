@@ -1,7 +1,10 @@
 # Conectar el stock compartido (Firebase)
 
 Sin esto, el stock solo baja en el celular de cada cliente. Con esto, baja para todos al mismo tiempo.
-Es gratis (plan Spark) y toma unos 10 minutos.
+Es gratis (plan Spark).
+
+El stock se cuenta en **tres contadores**: sándwiches de **res**, sándwiches de **cerdo** y **costillas**.
+Cada pedido descuenta de su proteína, sin importar si es Texas BBQ, Bistek o Azteca.
 
 ## 1. Crear la base de datos
 
@@ -19,7 +22,10 @@ En la pestaña **Reglas**, borra lo que haya, pega esto y toca **Publicar**:
   "rules": {
     "stock": {
       ".read": true,
-      "sandwiches": {
+      "res": {
+        ".write": "newData.isNumber() && newData.val() >= 0 && newData.val() <= data.val()"
+      },
+      "cerdo": {
         ".write": "newData.isNumber() && newData.val() >= 0 && newData.val() <= data.val()"
       },
       "ribs": {
@@ -35,12 +41,14 @@ Para subirlo o reponerlo, tú lo editas a mano desde la consola de Firebase (la 
 
 ## 3. Crear el stock inicial
 
-En la pestaña **Datos**, importa este JSON (menú de tres puntos → **Importar JSON**) o créalo a mano:
+En la pestaña **Datos**, borra el nodo `sandwiches` si existe y deja `stock` con estos tres valores
+(menú de tres puntos → **Importar JSON**, o créalos a mano):
 
 ```json
 {
   "stock": {
-    "sandwiches": 25,
+    "res": 5,
+    "cerdo": 18,
     "ribs": 4
   }
 }
@@ -65,6 +73,7 @@ Sube el cambio y listo.
 - Si un pedido se envía pero luego no se concreta, repón las unidades a mano en la consola de Firebase.
 - Si dos clientes piden la última unidad al mismo tiempo, solo uno se la lleva; al otro se le avisa y se le ajusta el pedido.
 - Si Firebase no responde, el cliente igual puede enviar su pedido (no se le niega la venta), pero el stock no se descuenta.
+- Si falta `res`, `cerdo` o `ribs` en la base de datos, la página no puede leer el stock y no lo controla.
 
 ## Límite conocido
 

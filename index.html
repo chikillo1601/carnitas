@@ -784,7 +784,7 @@
           </div>
 
           <div class="add-row">
-            <p class="stock-left" data-stock="sandwiches" hidden></p>
+            <p class="stock-left" data-stock-item="texas" hidden></p>
             <button type="button" class="btn btn-primary focus-ring" id="add-texas" onclick="addToCart('texas')">🔥 AGREGAR AL CARRITO</button>
           </div>
         </div>
@@ -817,7 +817,7 @@
           </div>
 
           <div class="add-row">
-            <p class="stock-left" data-stock="sandwiches" hidden></p>
+            <p class="stock-left" data-stock-item="bistek" hidden></p>
             <button type="button" class="btn btn-primary focus-ring" id="add-bistek" onclick="addToCart('bistek')">🔥 AGREGAR AL CARRITO</button>
           </div>
         </div>
@@ -850,7 +850,7 @@
           </div>
 
           <div class="add-row">
-            <p class="stock-left" data-stock="sandwiches" hidden></p>
+            <p class="stock-left" data-stock-item="azteca" hidden></p>
             <button type="button" class="btn btn-primary focus-ring" id="add-azteca" onclick="addToCart('azteca')">🔥 AGREGAR AL CARRITO</button>
           </div>
         </div>
@@ -881,7 +881,7 @@
           </div>
 
           <div class="add-row">
-            <p class="stock-left" data-stock="ribs" hidden></p>
+            <p class="stock-left" data-stock-item="costillas" hidden></p>
             <button type="button" class="btn btn-primary focus-ring" id="add-costillas" onclick="addToCart('costillas')">🔥 AGREGAR AL CARRITO</button>
           </div>
         </div>
@@ -966,7 +966,7 @@
           <span class="stock-name">🥪 Sándwiches</span>
         </div>
         <p class="stock-badge" data-stock-badge="sandwiches">STOCK HASTA AGOTAR EXISTENCIAS</p>
-        <p class="stock-meta">Res + Cerdo — stock compartido entre ambos sabores.</p>
+        <p class="stock-meta">Res + Cerdo, en Texas BBQ, Bistek y Azteca. Si una proteína se agota, te lo avisamos en la tarjeta.</p>
       </div>
 
       <div class="stock-card">
@@ -1108,9 +1108,10 @@
     // Antes de esta hora se puede armar el pedido, pero no enviarlo por WhatsApp.
     OPENING_AT: "2026-09-19T16:00:00-05:00",
 
-    // Stock inicial de lanzamiento. Los sándwiches son un solo stock compartido
-    // entre Texas BBQ, Bistek y Azteca. Baja con cada pedido que el cliente envía por WhatsApp.
-    SANDWICH_STOCK: 25,
+    // Stock inicial de lanzamiento. Res y cerdo se cuentan por separado (cada uno es compartido
+    // entre Texas BBQ, Bistek y Azteca). Baja con cada pedido que el cliente envía por WhatsApp.
+    RES_STOCK: 5,
+    CERDO_STOCK: 18,
     RIBS_STOCK: 4,
 
     // URL de tu Firebase Realtime Database (ej: "https://carnitas-abc12-default-rtdb.firebaseio.com").
@@ -1173,8 +1174,8 @@
 
   function setProtein(item, protein){
     proteinState[item] = protein;
-    document.getElementById('protein-' + item + '-res').classList.toggle('active', protein === 'RES');
-    document.getElementById('protein-' + item + '-cerdo').classList.toggle('active', protein === 'CERDO');
+    paintProtein(item);
+    renderStock(); // el contador de la tarjeta cambia según la proteína elegida
   }
 
   function setPickles(item, withPickles){
@@ -1238,7 +1239,7 @@
 
   // Suma una unidad a la línea que coincide (o la crea) y avisa al cliente.
   function commitLine(item, protein, side, drink, pickles, addons){
-    if (!canAdd(item)) return;
+    if (!canAdd(item, protein)) return;
     const key = lineKey(item, protein, side, drink, pickles, addons);
     const existing = cartLines.find(l => l.key === key);
     if (existing) {
@@ -1261,27 +1262,34 @@
   }
 
   /* ---------- Stock ----------
-     Sándwiches (Texas, Bistek, Azteca) comparten un solo stock; las costillas tienen el suyo.
-     Los adicionales, gaseosas y demás no descuentan stock.
+     Hay tres contadores: sándwiches de RES, sándwiches de CERDO (cada uno compartido entre
+     Texas, Bistek y Azteca) y costillas. Los adicionales, gaseosas y demás no descuentan stock.
      El stock baja UNA vez, al tocar "Enviar pedido por WhatsApp" (ver reserveStock). */
-  const stock = { sandwiches: null, ribs: null }; // null = todavía no se sabe
-  const stockTypeOf = item => item === 'costillas' ? 'ribs' : Object.hasOwn(SANDWICH_NAMES, item) ? 'sandwiches' : null;
+  const STOCK_TYPES = ['res', 'cerdo', 'ribs'];
+  const stock = { res: null, cerdo: null, ribs: null }; // null = todavía no se sabe
+  const stockTypeOf = (item, protein) =>
+    item === 'costillas' ? 'ribs'
+    : Object.hasOwn(SANDWICH_NAMES, item) ? (protein === 'CERDO' ? 'cerdo' : 'res')
+    : null;
 
   function cartCounts(){
-    const counts = { sandwiches: 0, ribs: 0 };
-    cartLines.forEach(l => { const t = stockTypeOf(l.item); if (t) counts[t] += l.qty; });
+    const counts = { res: 0, cerdo: 0, ribs: 0 };
+    cartLines.forEach(l => { const t = stockTypeOf(l.item, l.protein); if (t) counts[t] += l.qty; });
     return counts;
   }
 
-  const stockWords = { sandwiches: ['sándwich', 'sándwiches'], ribs: ['costilla', 'costillas'] };
-  const stockAmount = (type, n) => n + ' ' + stockWords[type][n === 1 ? 0 : 1];
+  const stockWords = {
+    res:   ['sándwich de res', 'sándwiches de res'],
+    cerdo: ['sándwich de cerdo', 'sándwiches de cerdo'],
+    ribs:  ['costilla', 'costillas'],
+  };
 
   // ¿Se puede sumar una unidad más de este producto sin pasarse del stock?
-  function canAdd(item){
-    const type = stockTypeOf(item);
+  function canAdd(item, protein){
+    const type = stockTypeOf(item, protein);
     if (!type || stock[type] === null) return true;
     if (cartCounts()[type] < stock[type]) return true;
-    showToast(stock[type] === 0 ? '😔 Ya se agotaron: ' + stockWords[type][1] : (stock[type] === 1 ? 'Solo queda ' : 'Solo quedan ') + stockAmount(type, stock[type]), 2600);
+    showToast('😔 No hay más ' + stockWords[type][1] + ' para agregar', 2600);
     return false;
   }
 
@@ -1295,9 +1303,9 @@
     let saved = null;
     try {
       const d = JSON.parse(localStorage.getItem(LOCAL_STOCK_KEY) || 'null');
-      if (d && Number.isInteger(d.sandwiches) && Number.isInteger(d.ribs) && d.sandwiches >= 0 && d.ribs >= 0) saved = d;
+      if (d && STOCK_TYPES.every(t => Number.isInteger(d[t]) && d[t] >= 0)) saved = d;
     } catch (e) { /* sin almacenamiento */ }
-    localStock = saved || { sandwiches: CARNITAS_CONFIG.SANDWICH_STOCK, ribs: CARNITAS_CONFIG.RIBS_STOCK };
+    localStock = saved || { res: CARNITAS_CONFIG.RES_STOCK, cerdo: CARNITAS_CONFIG.CERDO_STOCK, ribs: CARNITAS_CONFIG.RIBS_STOCK };
     return localStock;
   }
   function writeLocalStock(){
@@ -1321,13 +1329,11 @@
         const res = await dbFetch('/stock.json');
         if (!res.ok) throw new Error('HTTP ' + res.status);
         const d = await res.json();
-        if (!d || !Number.isInteger(d.sandwiches) || !Number.isInteger(d.ribs)) throw new Error('El stock no está creado en la base de datos');
-        stock.sandwiches = Math.max(0, d.sandwiches);
-        stock.ribs = Math.max(0, d.ribs);
+        if (!d || !STOCK_TYPES.every(t => Number.isInteger(d[t]))) throw new Error('Falta res, cerdo o ribs en /stock de la base de datos');
+        STOCK_TYPES.forEach(t => { stock[t] = Math.max(0, d[t]); });
       } else {
         const s = readLocalStock();
-        stock.sandwiches = s.sandwiches;
-        stock.ribs = s.ribs;
+        STOCK_TYPES.forEach(t => { stock[t] = s[t]; });
       }
     } catch (e) {
       console.warn('[stock] No se pudo leer el stock:', e.message); // se conserva lo último que se supo
@@ -1339,20 +1345,19 @@
   // Con servidor, el descuento es atómico (increment de Firebase) y las reglas de la base de datos
   // rechazan cualquier resultado negativo, así dos clientes no pueden comprar la misma última unidad.
   async function reserveStock(counts){
-    if (counts.sandwiches === 0 && counts.ribs === 0) return { ok: true };
+    if (STOCK_TYPES.every(t => counts[t] === 0)) return { ok: true };
 
     if (!stockDbUrl()) {
       const s = readLocalStock();
-      if (counts.sandwiches > s.sandwiches || counts.ribs > s.ribs) { await refreshStock(); return { ok: false }; }
-      s.sandwiches -= counts.sandwiches;
-      s.ribs -= counts.ribs;
+      if (STOCK_TYPES.some(t => counts[t] > s[t])) { await refreshStock(); return { ok: false }; }
+      STOCK_TYPES.forEach(t => { s[t] -= counts[t]; });
       writeLocalStock();
       await refreshStock();
       return { ok: true };
     }
 
     const body = {};
-    for (const type of ['sandwiches', 'ribs']) {
+    for (const type of STOCK_TYPES) {
       if (counts[type] > 0) body[type] = { '.sv': { increment: -counts[type] } };
     }
     try {
@@ -1370,12 +1375,12 @@
   // Si el stock bajó por debajo de lo que hay en el carrito, recorta el pedido (desde el final).
   function clampCartToStock(){
     let changed = false;
-    for (const type of ['sandwiches', 'ribs']) {
+    for (const type of STOCK_TYPES) {
       if (stock[type] === null) continue;
       let excess = cartCounts()[type] - stock[type];
       for (let i = cartLines.length - 1; i >= 0 && excess > 0; i--) {
         const l = cartLines[i];
-        if (stockTypeOf(l.item) !== type) continue;
+        if (stockTypeOf(l.item, l.protein) !== type) continue;
         const cut = Math.min(excess, l.qty);
         l.qty -= cut;
         excess -= cut;
@@ -1386,34 +1391,63 @@
     return changed;
   }
 
-  const STOCK_LOW = 5; // desde aquí se muestra "¡Últimos!"
-  const STOCK_CHIP = {
-    sandwiches: n => n === 0 ? '😔 Agotados' : n === 1 ? '🔥 ¡Último sándwich!' : n <= STOCK_LOW ? `🔥 ¡Últimos ${n}!` : `🔥 Quedan ${n} sándwiches`,
-    ribs:       n => n === 0 ? '😔 Agotadas' : n === 1 ? '🔥 ¡Última porción!'  : n <= STOCK_LOW ? `🔥 ¡Últimas ${n} porciones!` : `🔥 Quedan ${n} porciones`,
-  };
-  const STOCK_ITEMS = { sandwiches: ['texas', 'bistek', 'azteca'], ribs: ['costillas'] };
+  // Al cliente se le muestra el TOTAL de sándwiches (res + cerdo) y de costillas. El desglose por
+  // proteína no se muestra: solo decide si puede agregar o no (botón "Res · agotado", etc.).
+  const sandwichTotal = () => (stock.res === null || stock.cerdo === null) ? null : stock.res + stock.cerdo;
+  function stockText(isRibs, n){
+    if (n === 0) return isRibs ? '😔 Costillas agotadas' : '😔 Sándwiches agotados';
+    if (isRibs) return n === 1 ? '🔥 ¡Queda 1 porción!' : `🔥 Quedan ${n} porciones`;
+    return n === 1 ? '🔥 ¡Queda 1 sándwich!' : `🔥 Quedan ${n} sándwiches`;
+  }
+  const SANDWICH_ITEMS = Object.keys(SANDWICH_NAMES);
+
+  // Muestra un solo sabor de proteína como elegido en la tarjeta (sin tocar el stock).
+  function paintProtein(item){
+    document.getElementById('protein-' + item + '-res').classList.toggle('active', proteinState[item] === 'RES');
+    document.getElementById('protein-' + item + '-cerdo').classList.toggle('active', proteinState[item] === 'CERDO');
+  }
 
   // Pinta el stock en las tarjetas, en la sección de disponibilidad y en los botones de agregar.
+  // En cada sándwich el contador y el botón de agregar dependen de la proteína elegida.
   function renderStock(){
-    for (const type of ['sandwiches', 'ribs']) {
-      const n = stock[type];
-      document.querySelectorAll(`[data-stock="${type}"]`).forEach(el => {
-        el.hidden = n === null;
-        if (n === null) return;
-        el.textContent = STOCK_CHIP[type](n);
-        el.classList.toggle('low', n > 0 && n <= STOCK_LOW);
-        el.classList.toggle('out', n === 0);
+    SANDWICH_ITEMS.forEach(item => {
+      // Si la proteína elegida se agotó y la otra no, se cambia sola a la que sí hay.
+      const other = proteinState[item] === 'RES' ? 'CERDO' : 'RES';
+      if (stock[stockTypeOf(item, proteinState[item])] === 0 && stock[stockTypeOf(item, other)] > 0) {
+        proteinState[item] = other;
+        paintProtein(item);
+      }
+      [['res', 'RES', '🐄 Res'], ['cerdo', 'CERDO', '🐖 Cerdo']].forEach(([type, protein, label]) => {
+        const btn = document.getElementById('protein-' + item + '-' + type);
+        const out = stock[type] === 0;
+        btn.disabled = out;
+        btn.textContent = out ? label + ' · agotado' : label;
       });
-      document.querySelectorAll(`[data-stock-badge="${type}"]`).forEach(el => {
-        if (n === null) return;
-        el.textContent = n === 0 ? 'AGOTADO' : 'QUEDAN ' + n;
-      });
-      STOCK_ITEMS[type].forEach(item => {
-        const btn = document.getElementById('add-' + item);
-        btn.disabled = n === 0;
-        btn.textContent = n === 0 ? '😔 AGOTADO' : '🔥 AGREGAR AL CARRITO';
-      });
-    }
+    });
+
+    document.querySelectorAll('[data-stock-item]').forEach(el => {
+      const item = el.dataset.stockItem;
+      const isRibs = item === 'costillas';
+      const total = isRibs ? stock.ribs : sandwichTotal();
+      el.hidden = total === null;
+      if (total !== null) {
+        el.textContent = stockText(isRibs, total);
+        el.classList.toggle('low', total > 0 && total <= 5);
+        el.classList.toggle('out', total === 0);
+      }
+      // El botón depende del stock de la proteína elegida, no del total.
+      const soldOut = stock[stockTypeOf(item, proteinState[item])] === 0;
+      const btn = document.getElementById('add-' + item);
+      btn.disabled = soldOut;
+      btn.textContent = soldOut ? '😔 AGOTADO' : '🔥 AGREGAR AL CARRITO';
+    });
+
+    // En la sección de disponibilidad: el total, o el texto normal mientras no se sepa.
+    document.querySelectorAll('[data-stock-badge]').forEach(el => {
+      if (el.dataset.default === undefined) el.dataset.default = el.textContent;
+      const total = el.dataset.stockBadge === 'ribs' ? stock.ribs : sandwichTotal();
+      el.textContent = total === null ? el.dataset.default : total === 0 ? 'AGOTADO' : 'QUEDAN ' + total;
+    });
   }
 
   /* ---------- Cuenta regresiva de apertura ---------- */
@@ -1510,7 +1544,7 @@
   function adjustLine(key, delta){
     const line = cartLines.find(l => l.key === key);
     if (!line) return;
-    if (delta > 0 && !canAdd(line.item)) return;
+    if (delta > 0 && !canAdd(line.item, line.protein)) return;
     line.qty += delta;
     if (line.qty <= 0) cartLines = cartLines.filter(l => l.key !== key);
     renderCart();
@@ -1684,13 +1718,11 @@
     const before = cartCounts();
     clampCartToStock();
     const msg = document.getElementById('err-stock');
-    if (stock.sandwiches === null || stock.ribs === null) {
+    if (STOCK_TYPES.some(t => stock[t] === null)) {
       msg.textContent = 'No pudimos confirmar el stock. Intenta de nuevo en un momento.';
     } else {
-      const parts = [];
-      if (before.sandwiches > stock.sandwiches) parts.push(stockAmount('sandwiches', stock.sandwiches));
-      if (before.ribs > stock.ribs) parts.push(stockAmount('ribs', stock.ribs));
-      msg.textContent = '¡Se agotó mientras pedías! Ahora solo hay ' + (parts.join(' y ') || 'menos unidades') + '. Ajustamos tu pedido: revísalo y vuelve a enviarlo.';
+      const short = STOCK_TYPES.filter(t => before[t] > stock[t]).map(t => stockWords[t][1]);
+      msg.textContent = '¡Se agotó mientras pedías! Ya no alcanzaban ' + (short.join(' y ') || 'algunos productos') + '. Ajustamos tu pedido: revísalo y vuelve a enviarlo.';
     }
     msg.hidden = false;
     renderCart();
