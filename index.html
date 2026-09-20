@@ -652,6 +652,8 @@
   .stock-left{ margin:0 0 .7rem; text-align:center; font-family:'Bebas Neue',sans-serif; letter-spacing:.08em; font-size:1.05rem; color:var(--gold); }
   .stock-left.low{ color:var(--ember); }
   .stock-left.out{ color:var(--smoke); }
+  .addon-add:disabled{ opacity:.5; cursor:not-allowed; border-color:var(--char-line); }
+  .addon-add:disabled:hover{ background:transparent; }
   .btn:disabled, .btn[aria-disabled="true"]{
     opacity:.55; cursor:not-allowed; filter:grayscale(.5); box-shadow:none;
   }
@@ -726,7 +728,7 @@
           <span>·</span>
           <span>🍖 Costillas BBQ</span>
         </div>
-        <span class="stock-badge" style="margin-top:0">Stock hasta agotar existencias</span>
+        <span class="stock-badge" style="margin-top:0" data-closed-text="¡Lanzamiento agotado, gracias!">Stock hasta agotar existencias</span>
       </div>
 
       <div class="hero-actions">
@@ -738,8 +740,8 @@
   <!-- ============ TICKER ============ -->
   <div class="ticker" aria-hidden="true">
     <div class="ticker-track">
-      <span class="hot">🔥 PRIMER LANZAMIENTO</span><span>PRODUCCIÓN LIMITADA</span><span class="hot">DISPONIBLE HASTA AGOTAR EXISTENCIAS</span><span>ELIGE TU SABOR 🔥</span><span>🥤 MALTEADAS PRÓXIMAMENTE</span>
-      <span class="hot">🔥 PRIMER LANZAMIENTO</span><span>PRODUCCIÓN LIMITADA</span><span class="hot">DISPONIBLE HASTA AGOTAR EXISTENCIAS</span><span>ELIGE TU SABOR 🔥</span><span>🥤 MALTEADAS PRÓXIMAMENTE</span>
+      <span class="hot">🔥 PRIMER LANZAMIENTO</span><span>PRODUCCIÓN LIMITADA</span><span class="hot" data-closed-text="LANZAMIENTO AGOTADO · GRACIAS">DISPONIBLE HASTA AGOTAR EXISTENCIAS</span><span data-closed-text="APERTURA OFICIAL EL LUNES 🔥">ELIGE TU SABOR 🔥</span><span>🥤 MALTEADAS PRÓXIMAMENTE</span>
+      <span class="hot">🔥 PRIMER LANZAMIENTO</span><span>PRODUCCIÓN LIMITADA</span><span class="hot" data-closed-text="LANZAMIENTO AGOTADO · GRACIAS">DISPONIBLE HASTA AGOTAR EXISTENCIAS</span><span data-closed-text="APERTURA OFICIAL EL LUNES 🔥">ELIGE TU SABOR 🔥</span><span>🥤 MALTEADAS PRÓXIMAMENTE</span>
     </div>
   </div>
 
@@ -978,7 +980,7 @@
       </div>
     </div>
 
-    <p class="urgency-note">Disponible hasta agotar existencias. Sin urgencia falsa: esto es exactamente lo que hay para este primer lanzamiento.</p>
+    <p class="urgency-note" data-closed-text="Se agotó todo el lanzamiento. ¡Gracias por acompañarnos! La apertura oficial es el lunes: ahí nos vemos.">Disponible hasta agotar existencias. Sin urgencia falsa: esto es exactamente lo que hay para este primer lanzamiento.</p>
   </section>
 
   <!-- ============ CTA FINAL ============ -->
@@ -989,7 +991,7 @@
       <span>🥪 SÁNDWICHES</span>
       <span>🍖 COSTILLAS BBQ</span>
     </div>
-    <p class="final-note">DISPONIBLE HASTA AGOTAR EXISTENCIAS</p>
+    <p class="final-note" data-closed-text="LANZAMIENTO AGOTADO · APERTURA OFICIAL EL LUNES">DISPONIBLE HASTA AGOTAR EXISTENCIAS</p>
     <a class="btn btn-primary focus-ring" id="final-cta-btn" style="max-width:360px;margin:0 auto" href="#productos">🔥 ARMAR MI PEDIDO</a>
   </section>
 
@@ -1106,7 +1108,12 @@
 
     // Hora de apertura del servicio, con zona horaria de Colombia (-05:00).
     // Antes de esta hora se puede armar el pedido, pero no enviarlo por WhatsApp.
-    OPENING_AT: "2026-09-19T16:00:00-05:00",
+    // Apertura oficial: lunes 21 de septiembre, 4:00 pm.
+    OPENING_AT: "2026-09-21T16:00:00-05:00",
+
+    // false: hasta la hora de apertura las ventas están CERRADAS (no se puede agregar nada).
+    // true:  hasta la hora de apertura se puede armar el pedido, pero no enviarlo.
+    PRE_ORDERS: false,
 
     // Stock inicial de lanzamiento. Res y cerdo se cuentan por separado (cada uno es compartido
     // entre Texas BBQ, Bistek y Azteca). Baja con cada pedido que el cliente envía por WhatsApp.
@@ -1239,6 +1246,7 @@
 
   // Suma una unidad a la línea que coincide (o la crea) y avisa al cliente.
   function commitLine(item, protein, side, drink, pickles, addons){
+    if (salesClosed()) { showToast('🔒 Ventas cerradas hasta la apertura oficial', 2600); return; }
     if (!canAdd(item, protein)) return;
     const key = lineKey(item, protein, side, drink, pickles, addons);
     const existing = cartLines.find(l => l.key === key);
@@ -1439,11 +1447,15 @@
       });
     });
 
+    const closed = salesClosed(); // con las ventas cerradas no se muestra stock ni se puede agregar
+
+    document.querySelectorAll('.addon-add').forEach(b => { b.disabled = closed; });
+
     document.querySelectorAll('[data-stock-item]').forEach(el => {
       const item = el.dataset.stockItem;
       const isRibs = item === 'costillas';
       const total = isRibs ? stock.ribs : sandwichTotal();
-      el.hidden = total === null;
+      el.hidden = total === null || closed;
       if (total !== null) {
         el.textContent = stockText(isRibs, total);
         el.classList.toggle('low', total > 0 && total <= 5);
@@ -1452,21 +1464,31 @@
       // El botón depende del stock de la proteína elegida, no del total.
       const soldOut = stock[stockTypeOf(item, proteinState[item])] === 0;
       const btn = document.getElementById('add-' + item);
-      btn.disabled = soldOut;
-      btn.textContent = soldOut ? '😔 AGOTADO' : '🔥 AGREGAR AL CARRITO';
+      btn.disabled = closed || soldOut;
+      btn.textContent = closed ? '🔒 VENTAS CERRADAS' : soldOut ? '😔 AGOTADO' : '🔥 AGREGAR AL CARRITO';
     });
 
     // En la sección de disponibilidad: el total, o el texto normal mientras no se sepa.
     document.querySelectorAll('[data-stock-badge]').forEach(el => {
       if (el.dataset.default === undefined) el.dataset.default = el.textContent;
       const total = el.dataset.stockBadge === 'ribs' ? stock.ribs : sandwichTotal();
-      el.textContent = total === null ? el.dataset.default : total === 0 ? 'AGOTADO' : 'QUEDAN ' + total;
+      el.textContent = closed ? 'AGOTADO' : total === null ? el.dataset.default : total === 0 ? 'AGOTADO' : 'QUEDAN ' + total;
     });
   }
 
   /* ---------- Cuenta regresiva de apertura ---------- */
   let openingTs = Date.parse(CARNITAS_CONFIG.OPENING_AT);
   const isOpen = () => !Number.isFinite(openingTs) || Date.now() >= openingTs;
+  // Ventas cerradas: todavía no es la hora de apertura y no se permiten pedidos anticipados.
+  const salesClosed = () => !isOpen() && !CARNITAS_CONFIG.PRE_ORDERS;
+
+  // Textos que cambian mientras las ventas están cerradas (los marcados con data-closed-text).
+  function setClosedTexts(closed){
+    document.querySelectorAll('[data-closed-text]').forEach(el => {
+      if (el.dataset.openText === undefined) el.dataset.openText = el.textContent;
+      el.textContent = closed ? el.dataset.closedText : el.dataset.openText;
+    });
+  }
   const BOGOTA = { timeZone: 'America/Bogota' };
   const pad2 = n => String(n).padStart(2, '0');
 
@@ -1479,7 +1501,7 @@
     const opening = ymd(new Date(openingTs));
     if (opening === ymd(new Date())) return 'HOY';
     if (opening === ymd(new Date(Date.now() + 864e5))) return 'MAÑANA';
-    return new Date(openingTs).toLocaleDateString('es-CO', { ...BOGOTA, weekday: 'long', day: 'numeric', month: 'long' }).toUpperCase();
+    return 'EL ' + new Date(openingTs).toLocaleDateString('es-CO', { ...BOGOTA, weekday: 'long', day: 'numeric', month: 'long' }).replace(',', '').toUpperCase();
   }
 
   let wasOpen = null;
@@ -1499,9 +1521,16 @@
       document.getElementById('cd-h').textContent = pad2(Math.floor(left % 86400 / 3600));
       document.getElementById('cd-m').textContent = pad2(Math.floor(left % 3600 / 60));
       document.getElementById('cd-s').textContent = pad2(left % 60);
-      document.getElementById('countdown-label').textContent = '⏳ ABRIMOS ' + openingDayLabel() + ' A LAS ' + openingTimeLabel();
+      document.getElementById('countdown-label').textContent = salesClosed()
+        ? '🔒 VENTAS CERRADAS · APERTURA OFICIAL ' + openingDayLabel() + ' A LAS ' + openingTimeLabel()
+        : '⏳ ABRIMOS ' + openingDayLabel() + ' A LAS ' + openingTimeLabel();
     }
-    if (open !== wasOpen) { wasOpen = open; renderCart(); } // habilita o bloquea los botones de enviar
+    if (open !== wasOpen) { // abre o cierra las ventas: se actualizan botones, stock y textos
+      wasOpen = open;
+      setClosedTexts(salesClosed());
+      renderCart();
+      renderStock();
+    }
   }
 
   /* ---------- Aviso al agregar ---------- */
@@ -1756,6 +1785,7 @@
   checkoutDialog.addEventListener('click', (e) => { if (e.target === checkoutDialog) checkoutDialog.close(); });
   document.getElementById('cart-checkout-btn').addEventListener('click', openCheckout);
   document.getElementById('final-cta-btn').addEventListener('click', (e) => {
+    if (salesClosed()) { e.preventDefault(); return; }
     if (cartLines.length > 0) { e.preventDefault(); openCheckout(); } // cerrado: openCheckout no hace nada
   });
 
@@ -1807,6 +1837,14 @@
       finalBtn.textContent = sendLabel;
       finalBtn.href = '#pedir';
       finalBtn.setAttribute('aria-disabled', String(!open));
+    }
+
+    // Ventas cerradas: sin barra de carrito y el botón final avisa cuándo abrimos.
+    if (salesClosed()) {
+      bar.hidden = true;
+      finalBtn.textContent = '🔒 ABRIMOS ' + openingDayLabel().replace(/ \d.*$/, '');
+      finalBtn.href = '#inicio';
+      finalBtn.setAttribute('aria-disabled', 'true');
     }
 
     saveCart();
