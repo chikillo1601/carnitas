@@ -1360,16 +1360,30 @@
     for (const type of STOCK_TYPES) {
       if (counts[type] > 0) body[type] = { '.sv': { increment: -counts[type] } };
     }
-    try {
-      const res = await dbFetch('/stock.json', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
-      if (res.ok) { refreshStock(); return { ok: true }; }
-      if (res.status === 401 || res.status === 403) { await refreshStock(); return { ok: false }; } // rechazado: no alcanza
-      throw new Error('HTTP ' + res.status);
-    } catch (e) {
-      // Sin conexión con el servidor: no se le niega el pedido al cliente (el stock no se descontó).
-      console.warn('[stock] No se pudo descontar el stock:', e.message);
-      return { ok: true, unverified: true };
+    // Hasta 3 intentos si falla la conexión (celulares con señal floja). Si Firebase responde que no
+    // alcanza (401/403), no se reintenta.
+    let lastError;
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        const res = await dbFetch('/stock.json', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+        if (res.ok) { refreshStock(); return { ok: true }; }
+        if (res.status === 401 || res.status === 403) { await refreshStock(); return { ok: false }; } // rechazado: no alcanza
+        throw new Error('HTTP ' + res.status);
+      } catch (e) {
+        lastError = e;
+        if (attempt < 2) await new Promise(r => setTimeout(r, 700 * (attempt + 1)));
+      }
     }
+    // Sin conexión con el servidor: no se le niega el pedido al cliente, pero el stock no se descontó.
+    // Se marca para que el mensaje de WhatsApp le avise al dueño que lo descuente a mano.
+    console.warn('[stock] No se pudo descontar el stock:', lastError.message);
+    return { ok: true, unverified: true };
+  }
+
+  // "1 de res, 2 de cerdo, 1 costilla": lo que hay que descontar a mano si el sistema no pudo.
+  function describeCounts(counts){
+    const label = { res: n => n + ' de res', cerdo: n => n + ' de cerdo', ribs: n => n + (n === 1 ? ' costilla' : ' costillas') };
+    return STOCK_TYPES.filter(t => counts[t] > 0).map(t => label[t](counts[t])).join(', ');
   }
 
   // Si el stock bajó por debajo de lo que hay en el carrito, recorta el pedido (desde el final).
@@ -1550,7 +1564,8 @@
     renderCart();
   }
 
-  function cartMessage(totalPrice){
+  // unverifiedCounts: si no se pudo descontar el stock, se avisa aquí qué descontar a mano.
+  function cartMessage(totalPrice, unverifiedCounts = null){
     const c = CARNITAS_CONFIG;
     const lines = cartLines.map(l =>
       `${l.qty}x ${lineLabel(l.item, l.protein, l.drink, l.side, l.pickles, l.addons)} — ${cop(l.qty * lineUnitPrice(l.item, l.drink, l.addons.length))}`
@@ -1563,7 +1578,8 @@
     }
     const delivery = `\n\n👤 Nombre:\n${deliveryName.trim()}\n\n📞 Celular:\n${formatPhone(deliveryPhone)}\n\n📍 Dirección de entrega:\n${deliveryAddress.trim()}\n\n💳 Forma de pago:\n${payText}`;
     const notes = orderNotes.trim() ? `\n\n📝 Notas:\n${orderNotes.trim()}` : '';
-    return `Hola ${c.BRAND_NAME} 👋🔥\nQuiero hacer este pedido:\n\n${lines}\n\nTOTAL:\n${cop(totalPrice)}${delivery}${notes}`;
+    const stockNote = unverifiedCounts ? `\n\n⚠️ Stock sin descontar (descontar a mano): ${describeCounts(unverifiedCounts)}` : '';
+    return `Hola ${c.BRAND_NAME} 👋🔥\nQuiero hacer este pedido:\n\n${lines}\n\nTOTAL:\n${cop(totalPrice)}${delivery}${notes}${stockNote}`;
   }
 
   function cartTotal(){
@@ -1693,7 +1709,8 @@
     // navegador no la bloquee; luego se confirma el stock y se le pone el enlace.
     const waTab = window.open('about:blank', '_blank');
     setSubmitting(true);
-    const result = await reserveStock(cartCounts());
+    const counts = cartCounts();
+    const result = await reserveStock(counts);
     setSubmitting(false);
 
     if (!result.ok) {
@@ -1702,7 +1719,7 @@
       return;
     }
 
-    const url = buildWaLink(cartMessage(total));
+    const url = buildWaLink(cartMessage(total, result.unverified ? counts : null));
     if (waTab) { waTab.opener = null; waTab.location.href = url; }
     else { window.location.href = url; }
 
