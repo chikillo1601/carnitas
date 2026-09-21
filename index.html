@@ -411,8 +411,8 @@
     <fieldset class="opt-group" id="opt-protein">
       <legend>¿De qué carne?</legend>
       <div class="opt-row">
-        <button type="button" class="opt-btn" data-protein="RES" aria-pressed="true">🐄 Res</button>
-        <button type="button" class="opt-btn" data-protein="CERDO" aria-pressed="false">🐖 Cerdo</button>
+        <button type="button" class="opt-btn" data-protein="RES" aria-pressed="false">🐄 Res</button>
+        <button type="button" class="opt-btn" data-protein="CERDO" aria-pressed="true">🐖 Cerdo</button>
       </div>
     </fieldset>
 
@@ -810,7 +810,7 @@
 
   /* ---------- Ventana de opciones del sándwich ---------- */
   const optsDialog = $('opts-dialog');
-  const opt = { item: null, protein: 'RES', pickles: true, addons: new Set(), drink: false, qty: 1 };
+  const opt = { item: null, protein: 'CERDO', pickles: true, addons: new Set(), drink: false, qty: 1 };
 
   function optionsAddons(){ // en el mismo orden siempre, para que "queso + huevo" = "huevo + queso"
     return Object.keys(ADDONS).filter(id => opt.addons.has(id));
@@ -819,7 +819,7 @@
   function openOptions(item){
     if (salesClosed()) { showToast('🔒 Todavía no abrimos. ¡Te esperamos el lunes!', 2600); return; }
     const s = SANDWICHES[item];
-    Object.assign(opt, { item, protein: 'RES', pickles: true, drink: false, qty: 1 });
+    Object.assign(opt, { item, protein: 'CERDO', pickles: true, drink: false, qty: 1 }); // cerdo por defecto; si quieren res, la escogen
     opt.addons.clear();
     $('opts-photo').src = s.img;
     $('opts-photo').alt = '';
