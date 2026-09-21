@@ -288,7 +288,7 @@
     .item > div:last-child{ padding:1rem 1.1rem 1.2rem; display:flex; flex-direction:column; height:100%; }
     .item-copy{ -webkit-line-clamp:unset; overflow:visible; font-size:.88rem; }
     .item-foot{ margin-top:auto; padding-top:.8rem; }
-    .item-list.shakes{ grid-template-columns:repeat(4,1fr); }
+    .item-list.shakes{ grid-template-columns:repeat(3,1fr); }
     .item-list.shakes .item-name{ font-size:1.05rem; }
     .sheet{ margin:auto; border-radius:26px; }
   }
@@ -539,9 +539,10 @@
     INSTAGRAM_URL: "https://www.instagram.com/carnitas.co",
     TIKTOK_URL: "CAMBIAR_AQUI_TU_TIKTOK",
 
-    // Apertura oficial (hora de Colombia, -05:00): lunes 21 de septiembre, 4:00 pm.
+    // Apertura oficial (hora de Colombia, -05:00): lunes 21 de septiembre, 5:00 pm (solo ese día;
+    // desde el día siguiente rige el horario diario de abajo).
     // Antes de esa hora la carta se ve, pero no se puede pedir.
-    OPENING_AT: "2026-09-21T16:00:00-05:00",
+    OPENING_AT: "2026-09-21T17:00:00-05:00",
 
     // Horario diario (hora de Colombia, formato 24 h "HH:MM"). Desde la apertura oficial, la tienda
     // abre y cierra sola todos los días a estas horas: fuera de ese horario no se puede pedir.
@@ -587,7 +588,6 @@
 
   const SHAKES = {
     oreo:      { name: 'Oreo',      label: 'MALTEADA DE OREO',      img: 'img/malteada-oreo.svg',      copy: 'Cremosa, con galletas Oreo trituradas y crema batida.' },
-    milo:      { name: 'Milo',      label: 'MALTEADA DE MILO',      img: 'img/malteada-milo.svg',      copy: 'Con Milo, helado cremoso y crema batida.' },
     chocolate: { name: 'Chocolate', label: 'MALTEADA DE CHOCOLATE', img: 'img/malteada-chocolate.svg', copy: 'Chocolate intenso, salsa de chocolate y crema batida.' },
     fresa:     { name: 'Fresa',     label: 'MALTEADA DE FRESA',     img: 'img/malteada-fresa.svg',     copy: 'Fresas y helado, coronada con crema batida.' },
   };
