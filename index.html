@@ -127,18 +127,25 @@
   .menu-block-title::after{ content:''; flex:1; height:4px; border-radius:4px; background:var(--yellow); }
 
   .item-list{ display:grid; gap:.9rem; grid-template-columns:minmax(0,1fr); }
+  /* En celular: foto + nombre + precio/botón arriba, e ingredientes debajo a todo el ancho.
+     (El div interno usa display:contents para poder acomodar cada pieza en la cuadrícula.) */
   .item{
-    display:grid; grid-template-columns:104px minmax(0,1fr); gap:.85rem; align-items:center;
+    display:grid; grid-template-columns:104px minmax(0,1fr);
+    grid-template-areas:"photo tag" "photo name" "photo foot" "ing ing";
+    column-gap:.85rem; row-gap:.1rem; align-items:center;
     background:var(--black-2); border:2px solid rgba(255,255,255,.09); border-radius:22px; padding:.65rem;
     box-shadow:var(--shadow); transition:border-color .2s ease, transform .2s ease;
   }
   .item:hover{ border-color:var(--yellow); }
-  .item > div{ min-width:0; }
-  .item-photo{ width:104px; height:104px; object-fit:cover; object-position:50% 40%; border-radius:16px; background:#000; }
-  .item-tag{ color:var(--yellow); font-weight:800; font-size:.66rem; letter-spacing:.08em; text-transform:uppercase; }
-  .item-name{ font-weight:900; font-size:1.2rem; letter-spacing:-.015em; line-height:1.15; color:var(--white); }
-  .item-copy{ color:var(--muted); font-size:.8rem; line-height:1.4; margin-top:.2rem; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
-  .item-foot{ display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:.4rem .6rem; margin-top:.5rem; }
+  .item > div{ display:contents; }
+  .item-photo{ grid-area:photo; width:104px; height:104px; object-fit:cover; object-position:50% 40%; border-radius:16px; background:#000; }
+  .item-tag{ grid-area:tag; align-self:end; color:var(--yellow); font-weight:800; font-size:.66rem; letter-spacing:.08em; text-transform:uppercase; }
+  .item-name{ grid-area:name; font-weight:900; font-size:1.2rem; letter-spacing:-.015em; line-height:1.15; color:var(--white); }
+  .item-ing{
+    grid-area:ing; list-style:none; margin:.7rem 0 0; padding:.6rem 0 0; border-top:1px dashed rgba(255,255,255,.15);
+    display:grid; grid-template-columns:1fr 1fr; gap:.25rem .7rem; color:var(--muted); font-size:.74rem; line-height:1.3;
+  }
+  .item-foot{ grid-area:foot; align-self:start; display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:.4rem .6rem; margin-top:.4rem; }
   .item-price{ font-weight:900; font-size:1.25rem; color:var(--yellow); letter-spacing:-.02em; font-variant-numeric:tabular-nums; }
   .item-price.pending{ font-size:.8rem; color:var(--muted); font-weight:700; }
   .item-add{
@@ -288,11 +295,12 @@
     .topnav{ gap:.4rem; }
     .topnav a{ font-size:.9rem; padding:.45rem .95rem; }
     .item-list{ grid-template-columns:repeat(2,1fr); }
-    .item{ grid-template-columns:1fr; padding:0; overflow:hidden; align-items:stretch; gap:0; }
-    .item-photo{ width:100%; height:auto; aspect-ratio:4/5; border-radius:0; }
+    .item{ grid-template-columns:1fr; grid-template-areas:none; padding:0; overflow:hidden; align-items:stretch; gap:0; }
+    .item-photo{ grid-area:auto; width:100%; height:auto; aspect-ratio:4/5; border-radius:0; }
     .item > div:last-child{ padding:1rem 1.1rem 1.2rem; display:flex; flex-direction:column; height:100%; }
-    .item-copy{ -webkit-line-clamp:unset; overflow:visible; font-size:.88rem; }
-    .item-foot{ margin-top:auto; padding-top:.8rem; }
+    .item-tag, .item-name, .item-ing, .item-foot{ grid-area:auto; }
+    .item-ing{ display:flex; flex-wrap:wrap; gap:.25rem .75rem; margin:.5rem 0 0; padding:0; border-top:none; font-size:.8rem; }
+    .item-foot{ margin-top:auto; padding-top:.8rem; align-self:stretch; }
     .item-list.shakes{ grid-template-columns:repeat(3,1fr); }
     .item-list.shakes .item-name{ font-size:1.05rem; }
     .sheet{ margin:auto; border-radius:26px; }
@@ -582,8 +590,8 @@
     texas: {
       name: 'Texas BBQ', label: 'TEXAS BBQ', tag: 'Ahumado estilo texano', img: 'img/texas.webp', pickles: true,
       alt: 'Sándwich Texas BBQ desarmado: pan francés, cebolla caramelizada, queso derretido, carnitas de cerdo, pepinillos y lechuga fresca',
-      copy: 'Carne bañada en salsa BBQ ahumada, cebolla caramelizada, queso, pepinillos, lechuga y un toque de salsa picante, todo entre pan artesanal.',
-      // Ingredientes que se ven al elegir el sándwich. kind: 'meat' = carne según res/cerdo; 'pickles' = se tacha si dicen "sin pepinillos".
+      // Ingredientes: se ven en la tarjeta del menú y al elegir el sándwich.
+      // kind: 'meat' = carne según res/cerdo; 'pickles' = se tacha si dicen "sin pepinillos".
       ingredients: [
         { e: '🥖', t: 'Pan francés' }, { e: '🥩', kind: 'meat' }, { e: '🍯', t: 'Salsa BBQ ahumada' },
         { e: '🧅', t: 'Cebolla caramelizada' }, { e: '🧀', t: 'Queso derretido' },
@@ -593,7 +601,6 @@
     bistek: {
       name: 'Bistek', label: 'BISTEK', tag: 'A la plancha', img: 'img/bistek.webp', pickles: false,
       alt: 'Sándwich Bistek desarmado: pan francés, cebolla caramelizada, huevo frito, queso derretido, carne, hogao colombiano y lechuga',
-      copy: 'Carne con sabor ahumado, hogao colombiano, cebolla caramelizada, lechuga, huevo y queso, en pan artesanal. El sándwich criollo de toda la vida.',
       ingredients: [
         { e: '🥖', t: 'Pan francés' }, { e: '🥩', kind: 'meat' }, { e: '🍅', t: 'Hogao colombiano' },
         { e: '🧅', t: 'Cebolla caramelizada' }, { e: '🍳', t: 'Huevo frito' }, { e: '🧀', t: 'Queso derretido' }, { e: '🥬', t: 'Lechuga' },
@@ -602,7 +609,6 @@
     azteca: {
       name: 'Azteca', label: 'AZTECA', tag: 'Toque mexicano', img: 'img/azteca.webp', pickles: false,
       alt: 'Sándwich Azteca desarmado: pan francés, guacamole, nachos, queso derretido, pico de gallo, carne y lechuga',
-      copy: 'Carne con sabor ahumado, pico de gallo, guacamole, nachos, queso y lechuga, en pan artesanal. Picante, fresco y con personalidad.',
       ingredients: [
         { e: '🥖', t: 'Pan francés' }, { e: '🥩', kind: 'meat' }, { e: '🍅', t: 'Pico de gallo (tomate y cebolla)' },
         { e: '🥑', t: 'Guacamole' }, { e: '🌮', t: 'Nachos' }, { e: '🧀', t: 'Queso derretido' }, { e: '🥬', t: 'Lechuga' },
@@ -611,9 +617,12 @@
   };
 
   const SHAKES = {
-    oreo:      { name: 'Oreo',      label: 'MALTEADA DE OREO',      img: 'img/malteada-oreo.svg',      copy: 'Cremosa, con galletas Oreo trituradas y crema batida.' },
-    chocolate: { name: 'Chocolate', label: 'MALTEADA DE CHOCOLATE', img: 'img/malteada-chocolate.svg', copy: 'Chocolate intenso, salsa de chocolate y crema batida.' },
-    fresa:     { name: 'Fresa',     label: 'MALTEADA DE FRESA',     img: 'img/malteada-fresa.svg',     copy: 'Fresas y helado, coronada con crema batida.' },
+    oreo:      { name: 'Oreo',      label: 'MALTEADA DE OREO',      img: 'img/malteada-oreo.svg',
+                 ingredients: [{ e: '🍨', t: 'Helado' }, { e: '🍪', t: 'Galletas Oreo trituradas' }, { e: '🍦', t: 'Crema batida' }] },
+    chocolate: { name: 'Chocolate', label: 'MALTEADA DE CHOCOLATE', img: 'img/malteada-chocolate.svg',
+                 ingredients: [{ e: '🍨', t: 'Helado' }, { e: '🍫', t: 'Chocolate intenso' }, { e: '🍫', t: 'Salsa de chocolate' }, { e: '🍦', t: 'Crema batida' }] },
+    fresa:     { name: 'Fresa',     label: 'MALTEADA DE FRESA',     img: 'img/malteada-fresa.svg',
+                 ingredients: [{ e: '🍨', t: 'Helado' }, { e: '🍓', t: 'Fresas' }, { e: '🍦', t: 'Crema batida' }] },
   };
 
   // Adicionales: se eligen dentro de cada sándwich.
@@ -819,6 +828,10 @@
   }
 
   /* ---------- Menú: se dibuja desde SANDWICHES y SHAKES ---------- */
+  // Lista de ingredientes que se ve directo en la tarjeta (la carne aparece como "res o cerdo").
+  const ingredientList = list => list.map(i =>
+    `<li>${i.e} ${i.kind === 'meat' ? 'Carne de res o cerdo' : i.t}</li>`).join('');
+
   function renderMenu(){
     const c = CARNITAS_CONFIG;
     $('sandwich-list').innerHTML = Object.entries(SANDWICHES).map(([id, s]) => `
@@ -827,7 +840,7 @@
         <div>
           <p class="item-tag">${s.tag}</p>
           <h4 class="item-name">${s.name}</h4>
-          <p class="item-copy">${s.copy}</p>
+          <ul class="item-ing" aria-label="Ingredientes">${ingredientList(s.ingredients)}</ul>
           <div class="item-foot">
             <span class="item-price">${cop(c.SANDWICH_PRICE)}</span>
             <button type="button" class="item-add" data-add="${id}" aria-label="Agregar ${s.name}">+ AGREGAR</button>
@@ -840,7 +853,7 @@
         <img class="item-photo" src="${s.img}" width="112" height="112" loading="lazy" decoding="async" alt="Malteada de ${s.name} con crema batida">
         <div>
           <h4 class="item-name">Malteada de ${s.name}</h4>
-          <p class="item-copy">${s.copy}</p>
+          <ul class="item-ing" aria-label="Ingredientes">${ingredientList(s.ingredients)}</ul>
           <div class="item-foot">
             <span class="item-price${shakePriceSet() ? '' : ' pending'}">${shakePriceSet() ? cop(c.MALTEADA_PRICE) : 'Precio por definir'}</span>
             <button type="button" class="item-add" data-shake="${id}" aria-label="Agregar malteada de ${s.name}">+ AGREGAR</button>
