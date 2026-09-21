@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0C0B0A">
+<title>Carnitas · Mis cuentas</title>
+<style>
+  :root{
+    --red:#DA291C; --yellow:#FFC72C; --green:#3DD68C; --amber:#FFA83D; --bad:#FF5A4D;
+    --bg:#141210; --card:#1F1B18; --card-2:#2A2521; --line:rgba(255,255,255,.09);
+    --text:#fff; --muted:#BDB6AA;
+    --font:'Poppins',system-ui,-apple-system,'Segoe UI',sans-serif;
+  }
+  *,*::before,*::after{ box-sizing:border-box; }
+  body{ margin:0; background:var(--bg); color:var(--text); font-family:var(--font); font-size:16px; line-height:1.4; -webkit-font-smoothing:antialiased; padding-bottom:88px; }
+  h1,h2,h3,p{ margin:0; }
+  button,input,select{ font-family:inherit; font-size:1rem; }
+  .wrap{ max-width:720px; margin:0 auto; padding:1rem; }
+  header{ display:flex; align-items:center; justify-content:space-between; gap:.5rem; margin-bottom:1rem; }
+  header h1{ font-size:1.25rem; font-weight:800; }
+  header h1 span{ color:var(--yellow); }
+  h2{ font-size:1.05rem; font-weight:800; margin:1.4rem 0 .6rem; }
+  .muted{ color:var(--muted); font-size:.85rem; }
+  .card{ background:var(--card); border:1px solid var(--line); border-radius:16px; padding:1rem; }
+  .stack{ display:grid; gap:.6rem; }
+  .row{ display:flex; align-items:center; gap:.6rem; }
+  .between{ justify-content:space-between; }
+  .grow{ flex:1; min-width:0; }
+  .num{ font-variant-numeric:tabular-nums; font-weight:800; white-space:nowrap; }
+
+  /* Navegación inferior */
+  nav{ position:fixed; left:0; right:0; bottom:0; z-index:10; background:#0C0B0A; border-top:1px solid var(--line); display:flex; justify-content:center; padding-bottom:env(safe-area-inset-bottom); }
+  nav .in{ display:flex; width:100%; max-width:720px; }
+  nav button{ flex:1; background:none; border:none; color:var(--muted); padding:.55rem 0 .5rem; cursor:pointer; font-size:.68rem; font-weight:700; display:grid; gap:.1rem; justify-items:center; position:relative; }
+  nav button b{ font-size:1.35rem; line-height:1; }
+  nav button.on{ color:var(--yellow); }
+  nav .dot{ position:absolute; top:.3rem; left:calc(50% + .7rem); background:var(--red); color:#fff; border-radius:99px; min-width:18px; height:18px; font-size:.68rem; display:grid; place-items:center; padding:0 4px; }
+
+  /* Chips */
+  .chips{ display:flex; gap:.4rem; flex-wrap:wrap; }
+  .chip{ background:var(--card-2); color:var(--muted); border:1px solid var(--line); border-radius:99px; padding:.45rem .9rem; font-weight:700; font-size:.88rem; cursor:pointer; }
+  .chip.on{ background:var(--yellow); color:#141210; border-color:var(--yellow); }
+
+  /* Tarjetas de resultado */
+  .kpis{ display:grid; grid-template-columns:1fr 1fr; gap:.6rem; }
+  .kpi{ background:var(--card); border:1px solid var(--line); border-radius:16px; padding:.9rem; }
+  .kpi small{ display:block; color:var(--muted); font-weight:600; font-size:.78rem; }
+  .kpi b{ display:block; font-size:1.45rem; font-weight:800; margin-top:.15rem; font-variant-numeric:tabular-nums; }
+  .kpi.big{ grid-column:1/-1; background:linear-gradient(135deg,#2a2015,#1F1B18); border-color:rgba(255,199,44,.35); }
+  .kpi.big b{ font-size:2.1rem; }
+  .pos{ color:var(--green); } .neg{ color:var(--bad); }
+
+  /* Gráfica */
+  .chart{ display:flex; align-items:flex-end; gap:.5rem; height:120px; }
+  .chart .d{ flex:1; display:flex; flex-direction:column; align-items:center; gap:.3rem; height:100%; justify-content:flex-end; }
+  .chart .bars{ display:flex; align-items:flex-end; gap:3px; width:100%; height:100%; justify-content:center; }
+  .chart .bars i{ display:block; width:42%; max-width:22px; border-radius:5px 5px 0 0; min-height:2px; }
+  .chart .v{ background:var(--yellow); } .chart .g{ background:var(--red); }
+  .chart label{ font-size:.68rem; color:var(--muted); }
+  .legend{ display:flex; gap:1rem; font-size:.78rem; color:var(--muted); margin-top:.6rem; }
+  .legend i{ display:inline-block; width:10px; height:10px; border-radius:3px; margin-right:.3rem; }
+
+  /* Rentabilidad */
+  .prow{ padding:.75rem 0; border-bottom:1px solid var(--line); }
+  .prow:last-child{ border-bottom:none; }
+  .meter{ height:6px; background:var(--card-2); border-radius:99px; margin-top:.4rem; overflow:hidden; }
+  .meter i{ display:block; height:100%; background:var(--green); border-radius:99px; }
+  .tag{ display:inline-block; font-size:.7rem; font-weight:700; border-radius:99px; padding:.1rem .55rem; }
+  .tag.r{ background:rgba(255,90,77,.18); color:var(--bad); }
+  .tag.a{ background:rgba(255,168,61,.18); color:var(--amber); }
+  .tag.g{ background:rgba(61,214,140,.16); color:var(--green); }
+  .tag.n{ background:var(--card-2); color:var(--muted); }
+
+  /* Vender */
+  .tiles{ display:grid; grid-template-columns:repeat(2,1fr); gap:.6rem; }
+  @media(min-width:520px){ .tiles{ grid-template-columns:repeat(3,1fr); } }
+  .tile{ position:relative; background:var(--card); border:2px solid var(--line); border-radius:16px; padding:.9rem .8rem; color:var(--text); text-align:left; cursor:pointer; min-height:92px; display:flex; flex-direction:column; justify-content:space-between; gap:.3rem; transition:transform .08s; }
+  .tile:active{ transform:scale(.96); border-color:var(--yellow); }
+  .tile strong{ font-size:.98rem; line-height:1.2; }
+  .tile span{ color:var(--yellow); font-weight:800; font-variant-numeric:tabular-nums; }
+  .tile .cnt{ position:absolute; top:.5rem; right:.5rem; background:var(--yellow); color:#141210; font-weight:800; font-size:.8rem; border-radius:99px; min-width:26px; height:26px; display:grid; place-items:center; padding:0 6px; }
+  .line{ display:flex; align-items:center; gap:.6rem; padding:.6rem 0; border-bottom:1px solid var(--line); }
+  .line:last-child{ border-bottom:none; }
+  .qty{ display:flex; align-items:center; gap:.1rem; }
+  .qty button, .icon{ width:38px; height:38px; border-radius:10px; border:1px solid var(--line); background:var(--card-2); color:var(--text); font-size:1.15rem; font-weight:800; cursor:pointer; }
+  .icon.del{ color:var(--bad); }
+
+  /* Formularios */
+  label.f{ display:grid; gap:.3rem; font-size:.82rem; font-weight:600; color:var(--muted); }
+  input,select{ width:100%; background:var(--card-2); color:var(--text); border:1px solid var(--line); border-radius:12px; padding:.75rem .85rem; min-height:48px; }
+  input:focus,select:focus{ outline:2px solid var(--yellow); outline-offset:1px; }
+  input.money{ font-size:1.4rem; font-weight:800; font-variant-numeric:tabular-nums; }
+  .grid2{ display:grid; grid-template-columns:1fr 1fr; gap:.6rem; }
+  .btn{ min-height:52px; border:none; border-radius:99px; padding:0 1.4rem; font-weight:800; cursor:pointer; background:var(--yellow); color:#141210; width:100%; }
+  .btn.sec{ background:var(--card-2); color:var(--text); border:1px solid var(--line); }
+  .btn.sm{ min-height:40px; width:auto; padding:0 1rem; font-size:.88rem; }
+  details summary{ cursor:pointer; color:var(--yellow); font-weight:700; font-size:.9rem; padding:.3rem 0; }
+  .banner{ background:rgba(255,168,61,.12); border:1px solid rgba(255,168,61,.4); color:var(--amber); border-radius:14px; padding:.75rem .9rem; font-size:.88rem; font-weight:600; cursor:pointer; margin-bottom:.8rem; }
+  .empty{ text-align:center; color:var(--muted); padding:1.5rem .5rem; font-size:.92rem; }
+  dialog{ background:var(--card); color:var(--text); border:1px solid var(--line); border-radius:20px; padding:1.2rem; width:min(92vw,420px); }
+  dialog::backdrop{ background:rgba(0,0,0,.7); }
+  #toast{ position:fixed; left:50%; bottom:100px; transform:translateX(-50%); background:#fff; color:#141210; font-weight:700; padding:.6rem 1.1rem; border-radius:99px; z-index:30; opacity:0; pointer-events:none; transition:opacity .2s; font-size:.9rem; max-width:90vw; }
+  #toast.on{ opacity:1; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Carnitas <span>· Mis cuentas</span></h1>
+    <span class="muted" id="hdate"></span>
+  </header>
+  <main id="app"></main>
+</div>
+
+<nav><div class="in" id="nav"></div></nav>
+<div id="toast" role="status"></div>
+<dialog id="dlg"></dialog>
+
+<script>
+(() => {
+'use strict';
+
+/* ============ Datos ============ */
+const KEY = 'carnitas-finanzas-v1';
+const CATS = ['Ingredientes','Empaques','Servicios','Transporte','Otros'];
+const uid = () => Math.random().toString(36).slice(2, 9);
+const seed = () => ({
+  days: 3,
+  products: [
+    ['Texas BBQ',15000],['Bistek',15000],['Azteca',15000],
+    ['Malteada chocolate',10000],['Malteada fresa',10000],['Malteada milo',10000],['Malteada oreo',10000],
+    ['Gaseosa',4000],['Adicional',3000]
+  ].map(([name, price]) => ({ id: uid(), name, price, cost: 0, stock: 0 })),
+  orders: {},     // ids de pedidos de la página ya pasados a ventas
+  sales: [],      // {id,date,pid,name,qty,price,cost}
+  expenses: []    // {id,date,concept,amount,cat,pid,qty}
+});
+/* Conexión con los pedidos de la página (ver LEEME-PEDIDOS.md) */
+const DB_URL  = 'https://carnitas-7aafe-default-rtdb.firebaseio.com';
+const API_KEY = 'PEGA_AQUI_TU_API_KEY';   // Firebase → Configuración del proyecto → "Clave de API web"
+const AUTH_KEY = 'carnitas-auth-v1';
+let S;
+try { S = JSON.parse(localStorage.getItem(KEY)) || seed(); } catch { S = seed(); }
+S.orders = S.orders || {};
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch { toast('No se pudo guardar en este navegador'); } };
+
+/* ============ Utilidades ============ */
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const cop = n => (n < 0 ? '-' : '') + '$' + Math.abs(Math.round(n)).toLocaleString('es-CO');
+const pad = n => String(n).padStart(2, '0');
+const ymd = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const today = () => ymd(new Date());
+const addDays = (s, n) => { const d = new Date(s + 'T12:00:00'); d.setDate(d.getDate() + n); return ymd(d); };
+const DOW = ['dom','lun','mar','mié','jue','vie','sáb'];
+const prettyDate = s => { const d = new Date(s + 'T12:00:00'); return s === today() ? 'Hoy' : `${DOW[d.getDay()]} ${d.getDate()}/${d.getMonth()+1}`; };
+const sum = (a, f) => a.reduce((t, x) => t + f(x), 0);
+const prod = id => S.products.find(p => p.id === id);
+const moneyVal = el => Number(String(el.value).replace(/\D/g, '')) || 0;
+let toastT;
+function toast(msg){ const t = $('#toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('on'), 1600); }
+
+/* ============ Estado de la interfaz ============ */
+let view = 'resumen', period = 'hoy', selDate = today(), expCat = CATS[0];
+
+function rangeStart(){
+  const t = today();
+  if (period === 'hoy') return t;
+  if (period === '7d') return addDays(t, -6);
+  if (period === 'mes') return t.slice(0, 8) + '01';
+  return '0000-00-00';
+}
+const inRange = d => d >= rangeStart() && d <= today();
+
+/* ============ Acciones ============ */
+function sell(pid, date){
+  const p = prod(pid); if (!p) return;
+  const s = S.sales.find(x => x.pid === pid && x.date === date && x.price === p.price && x.cost === p.cost);
+  if (s) s.qty++; else S.sales.push({ id: uid(), date, pid, name: p.name, qty: 1, price: p.price, cost: p.cost });
+  p.stock--; save(); render(); toast(`+1 ${p.name}`);
+}
+function decSale(id){
+  const s = S.sales.find(x => x.id === id); if (!s) return;
+  const p = prod(s.pid); if (p) p.stock++;
+  if (--s.qty <= 0) S.sales = S.sales.filter(x => x.id !== id);
+  save(); render();
+}
+function addExpense(e){
+  const p = e.pid && prod(e.pid);
+  if (p && e.qty > 0){ p.stock += e.qty; p.cost = Math.round(e.amount / e.qty); }
+  S.expenses.push({ id: uid(), ...e, pid: p ? p.id : '', qty: p ? e.qty : 0 });
+  save();
+}
+/* ---------- Pedidos de la página (Firebase por REST, solo con tu login) ---------- */
+let auth = null; try { auth = JSON.parse(localStorage.getItem(AUTH_KEY)); } catch {}
+let orders = null, ordMsg = '', ordBusy = false, showHist = false;
+const apiReady = () => API_KEY && !API_KEY.startsWith('PEGA');
+const saveAuth = () => { try { auth ? localStorage.setItem(AUTH_KEY, JSON.stringify(auth)) : localStorage.removeItem(AUTH_KEY); } catch {} };
+async function postJson(url, body, form){
+  const r = await fetch(url, { method: 'POST', headers: { 'Content-Type': form ? 'application/x-www-form-urlencoded' : 'application/json' }, body });
+  const j = await r.json(); if (!r.ok) throw new Error((j.error && j.error.message) || 'error'); return j;
+}
+async function login(email, pw){
+  const j = await postJson(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${API_KEY}`, JSON.stringify({ email, password: pw, returnSecureToken: true }));
+  auth = { token: j.idToken, refresh: j.refreshToken, exp: Date.now() + j.expiresIn * 1000, email }; saveAuth();
+}
+async function token(){
+  if (!auth) throw new Error('NO_AUTH');
+  if (Date.now() > auth.exp - 60000){
+    const j = await postJson(`https://securetoken.googleapis.com/v1/token?key=${API_KEY}`, 'grant_type=refresh_token&refresh_token=' + encodeURIComponent(auth.refresh), true);
+    auth.token = j.id_token; auth.refresh = j.refresh_token; auth.exp = Date.now() + Number(j.expires_in) * 1000; saveAuth();
+  }
+  return auth.token;
+}
+async function db(path, method, body, query){
+  const q = (query ? query + '&' : '') + 'auth=' + await token();
+  const r = await fetch(`${DB_URL}/${path}.json?${q}`, { method: method || 'GET', body: body ? JSON.stringify(body) : undefined });
+  if (!r.ok) throw new Error(r.status === 401 || r.status === 403 ? 'DENIED' : 'HTTP ' + r.status);
+  return r.json();
+}
+async function loadOrders(silent){
+  if (!auth || !apiReady()) return;
+  ordBusy = !silent; if (!silent && view === 'pedidos') render();
+  try { orders = (await db('orders', 'GET', null, 'orderBy=' + encodeURIComponent('"$key"') + '&limitToLast=100')) || {}; ordMsg = ''; }
+  catch (e) {
+    if (e.message === 'NO_AUTH' || e.message === 'DENIED' || /TOKEN|USER/.test(e.message)){ auth = null; saveAuth(); ordMsg = 'Tu sesión venció o no tienes permiso. Entra de nuevo.'; }
+    else ordMsg = 'No pude conectar. Revisa tu internet e intenta de nuevo.';
+  }
+  ordBusy = false; render();
+}
+const pendingOrders = () => orders ? Object.entries(orders).filter(([id, o]) => o.status === 'pendiente' && !S.orders[id]).sort((a, b) => b[0].localeCompare(a[0])) : [];
+async function setStatus(id, status){ try { await db('orders/' + id, 'PATCH', { status }); if (orders && orders[id]) orders[id].status = status; } catch { toast('Guardado aquí, pero no pude actualizar el estado en la nube'); if (orders && orders[id]) orders[id].status = status; } }
+async function confirmOrder(id){
+  const o = orders && orders[id]; if (!o || S.orders[id]) return;
+  const date = ymd(new Date(o.ts)), gas = S.products.find(p => p.name.toLowerCase() === 'gaseosa'), adi = S.products.find(p => p.name.toLowerCase() === 'adicional');
+  const put = (p, name, qty, price) => {
+    if (qty <= 0) return;
+    if (!p){ p = { id: uid(), name, price, cost: 0, stock: 0 }; S.products.push(p); }
+    S.sales.push({ id: uid(), date, pid: p.id, name: p.name, qty, price, cost: p.cost, orderId: id }); p.stock -= qty;
+  };
+  (o.lines || []).forEach(l => {
+    const p = S.products.find(x => x.name.toLowerCase() === String(l.product).toLowerCase());
+    const gp = l.drink ? (gas ? gas.price : 4000) : 0, ap = (l.addons || 0) * (adi ? adi.price : 3000);
+    put(p, l.product, l.qty, Math.max(0, l.unit - gp - ap));
+    if (l.drink) put(gas, 'Gaseosa', l.qty, gp);
+    if (l.addons) put(adi, 'Adicional', l.qty * l.addons, adi ? adi.price : 3000);
+  });
+  S.orders[id] = true; save(); await setStatus(id, 'entregado'); render(); toast('Sumado a tus ventas ✔');
+}
+async function cancelOrder(id){ if (!confirm('¿Cancelar este pedido? No se suma a ventas.')) return; S.orders[id] = true; save(); await setStatus(id, 'cancelado'); render(); }
+
+function delExpense(id){
+  const e = S.expenses.find(x => x.id === id); if (!e) return;
+  const p = e.pid && prod(e.pid); if (p) p.stock -= e.qty;
+  S.expenses = S.expenses.filter(x => x.id !== id); save(); render();
+}
+
+/* ============ Cálculos ============ */
+function totals(){
+  const sales = S.sales.filter(s => inRange(s.date)), exps = S.expenses.filter(e => inRange(e.date));
+  const sold = sum(sales, s => s.qty * s.price), spent = sum(exps, e => e.amount);
+  return { sales, exps, sold, spent, profit: sold - spent };
+}
+function profitability(sales){
+  const m = {};
+  sales.forEach(s => {
+    const k = s.pid || s.name, r = m[k] || (m[k] = { name: s.name, qty: 0, rev: 0, gain: 0, noCost: false });
+    r.qty += s.qty; r.rev += s.qty * s.price; r.gain += s.qty * (s.price - s.cost);
+    if (!s.cost) r.noCost = true;
+  });
+  return Object.values(m).sort((a, b) => b.gain - a.gain);
+}
+function reorder(){
+  const t = today(), first = S.sales.reduce((m, s) => s.date < m ? s.date : m, t);
+  const span = Math.min(7, Math.max(1, Math.round((new Date(t) - new Date(first)) / 864e5) + 1));
+  const from = addDays(t, -6);
+  const rows = S.products.map(p => {
+    const sold = sum(S.sales.filter(s => s.pid === p.id && s.date >= from), s => s.qty);
+    const avg = sold / span, stock = p.stock;
+    const left = avg > 0 ? stock / avg : Infinity;
+    const need = Math.max(0, Math.ceil(avg * S.days - stock));
+    let st = 'ok';
+    if (avg === 0) st = stock <= 0 ? 'out' : 'idle';
+    else if (stock <= 0 || left < 1) st = 'urgent';
+    else if (left < S.days) st = 'soon';
+    return { p, avg, stock, left, need, st, money: need * p.cost };
+  });
+  const order = { out: 0, urgent: 0, soon: 1, ok: 2, idle: 3 };
+  return rows.sort((a, b) => order[a.st] - order[b.st] || a.left - b.left);
+}
+const needCount = () => reorder().filter(r => (r.st === 'urgent' || r.st === 'soon') && r.need > 0).length;
+
+/* ============ Vistas ============ */
+function vResumen(){
+  const T = totals(), P = profitability(T.sales), R = reorder().filter(r => (r.st === 'urgent' || r.st === 'soon') && r.need > 0);
+  const noCost = S.products.filter(p => !p.cost).length;
+  const maxG = Math.max(1, ...P.map(r => Math.abs(r.gain)));
+  // últimos 7 días
+  const days = Array.from({ length: 7 }, (_, i) => addDays(today(), i - 6));
+  const dv = days.map(d => sum(S.sales.filter(s => s.date === d), s => s.qty * s.price));
+  const dg = days.map(d => sum(S.expenses.filter(e => e.date === d), e => e.amount));
+  const mx = Math.max(1, ...dv, ...dg);
+  return `
+  <div class="chips" style="margin-bottom:.8rem">${[['hoy','Hoy'],['7d','7 días'],['mes','Este mes'],['todo','Todo']].map(([k,l]) => `<button class="chip ${period===k?'on':''}" data-act="period" data-v="${k}">${l}</button>`).join('')}</div>
+  ${noCost ? `<div class="banner" data-act="tab" data-v="productos">⚠️ ${noCost} producto${noCost>1?'s':''} sin costo: sin eso no puedo calcular la rentabilidad. Toca para completarlos →</div>` : ''}
+  ${R.length ? `<div class="banner" data-act="tab" data-v="recomprar">🛒 Toca recomprar ${R.length} producto${R.length>1?'s':''} para no quedarte sin vender →</div>` : ''}
+  <div class="kpis">
+    <div class="kpi big"><small>Ganancia (vendido − gastado)</small><b class="${T.profit<0?'neg':'pos'}">${cop(T.profit)}</b></div>
+    <div class="kpi"><small>💰 Vendido</small><b>${cop(T.sold)}</b></div>
+    <div class="kpi"><small>🧾 Gastado</small><b>${cop(T.spent)}</b></div>
+  </div>
+
+  <h2>Últimos 7 días</h2>
+  <div class="card">
+    <div class="chart">${days.map((d,i) => `<div class="d"><div class="bars"><i class="v" style="height:${dv[i]/mx*100}%"></i><i class="g" style="height:${dg[i]/mx*100}%"></i></div><label>${prettyDate(d).split(' ')[0]}</label></div>`).join('')}</div>
+    <div class="legend"><span><i style="background:var(--yellow)"></i>Vendido</span><span><i style="background:var(--red)"></i>Gastado</span></div>
+  </div>
+
+  <h2>¿Qué producto deja más plata?</h2>
+  <div class="card">
+    ${P.length ? P.map(r => {
+      const mg = r.rev ? Math.round(r.gain / r.rev * 100) : 0;
+      return `<div class="prow">
+        <div class="row between"><strong class="grow">${esc(r.name)}</strong><span class="num ${r.gain<0?'neg':'pos'}">${cop(r.gain)}</span></div>
+        <div class="row between muted"><span>${r.qty} vendidas · ${cop(r.rev)}</span><span>${r.noCost ? '<span class="tag n">sin costo</span>' : `<span class="tag ${mg>=40?'g':mg>=20?'a':'r'}">${mg}% margen</span>`}</span></div>
+        <div class="meter"><i style="width:${Math.max(0, r.gain)/maxG*100}%"></i></div>
+      </div>`;
+    }).join('') : '<div class="empty">Aún no hay ventas en este periodo.<br>Ve a <b>Vender</b> y toca un producto cada vez que vendas.</div>'}
+  </div>
+  <p class="muted" style="margin-top:.7rem">Ganancia por producto = (precio − costo) × unidades vendidas. La ganancia de arriba es caja: todo lo vendido menos todo lo gastado (incluye compras de mercancía).</p>`;
+}
+
+function vVender(){
+  const list = S.sales.filter(s => s.date === selDate);
+  const cnt = {}; list.forEach(s => cnt[s.pid] = (cnt[s.pid] || 0) + s.qty);
+  const tot = sum(list, s => s.qty * s.price);
+  return `
+  <div class="row between" style="margin-bottom:.8rem">
+    <div class="row"><button class="icon" data-act="day" data-v="-1" aria-label="Día anterior">‹</button>
+      <input type="date" id="selDate" value="${selDate}" style="width:auto;min-height:38px;padding:.3rem .6rem">
+      <button class="icon" data-act="day" data-v="1" aria-label="Día siguiente">›</button></div>
+    ${selDate !== today() ? '<button class="chip" data-act="day" data-v="0">Ir a hoy</button>' : ''}
+  </div>
+  <p class="muted" style="margin-bottom:.6rem">Toca un producto <b>cada vez que vendas uno</b>.</p>
+  <div class="tiles">${S.products.map(p => `<button class="tile" data-act="sell" data-id="${p.id}">${cnt[p.id] ? `<div class="cnt">${cnt[p.id]}</div>` : ''}<strong>${esc(p.name)}</strong><span>${cop(p.price)}</span></button>`).join('')}</div>
+
+  <h2>${prettyDate(selDate)}: ${cop(tot)}</h2>
+  <div class="card">${list.length ? list.map(s => `<div class="line">
+      <div class="grow"><strong>${esc(s.name)}</strong><div class="muted">${cop(s.price)} c/u</div></div>
+      <div class="qty"><button data-act="dec" data-id="${s.id}" aria-label="Quitar uno">−</button><b style="min-width:26px;text-align:center">${s.qty}</b><button data-act="inc" data-id="${s.pid}" data-d="${s.date}" aria-label="Agregar uno">+</button></div>
+      <span class="num" style="min-width:80px;text-align:right">${cop(s.qty*s.price)}</span></div>`).join('') : '<div class="empty">Sin ventas este día</div>'}</div>`;
+}
+
+function vGastos(){
+  const list = [...S.expenses].filter(e => e.date >= today().slice(0,8) + '01' || e.date === selDate).sort((a,b) => b.date.localeCompare(a.date));
+  const bycat = {}; S.expenses.filter(e => e.date >= today().slice(0,8)+'01').forEach(e => bycat[e.cat] = (bycat[e.cat]||0) + e.amount);
+  return `
+  <div class="card stack">
+    <label class="f">¿Cuánto gastaste?<input class="money" id="eAmount" data-money inputmode="numeric" placeholder="$0" autocomplete="off"></label>
+    <div class="chips">${CATS.map(c => `<button class="chip ${expCat===c?'on':''}" data-act="cat" data-v="${c}">${c}</button>`).join('')}</div>
+    <label class="f">¿En qué? (opcional)<input id="eConcept" placeholder="Ej: carne, pan, bolsas…" autocomplete="off"></label>
+    <details><summary>Es mercancía para revender (suma al inventario)</summary>
+      <div class="grid2" style="margin-top:.5rem">
+        <label class="f">Producto<select id="ePid"><option value="">—</option>${S.products.map(p => `<option value="${p.id}">${esc(p.name)}</option>`).join('')}</select></label>
+        <label class="f">Unidades compradas<input id="eQty" inputmode="numeric" placeholder="0"></label>
+      </div>
+      <p class="muted" style="margin-top:.4rem">El costo por unidad del producto se actualiza solo (monto ÷ unidades).</p>
+    </details>
+    <label class="f">Fecha<input type="date" id="eDate" value="${selDate}"></label>
+    <button class="btn" data-act="saveExp">Guardar gasto</button>
+  </div>
+
+  ${Object.keys(bycat).length ? `<h2>Este mes por categoría</h2><div class="chips">${Object.entries(bycat).sort((a,b)=>b[1]-a[1]).map(([c,v]) => `<span class="chip">${c}: <b>${cop(v)}</b></span>`).join('')}</div>` : ''}
+
+  <h2>Gastos recientes</h2>
+  <div class="card">${list.length ? list.map(e => `<div class="line">
+    <div class="grow"><strong>${esc(e.concept || e.cat)}</strong><div class="muted">${prettyDate(e.date)} · ${e.cat}${e.qty ? ` · +${e.qty} ${esc((prod(e.pid)||{name:''}).name)}` : ''}</div></div>
+    <span class="num">${cop(e.amount)}</span><button class="icon del" data-act="delExp" data-id="${e.id}" aria-label="Borrar gasto">✕</button></div>`).join('') : '<div class="empty">Aún no hay gastos este mes</div>'}</div>`;
+}
+
+function vProductos(){
+  return `
+  <p class="muted" style="margin-bottom:.6rem">Pon el <b>precio de venta</b> y lo que te <b>cuesta hacer/comprar cada uno</b>. Con eso calculo tu ganancia y qué recomprar.</p>
+  <div class="stack">${S.products.map(p => `<div class="card stack" data-pid="${p.id}">
+    <div class="row"><input data-f="name" value="${esc(p.name)}" style="font-weight:800"><button class="icon del" data-act="delProd" data-id="${p.id}" aria-label="Borrar producto">✕</button></div>
+    <div class="grid2">
+      <label class="f">Precio de venta<input data-f="price" data-money inputmode="numeric" value="${p.price.toLocaleString('es-CO')}"></label>
+      <label class="f">Costo por unidad<input data-f="cost" data-money inputmode="numeric" value="${p.cost ? p.cost.toLocaleString('es-CO') : ''}" placeholder="$0"></label>
+    </div>
+    <div class="grid2">
+      <label class="f">En inventario (unid.)<input data-f="stock" inputmode="numeric" value="${p.stock}"></label>
+      <div class="f">Ganancia por unidad<div class="num" data-margin style="min-height:48px;display:flex;align-items:center;font-size:1.1rem"></div></div>
+    </div></div>`).join('')}</div>
+  <button class="btn sec" style="margin-top:.8rem" data-act="addProd">+ Nuevo producto</button>
+
+  <h2>Copia de seguridad</h2>
+  <p class="muted" style="margin-bottom:.5rem">Los datos viven en este navegador. Descarga una copia de vez en cuando.</p>
+  <div class="grid2"><button class="btn sec sm" data-act="export">⬇ Descargar</button><button class="btn sec sm" data-act="import">⬆ Restaurar</button></div>
+  <input type="file" id="file" accept="application/json" hidden>`;
+}
+
+function vRecomprar(){
+  const R = reorder(), total = sum(R.filter(r => r.need > 0 && r.st !== 'idle'), r => r.money);
+  const label = { out:['Agotado','r'], urgent:['Comprar ya','r'], soon:['Pronto','a'], ok:['Tienes de sobra','g'], idle:['Sin ventas recientes','n'] };
+  return `
+  <div class="card stack">
+    <label class="f">Quiero tener inventario para…
+      <select id="days">${[1,2,3,5,7].map(n => `<option value="${n}" ${S.days===n?'selected':''}>${n} día${n>1?'s':''} de ventas</option>`).join('')}</select></label>
+    <div class="row between"><span class="muted">Para completar necesitas invertir</span><span class="num" style="font-size:1.5rem;color:var(--yellow)">${cop(total)}</span></div>
+  </div>
+  <p class="muted" style="margin:.6rem 0">Calculado con tus ventas de los últimos 7 días y el inventario que tienes.</p>
+  <div class="card">${R.map(r => { const [l, c] = label[r.st]; return `<div class="prow">
+    <div class="row between"><strong class="grow">${esc(r.p.name)}</strong><span class="tag ${c}">${l}</span></div>
+    <div class="muted">Inventario: <b>${Math.max(0, r.stock)}</b> · Vendes ~${r.avg ? r.avg.toFixed(1) : '0'}/día${isFinite(r.left) && r.stock > 0 ? ` · alcanza ${r.left.toFixed(1)} días` : ''}</div>
+    ${r.need > 0 && r.st !== 'idle' ? `<div class="row between" style="margin-top:.5rem"><span>Comprar <b>${r.need}</b> ${r.p.cost ? `→ <b class="num">${cop(r.money)}</b>` : '<span class="muted">(pon el costo en Productos)</span>'}</span><button class="btn sm" data-act="buy" data-id="${r.p.id}" data-q="${r.need}">Ya compré</button></div>` : ''}
+  </div>`; }).join('')}</div>`;
+}
+
+function vPedidos(){
+  if (!apiReady()) return `<div class="card stack"><strong>Falta conectar</strong><p class="muted">Abre LEEME-PEDIDOS.md y sigue los pasos. Al final pegas tu clave de API en <code>API_KEY</code> dentro de finanzas.html.</p></div>`;
+  if (!auth) return `<div class="card stack">
+    <strong>Entra para ver los pedidos de tus clientes</strong>
+    <p class="muted">Solo tu cuenta puede leerlos.</p>
+    ${ordMsg ? `<div class="banner" style="cursor:default">${esc(ordMsg)}</div>` : ''}
+    <label class="f">Correo<input id="lEmail" type="email" autocomplete="username"></label>
+    <label class="f">Contraseña<input id="lPass" type="password" autocomplete="current-password"></label>
+    <button class="btn" data-act="login">Entrar</button></div>`;
+  const P = pendingOrders();
+  const hist = orders ? Object.entries(orders).filter(([id, o]) => !P.some(x => x[0] === id)).sort((a, b) => b[0].localeCompare(a[0])).slice(0, 15) : [];
+  const card = ([id, o]) => `<div class="card stack">
+    <div class="row between"><strong>${esc(o.name)}</strong><span class="num">${cop(o.total)}</span></div>
+    <div class="muted">${new Date(o.ts).toLocaleString('es-CO', { weekday: 'short', hour: 'numeric', minute: '2-digit' })} · ${esc(o.pay === 'EFECTIVO' ? 'Efectivo' : 'Transferencia')} · ${esc(o.phone)}<br>📍 ${esc(o.address)}${o.notes ? '<br>📝 ' + esc(o.notes) : ''}</div>
+    <div>${(o.lines || []).map(l => `<div>${l.qty}× ${esc(l.label || l.product)}</div>`).join('')}</div>
+    <div class="grid2"><button class="btn sec sm" data-act="cancelOrd" data-id="${id}">✕ Cancelar</button><button class="btn sm" data-act="okOrd" data-id="${id}">✔ Entregado</button></div></div>`;
+  return `<div class="row between" style="margin-bottom:.6rem"><span class="muted">${esc(auth.email)}</span>
+      <span class="row"><button class="chip" data-act="reload">${ordBusy ? 'Cargando…' : '↻ Actualizar'}</button><button class="chip" data-act="logout">Salir</button></span></div>
+    ${ordMsg ? `<div class="banner" style="cursor:default">${esc(ordMsg)}</div>` : ''}
+    <p class="muted" style="margin-bottom:.6rem">Cuando entregues un pedido, toca <b>Entregado</b> y se suma solo a tus ventas (y baja el inventario).</p>
+    <div class="stack">${P.length ? P.map(card).join('') : `<div class="empty">${orders ? 'No hay pedidos pendientes 🎉' : 'Cargando…'}</div>`}</div>
+    ${hist.length ? `<h2>Recientes</h2><div class="card">${hist.map(([id, o]) => `<div class="line"><div class="grow"><strong>${esc(o.name)}</strong><div class="muted">${new Date(o.ts).toLocaleString('es-CO', { weekday: 'short', hour: 'numeric', minute: '2-digit' })}</div></div><span class="tag ${o.status === 'cancelado' ? 'r' : 'g'}">${esc(o.status)}</span><span class="num">${cop(o.total)}</span></div>`).join('')}</div>` : ''}`;
+}
+
+const VIEWS = { resumen: vResumen, pedidos: vPedidos, vender: vVender, gastos: vGastos, productos: vProductos, recomprar: vRecomprar };
+const TABS = [['resumen','📊','Resumen'],['pedidos','📥','Pedidos'],['vender','💰','Vender'],['gastos','🧾','Gastos'],['recomprar','🛒','Recomprar'],['productos','🍔','Productos']];
+
+function render(){
+  const y = window.scrollY;
+  $('#app').innerHTML = VIEWS[view]();
+  const n = needCount(), np = pendingOrders().length;
+  $('#nav').innerHTML = TABS.map(([k, i, l]) => { const c = k === 'recomprar' ? n : k === 'pedidos' ? np : 0; return `<button class="${view===k?'on':''}" data-act="tab" data-v="${k}"><b>${i}</b>${l}${c ? `<span class="dot">${c}</span>` : ''}</button>`; }).join('');
+  $('#hdate').textContent = new Date().toLocaleDateString('es-CO', { weekday:'long', day:'numeric', month:'short' });
+  document.querySelectorAll('[data-pid]').forEach(updMargin);
+  window.scrollTo(0, y);
+}
+function updMargin(card){
+  const p = prod(card.dataset.pid); if (!p) return;
+  const el = card.querySelector('[data-margin]'), g = p.price - p.cost;
+  el.innerHTML = p.cost ? `<span class="${g<0?'neg':'pos'}">${cop(g)}</span>&nbsp;<span class="muted">(${p.price ? Math.round(g/p.price*100) : 0}%)</span>` : '<span class="muted">Falta el costo</span>';
+}
+
+/* ============ Eventos ============ */
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-act]'); if (!b) return;
+  const a = b.dataset.act, v = b.dataset.v, id = b.dataset.id;
+  if (a === 'tab'){ view = v; render(); window.scrollTo(0, 0); if (v === 'pedidos') loadOrders(); }
+  else if (a === 'login'){
+    const em = $('#lEmail').value.trim(), pw = $('#lPass').value;
+    if (!em || !pw){ toast('Escribe correo y contraseña'); return; }
+    b.disabled = true; login(em, pw).then(() => { ordMsg = ''; loadOrders(); }).catch(() => { b.disabled = false; toast('Correo o contraseña incorrectos'); });
+  }
+  else if (a === 'logout'){ auth = null; orders = null; saveAuth(); render(); }
+  else if (a === 'reload') loadOrders();
+  else if (a === 'okOrd') confirmOrder(id);
+  else if (a === 'cancelOrd') cancelOrder(id);
+  else if (a === 'period'){ period = v; render(); }
+  else if (a === 'sell') sell(id, selDate);
+  else if (a === 'inc') sell(id, b.dataset.d);
+  else if (a === 'dec') decSale(id);
+  else if (a === 'day'){ selDate = v === '0' ? today() : addDays(selDate, Number(v)); render(); }
+  else if (a === 'cat'){ expCat = v; document.querySelectorAll('[data-act=cat]').forEach(x => x.classList.toggle('on', x.dataset.v === v)); }
+  else if (a === 'saveExp'){
+    const amount = moneyVal($('#eAmount'));
+    if (!amount){ toast('Escribe cuánto gastaste'); $('#eAmount').focus(); return; }
+    const pid = $('#ePid').value, qty = Number($('#eQty').value) || 0;
+    if (pid && qty <= 0){ toast('¿Cuántas unidades compraste?'); $('#eQty').focus(); return; }
+    const date = $('#eDate').value || today();
+    const concept = $('#eConcept').value.trim() || (pid ? 'Compra ' + prod(pid).name : '');
+    addExpense({ date, concept, amount, cat: expCat, pid, qty }); selDate = date; render(); toast('Gasto guardado ✔');
+  }
+  else if (a === 'delExp'){ if (confirm('¿Borrar este gasto?')) delExpense(id); }
+  else if (a === 'addProd'){ S.products.push({ id: uid(), name: 'Nuevo producto', price: 0, cost: 0, stock: 0 }); save(); render(); const n = document.querySelectorAll('[data-f=name]'); n[n.length-1].select(); n[n.length-1].scrollIntoView({block:'center'}); }
+  else if (a === 'delProd'){ if (confirm('¿Borrar este producto? Sus ventas pasadas se conservan.')){ S.products = S.products.filter(p => p.id !== id); save(); render(); } }
+  else if (a === 'buy') buyDialog(id, Number(b.dataset.q));
+  else if (a === 'export'){
+    const url = URL.createObjectURL(new Blob([JSON.stringify(S, null, 1)], { type: 'application/json' }));
+    const l = document.createElement('a'); l.href = url; l.download = `carnitas-cuentas-${today()}.json`; l.click(); URL.revokeObjectURL(url);
+  }
+  else if (a === 'import') $('#file').click();
+});
+
+document.addEventListener('input', e => {
+  const t = e.target;
+  if (t.matches('[data-money]')){ const d = t.value.replace(/\D/g, ''); t.value = d ? Number(d).toLocaleString('es-CO') : ''; }
+  if (t.id === 'eQty') t.value = t.value.replace(/\D/g, '');
+});
+document.addEventListener('change', e => {
+  const t = e.target;
+  if (t.id === 'selDate'){ if (t.value){ selDate = t.value; render(); } }
+  else if (t.id === 'days'){ S.days = Number(t.value); save(); render(); }
+  else if (t.dataset.f){
+    const card = t.closest('[data-pid]'), p = prod(card.dataset.pid), f = t.dataset.f;
+    if (f === 'name') p.name = t.value.trim() || 'Producto';
+    else if (f === 'stock') p.stock = parseInt(t.value, 10) || 0;
+    else p[f] = moneyVal(t);
+    save(); updMargin(card);
+  }
+  else if (t.id === 'file'){
+    const r = new FileReader();
+    r.onload = () => {
+      try { const d = JSON.parse(r.result); if (!Array.isArray(d.products) || !Array.isArray(d.sales) || !Array.isArray(d.expenses)) throw 0;
+        if (confirm('Esto reemplaza los datos actuales. ¿Continuar?')){ S = d; S.orders = S.orders || {}; save(); render(); toast('Datos restaurados ✔'); } }
+      catch { toast('Ese archivo no es una copia válida'); }
+    };
+    if (t.files[0]) r.readAsText(t.files[0]); t.value = '';
+  }
+});
+
+function buyDialog(pid, q){
+  const p = prod(pid), dlg = $('#dlg');
+  dlg.innerHTML = `<div class="stack"><h3>Compra de ${esc(p.name)}</h3>
+    <label class="f">Unidades compradas<input id="bQty" inputmode="numeric" value="${q}"></label>
+    <label class="f">¿Cuánto pagaste en total?<input class="money" id="bAmt" data-money inputmode="numeric" value="${p.cost ? (q * p.cost).toLocaleString('es-CO') : ''}" placeholder="$0"></label>
+    <div class="grid2"><button class="btn sec" id="bNo">Cancelar</button><button class="btn" id="bOk">Guardar</button></div></div>`;
+  dlg.showModal();
+  $('#bNo').onclick = () => dlg.close();
+  $('#bOk').onclick = () => {
+    const qty = Number($('#bQty').value.replace(/\D/g, '')) || 0, amount = moneyVal($('#bAmt'));
+    if (!qty || !amount){ toast('Completa unidades y monto'); return; }
+    addExpense({ date: today(), concept: 'Compra ' + p.name, amount, cat: 'Ingredientes', pid, qty });
+    dlg.close(); render(); toast('Compra registrada ✔');
+  };
+}
+
+render();
+if (auth && apiReady()){ loadOrders(true); setInterval(() => loadOrders(true), 60000); }
+})();
+</script>
+</body>
+</html>
