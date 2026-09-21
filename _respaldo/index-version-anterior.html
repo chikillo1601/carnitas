@@ -1,0 +1,1599 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Carnitas · Sándwiches y malteadas</title>
+<meta name="description" content="Carnitas - Sándwiches artesanales y malteadas. Pedidos por WhatsApp. Barriga llena, corazón contento.">
+<meta name="theme-color" content="#DA291C">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --red:#DA291C;
+    --red-dark:#B11E14;
+    --yellow:#FFC72C;
+    --yellow-dark:#F2AE00;
+    --cream:#FFF6DC;
+    --ink:#27251F;
+    --ink-soft:#5E584D;
+    --line:rgba(39,37,31,.14);
+    --white:#fff;
+    --shadow:0 10px 28px -12px rgba(39,37,31,.35);
+    --font:'Poppins',system-ui,-apple-system,'Segoe UI',sans-serif;
+  }
+
+  *,*::before,*::after{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; scroll-padding-top:72px; }
+  body{
+    margin:0;
+    background:var(--white);
+    color:var(--ink);
+    font-family:var(--font);
+    font-size:16px; line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  img{ max-width:100%; height:auto; display:block; }
+  a{ color:inherit; }
+  h1,h2,h3,h4,p{ margin:0; }
+  button{ font-family:inherit; }
+  [hidden]{ display:none !important; }
+
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior:auto; }
+    *,*::before,*::after{ animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important; }
+  }
+
+  .container{ width:100%; max-width:1120px; margin:0 auto; padding:0 1.25rem; }
+  .focus-ring:focus-visible, a:focus-visible, button:focus-visible{ outline:3px solid var(--ink); outline-offset:3px; border-radius:6px; }
+  .hero .focus-ring:focus-visible, .final-cta .focus-ring:focus-visible, .topbar a:focus-visible, .site-footer a:focus-visible{ outline-color:var(--yellow); }
+
+  /* ---------- Botones ---------- */
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:.5rem;
+    min-height:54px; padding:0 1.6rem;
+    border:none; border-radius:999px;
+    font-family:var(--font); font-weight:800; font-size:1rem; letter-spacing:.01em;
+    text-decoration:none; cursor:pointer; width:100%;
+    transition:transform .15s ease, background .15s ease, box-shadow .15s ease;
+  }
+  .btn:active{ transform:scale(.98); }
+  .btn-primary{ background:var(--red); color:var(--white); box-shadow:0 8px 18px -8px rgba(218,41,28,.7); }
+  .btn-primary:hover{ background:var(--red-dark); }
+  .btn-yellow{ background:var(--yellow); color:var(--ink); box-shadow:0 8px 18px -8px rgba(242,174,0,.8); }
+  .btn-yellow:hover{ background:var(--yellow-dark); }
+  .btn:disabled, .btn[aria-disabled="true"]{ opacity:.55; cursor:not-allowed; box-shadow:none; filter:grayscale(.4); }
+  .btn:disabled:active, .btn[aria-disabled="true"]:active{ transform:none; }
+
+  /* ---------- Barra superior ---------- */
+  .topbar{ position:sticky; top:0; z-index:60; background:var(--red); color:var(--white); box-shadow:0 2px 12px rgba(0,0,0,.18); }
+  .topbar .container{ display:flex; align-items:center; justify-content:space-between; height:64px; }
+  .logo{ font-weight:900; font-size:1.35rem; letter-spacing:-.01em; text-decoration:none; color:var(--white); flex:none; }
+  .logo span{ color:var(--yellow); }
+  .topnav{ display:flex; gap:.15rem; }
+  .topnav a{
+    text-decoration:none; font-weight:700; font-size:.8rem;
+    padding:.45rem .65rem; border-radius:999px; color:var(--white);
+    transition:background .15s ease;
+  }
+  .topnav a:hover{ background:rgba(255,255,255,.18); }
+  .topnav .hide-sm{ display:none; }
+
+  /* ---------- Hero ---------- */
+  .hero{
+    position:relative; overflow:hidden;
+    background:radial-gradient(90% 70% at 85% 10%, rgba(255,199,44,.35), transparent 60%), var(--red);
+    color:var(--white);
+    padding:2.2rem 0 3rem;
+  }
+  .hero-inner{ display:grid; gap:2.6rem; align-items:center; }
+  .hero-inner > div:first-child{ position:relative; z-index:2; }
+  .eyebrow{
+    display:inline-block; background:var(--yellow); color:var(--ink);
+    font-weight:800; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase;
+    padding:.35rem .9rem; border-radius:999px;
+  }
+  .hero h1{
+    font-weight:900; font-size:clamp(2.4rem,9vw,4.3rem); line-height:1.02; letter-spacing:-.02em;
+    margin-top:1rem; text-wrap:balance;
+  }
+  .hero h1 em{ font-style:normal; color:var(--yellow); }
+  .hero-copy{ margin-top:1rem; font-size:1.05rem; font-weight:500; max-width:34ch; color:rgba(255,255,255,.92); }
+  .hero-cta{ margin-top:1.6rem; max-width:320px; }
+
+  .countdown{
+    margin-top:1.6rem; max-width:400px;
+    background:var(--white); color:var(--ink);
+    border-radius:22px; padding:1rem 1.1rem 1.1rem;
+    box-shadow:var(--shadow);
+  }
+  .countdown-label{ font-weight:800; font-size:.8rem; letter-spacing:.05em; color:var(--red); text-transform:uppercase; line-height:1.35; }
+  .countdown-digits{ display:flex; gap:.5rem; margin-top:.75rem; }
+  .countdown-digits > div{ flex:1; background:var(--red); color:var(--white); border-radius:14px; padding:.55rem 0 .45rem; text-align:center; }
+  .countdown-digits b{ display:block; font-weight:900; font-size:1.9rem; line-height:1.05; font-variant-numeric:tabular-nums; }
+  .countdown-digits small{ display:block; font-size:.62rem; font-weight:700; letter-spacing:.1em; opacity:.9; }
+  .countdown.is-open{ background:var(--yellow); }
+  .countdown.is-open .countdown-label{ color:var(--ink); font-size:.95rem; }
+
+  .hero-photo{ position:relative; max-width:420px; margin:0 auto; width:100%; }
+  .hero-photo::before{
+    content:''; position:absolute; inset:-6% -8% -4% -8%;
+    background:var(--yellow); border-radius:50% 46% 54% 50% / 52% 50% 50% 48%;
+    transform:rotate(-6deg);
+  }
+  .hero-photo img{ position:relative; border-radius:28px; box-shadow:0 22px 44px -18px rgba(0,0,0,.55); border:5px solid var(--white); }
+  .price-sticker{
+    position:absolute; right:-6px; bottom:-14px; z-index:2;
+    width:104px; height:104px; border-radius:50%;
+    background:var(--white); color:var(--red);
+    display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;
+    font-weight:900; line-height:1; transform:rotate(8deg);
+    box-shadow:0 10px 22px -8px rgba(0,0,0,.5);
+  }
+  .price-sticker small{ font-size:.62rem; font-weight:800; letter-spacing:.06em; color:var(--ink); }
+  .price-sticker b{ font-size:1.35rem; margin-top:.15rem; }
+
+  /* ---------- Cinta ---------- */
+  .ticker{ background:var(--yellow); color:var(--ink); overflow:hidden; white-space:nowrap; padding:.7rem 0; border-bottom:3px solid var(--ink); }
+  .ticker-track{ display:inline-flex; animation:scroll-left 26s linear infinite; }
+  @keyframes scroll-left{ from{ transform:translateX(0); } to{ transform:translateX(-50%); } }
+  .ticker span{ font-weight:800; font-size:.85rem; letter-spacing:.08em; padding:0 1.4rem; }
+  .ticker span::after{ content:'•'; margin-left:2.8rem; color:var(--red); }
+
+  /* ---------- Secciones ---------- */
+  section{ padding:3.2rem 0; }
+  .section-head{ text-align:center; margin-bottom:2rem; }
+  .section-kicker{ color:var(--red); font-weight:800; font-size:.8rem; letter-spacing:.1em; text-transform:uppercase; }
+  .section-title{ font-weight:900; font-size:clamp(1.9rem,6vw,2.7rem); line-height:1.1; letter-spacing:-.02em; margin-top:.35rem; text-wrap:balance; }
+  .section-note{ color:var(--ink-soft); font-size:1rem; margin-top:.6rem; max-width:52ch; margin-left:auto; margin-right:auto; }
+  .menu-block + .menu-block{ margin-top:3.4rem; }
+  .menu-block-title{
+    display:flex; align-items:center; gap:.7rem;
+    font-weight:900; font-size:1.5rem; letter-spacing:-.01em; margin-bottom:1.3rem;
+  }
+  .menu-block-title::after{ content:''; flex:1; height:4px; border-radius:4px; background:var(--yellow); }
+
+  .products{ background:var(--white); }
+  .product-list{ display:grid; gap:1.5rem; grid-template-columns:1fr; }
+
+  /* ---------- Tarjetas de producto ---------- */
+  .product-card{
+    background:var(--white); border:2px solid var(--line); border-radius:24px; overflow:hidden;
+    box-shadow:var(--shadow); display:flex; flex-direction:column;
+    transition:transform .2s ease, border-color .2s ease;
+  }
+  .product-card:hover{ transform:translateY(-3px); border-color:var(--yellow); }
+  .product-photo{ position:relative; aspect-ratio:4/5; background:var(--ink); overflow:hidden; }
+  .product-photo img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .product-body{ padding:1.3rem 1.3rem 1.5rem; display:flex; flex-direction:column; flex:1; }
+  .product-tag{ color:var(--red); font-weight:800; font-size:.75rem; letter-spacing:.08em; text-transform:uppercase; }
+  .product-name{ font-weight:900; font-size:1.55rem; letter-spacing:-.015em; line-height:1.15; margin-top:.2rem; }
+  .product-copy{ color:var(--ink-soft); font-size:.94rem; line-height:1.55; margin-top:.5rem; }
+
+  .protein-picker{ display:inline-flex; flex-wrap:wrap; gap:.4rem; margin-top:1rem; }
+  .protein-picker + .protein-picker{ display:flex; margin-top:.5rem; }
+  .protein-btn{
+    padding:.5rem 1.05rem; border-radius:999px; white-space:nowrap;
+    border:2px solid var(--line); background:var(--white); color:var(--ink);
+    font-weight:700; font-size:.85rem; cursor:pointer;
+    transition:background .15s ease, color .15s ease, border-color .15s ease;
+  }
+  .protein-btn:hover:not(:disabled):not(.active){ border-color:var(--ink); }
+  .protein-btn.active{ background:var(--red); border-color:var(--red); color:var(--white); }
+  .protein-btn:disabled{ opacity:.45; cursor:not-allowed; text-decoration:line-through; }
+
+  .addon-chips{ margin-top:1rem; }
+  .addon-chips-title{ font-size:.82rem; font-weight:700; color:var(--ink); }
+  .addon-chips-title span{ font-weight:500; color:var(--ink-soft); }
+  .chip-row{ display:flex; flex-wrap:wrap; gap:.4rem; margin-top:.5rem; }
+  .chip{ position:relative; cursor:pointer; }
+  .chip input{ position:absolute; opacity:0; width:1px; height:1px; }
+  .chip span{
+    display:inline-block; padding:.38rem .8rem; white-space:nowrap;
+    background:var(--cream); color:var(--ink); border:2px solid transparent; border-radius:999px;
+    font-size:.76rem; font-weight:700;
+    transition:background .15s ease, color .15s ease, border-color .15s ease;
+  }
+  .chip:hover span{ border-color:var(--yellow-dark); }
+  .chip input:checked + span{ background:var(--red); border-color:var(--red); color:var(--white); }
+  .chip input:checked + span::before{ content:'✓ '; }
+  .chip input:focus-visible + span{ outline:3px solid var(--ink); outline-offset:2px; }
+
+  .price-row{
+    display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap;
+    margin-top:1.2rem; padding-top:1rem; border-top:2px dashed var(--line);
+  }
+  .price-now{ font-weight:900; font-size:1.9rem; color:var(--red); letter-spacing:-.02em; line-height:1; font-variant-numeric:tabular-nums; }
+  .price-now small{ display:block; margin-top:.25rem; font-size:.66rem; font-weight:700; letter-spacing:.1em; color:var(--ink-soft); }
+  .coke-toggle{ display:inline-flex; align-items:center; gap:.55rem; font-size:.86rem; font-weight:600; cursor:pointer; user-select:none; }
+  .switch{ position:relative; width:44px; height:26px; background:#D9D5CB; border-radius:999px; transition:background .2s ease; flex:none; }
+  .switch::after{ content:''; position:absolute; top:3px; left:3px; width:20px; height:20px; border-radius:50%; background:var(--white); box-shadow:0 1px 3px rgba(0,0,0,.3); transition:transform .2s ease; }
+  .coke-toggle input{ position:absolute; opacity:0; width:1px; height:1px; }
+  .coke-toggle input:checked ~ .switch{ background:var(--red); }
+  .coke-toggle input:checked ~ .switch::after{ transform:translateX(18px); }
+  .coke-toggle input:focus-visible ~ .switch{ outline:3px solid var(--ink); outline-offset:2px; }
+
+  .add-row{ margin-top:1.1rem; }
+  .stock-left{ margin:0 0 .6rem; text-align:center; font-weight:800; font-size:.85rem; color:var(--ink-soft); }
+  .stock-left.low{ color:var(--red); }
+  .stock-left.out{ color:var(--ink-soft); }
+
+  /* ---------- Malteadas ---------- */
+  .shake-list{ display:grid; gap:1.2rem; grid-template-columns:repeat(2,1fr); }
+  .shake-card{
+    background:var(--white); border:2px solid var(--line); border-radius:22px; overflow:hidden;
+    box-shadow:var(--shadow); display:flex; flex-direction:column;
+    transition:transform .2s ease, border-color .2s ease;
+  }
+  .shake-card:hover{ transform:translateY(-3px); border-color:var(--yellow); }
+  .shake-card img{ width:100%; aspect-ratio:4/5; object-fit:cover; }
+  .shake-body{ padding:1rem 1rem 1.2rem; display:flex; flex-direction:column; flex:1; }
+  .shake-name{ font-weight:900; font-size:1.15rem; letter-spacing:-.01em; line-height:1.15; }
+  .shake-copy{ color:var(--ink-soft); font-size:.8rem; line-height:1.45; margin-top:.3rem; }
+  .shake-price{ font-weight:900; font-size:1.4rem; color:var(--red); margin-top:.7rem; letter-spacing:-.02em; }
+  .shake-price.pending{ font-size:.85rem; color:var(--ink-soft); font-weight:700; }
+  .shake-add{
+    margin-top:.8rem; min-height:46px; width:100%;
+    border:none; border-radius:999px; background:var(--red); color:var(--white);
+    font-weight:800; font-size:.9rem; cursor:pointer;
+    transition:background .15s ease, transform .15s ease;
+  }
+  .shake-add:hover:not(:disabled){ background:var(--red-dark); }
+  .shake-add:active:not(:disabled){ transform:scale(.97); }
+  .shake-add:disabled{ opacity:.5; cursor:not-allowed; }
+
+  /* ---------- Adicionales ---------- */
+  .addons{ background:var(--cream); }
+  .addon-list{ display:grid; gap:.7rem; max-width:760px; margin:0 auto; grid-template-columns:1fr; }
+  .addon-row{
+    display:flex; align-items:center; gap:.9rem;
+    background:var(--white); border:2px solid var(--line); border-radius:18px;
+    padding:.7rem .7rem .7rem 1.1rem;
+  }
+  .addon-name{ flex:1; font-weight:700; font-size:.95rem; }
+  .addon-price{ font-weight:900; font-size:1.15rem; color:var(--red); font-variant-numeric:tabular-nums; }
+  .addon-add{
+    min-height:42px; padding:0 1.1rem; border-radius:999px;
+    border:2px solid var(--red); background:var(--white); color:var(--red);
+    font-weight:800; font-size:.82rem; cursor:pointer; white-space:nowrap;
+    transition:background .15s ease, color .15s ease, transform .15s ease;
+  }
+  .addon-add:hover:not(:disabled){ background:var(--red); color:var(--white); }
+  .addon-add:active:not(:disabled){ transform:scale(.96); }
+  .addon-add:disabled{ opacity:.5; cursor:not-allowed; border-color:var(--line); color:var(--ink-soft); }
+
+  /* ---------- Precios ---------- */
+  .pricing{ background:var(--white); }
+  .tag-row{ display:grid; gap:.9rem; grid-template-columns:1fr; max-width:760px; margin:0 auto; }
+  .tag{
+    display:flex; align-items:center; justify-content:space-between; gap:1rem;
+    background:var(--yellow); color:var(--ink); border-radius:18px; padding:1rem 1.3rem;
+    box-shadow:0 6px 0 var(--yellow-dark);
+  }
+  .tag-label{ font-weight:700; font-size:1rem; }
+  .tag-price{ font-weight:900; font-size:1.6rem; letter-spacing:-.02em; font-variant-numeric:tabular-nums; }
+
+  /* ---------- Disponibilidad (solo si el stock está activo) ---------- */
+  .stock{ background:var(--cream); }
+  .stock-card{ background:var(--white); border:2px solid var(--line); border-radius:22px; padding:1.4rem; max-width:520px; margin:0 auto; text-align:center; box-shadow:var(--shadow); }
+  .stock-name{ font-weight:900; font-size:1.2rem; }
+  .stock-badge{ margin-top:.6rem; font-weight:800; font-size:1rem; color:var(--red); letter-spacing:.04em; }
+  .stock-meta{ margin-top:.5rem; font-size:.85rem; color:var(--ink-soft); }
+
+  /* ---------- CTA final ---------- */
+  .final-cta{ background:var(--red); color:var(--white); text-align:center; }
+  .final-cta h2{ font-weight:900; font-size:clamp(2rem,7vw,3.2rem); line-height:1.05; letter-spacing:-.02em; }
+  .final-cta h2 em{ font-style:normal; color:var(--yellow); }
+  .final-note{ margin:1rem 0 1.6rem; font-weight:700; font-size:.9rem; letter-spacing:.06em; text-transform:uppercase; opacity:.95; }
+  .final-cta .btn{ max-width:360px; margin:0 auto; }
+
+  /* ---------- Pie ---------- */
+  .site-footer{ background:var(--ink); color:var(--white); padding:2.4rem 0 2.8rem; text-align:center; }
+  .site-footer .logo{ font-size:1.7rem; }
+  .social-row{ display:flex; justify-content:center; gap:.9rem; margin:1.2rem 0; }
+  .social-icon{
+    width:46px; height:46px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    background:var(--yellow); transition:transform .15s ease, background .15s ease;
+  }
+  .social-icon:hover{ transform:translateY(-2px); background:var(--white); }
+  .social-icon svg{ width:22px; height:22px; fill:var(--ink); }
+  .slogan{ font-weight:600; opacity:.9; }
+  .fine-print{ margin-top:.8rem; font-size:.78rem; opacity:.65; }
+
+  /* ---------- Carrito (barra fija) ---------- */
+  .cart-bar{
+    position:fixed; left:0; right:0; bottom:0; z-index:70;
+    background:var(--white); border-top:4px solid var(--red);
+    box-shadow:0 -14px 34px -14px rgba(0,0,0,.4);
+  }
+  .cart-bar-inner{ max-width:760px; margin:0 auto; padding:.75rem 1.2rem calc(.85rem + env(safe-area-inset-bottom,0px)); }
+  .cart-summary{
+    width:100%; display:flex; align-items:center; gap:.9rem;
+    background:none; border:none; color:var(--ink); cursor:pointer;
+    padding:0 0 .65rem; font-weight:800; font-size:1rem;
+  }
+  .cart-summary #cart-total{ color:var(--red); font-weight:900; font-size:1.2rem; font-variant-numeric:tabular-nums; margin-left:auto; }
+  .cart-chevron{ color:var(--ink-soft); font-size:.8rem; transition:transform .2s ease; }
+  .cart-summary[aria-expanded="true"] .cart-chevron{ transform:rotate(180deg); }
+  .cart-detail{ max-height:38vh; overflow-y:auto; border-top:2px dashed var(--line); padding-top:.7rem; margin-bottom:.7rem; display:flex; flex-direction:column; gap:.5rem; }
+  .cart-detail #cart-lines{ display:flex; flex-direction:column; gap:.5rem; }
+  .cart-line{ display:flex; flex-direction:column; gap:.4rem; font-size:.88rem; padding-bottom:.6rem; border-bottom:1px solid var(--line); }
+  .cart-line:last-child{ border-bottom:none; padding-bottom:0; }
+  .cart-line-info{ display:flex; justify-content:space-between; align-items:baseline; gap:.6rem; }
+  .cart-line-info strong{ font-weight:700; font-size:.85rem; }
+  .cart-line-price{ font-size:.75rem; color:var(--ink-soft); white-space:nowrap; }
+  .cart-line-controls{ display:flex; align-items:center; justify-content:space-between; }
+  .cart-line-subtotal{ font-weight:900; color:var(--red); font-variant-numeric:tabular-nums; }
+  .stepper{ display:inline-flex; align-items:center; border:2px solid var(--line); border-radius:999px; overflow:hidden; }
+  .stepper button{ width:34px; height:34px; background:var(--white); color:var(--ink); border:none; font-weight:800; font-size:1.05rem; cursor:pointer; transition:background .15s ease, color .15s ease; }
+  .stepper button:hover{ background:var(--red); color:var(--white); }
+  .stepper .qty-value{ display:inline-block; width:30px; text-align:center; font-weight:800; font-size:.95rem; font-variant-numeric:tabular-nums; }
+  .closed-note{ margin:0 0 .6rem; font-size:.82rem; color:var(--ink-soft); text-align:center; }
+  .cart-bar.pulse{ animation:cart-pulse .45s ease; }
+  @keyframes cart-pulse{
+    0%{ box-shadow:0 -14px 34px -14px rgba(0,0,0,.4); }
+    40%{ box-shadow:0 -10px 34px -2px rgba(255,199,44,.95); }
+    100%{ box-shadow:0 -14px 34px -14px rgba(0,0,0,.4); }
+  }
+
+  .toast{
+    position:fixed; left:50%; z-index:75; transform:translateX(-50%);
+    max-width:calc(100% - 2rem);
+    background:var(--ink); color:var(--white);
+    font-weight:600; font-size:.9rem; padding:.7rem 1.2rem; border-radius:999px;
+    box-shadow:var(--shadow); pointer-events:none;
+  }
+
+  /* ---------- Formulario de pedido ---------- */
+  .checkout{
+    width:min(94vw,460px); max-height:92vh; overflow-y:auto; padding:0; margin:auto;
+    background:var(--white); color:var(--ink);
+    border:none; border-radius:26px; box-shadow:0 30px 60px -20px rgba(0,0,0,.6);
+  }
+  .checkout::backdrop{ background:rgba(39,37,31,.72); }
+  .checkout form{ padding:1.5rem; display:flex; flex-direction:column; gap:1.1rem; }
+  .checkout-title{ font-weight:900; font-size:1.7rem; letter-spacing:-.02em; color:var(--red); }
+  .order-summary{ background:var(--cream); border-radius:16px; padding:.9rem 1rem; }
+  .order-summary ul{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:.45rem; }
+  .order-summary li{ display:flex; justify-content:space-between; gap:.8rem; font-size:.84rem; font-weight:500; }
+  .order-summary li span:last-child{ white-space:nowrap; font-weight:700; font-variant-numeric:tabular-nums; }
+  .order-total{ display:flex; justify-content:space-between; align-items:baseline; margin-top:.7rem; padding-top:.65rem; border-top:2px dashed rgba(39,37,31,.2); font-weight:800; }
+  .order-total strong{ color:var(--red); font-size:1.5rem; font-weight:900; letter-spacing:-.02em; }
+  .field{ display:flex; flex-direction:column; gap:.45rem; border:none; padding:0; margin:0; min-width:0; }
+  .field-label{ font-weight:700; font-size:.92rem; padding:0; }
+  .field-opt{ font-weight:500; color:var(--ink-soft); }
+  .field-help{ font-size:.8rem; color:var(--ink-soft); margin:0; }
+  .field input[type="text"], .field textarea{
+    width:100%; resize:vertical; background:var(--white); color:var(--ink);
+    border:2px solid var(--line); border-radius:14px; padding:.7rem .9rem;
+    font-family:var(--font); font-size:.95rem;
+  }
+  .field input[type="text"]:focus-visible, .field textarea:focus-visible{ outline:3px solid var(--yellow); outline-offset:0; border-color:var(--ink); }
+  .field input[aria-invalid="true"], .field textarea[aria-invalid="true"]{ border-color:var(--red); }
+  .field-error{ color:var(--red-dark); font-weight:600; font-size:.82rem; }
+  .pay-options{ display:flex; gap:.6rem; flex-wrap:wrap; }
+  .pay-option{ flex:1 1 140px; position:relative; cursor:pointer; }
+  .pay-option input{ position:absolute; opacity:0; width:1px; height:1px; }
+  .pay-option span{
+    display:flex; align-items:center; justify-content:center; min-height:50px; padding:0 1rem;
+    background:var(--white); color:var(--ink); border:2px solid var(--line); border-radius:999px;
+    font-weight:700; font-size:.92rem; white-space:nowrap;
+    transition:background .15s ease, color .15s ease, border-color .15s ease;
+  }
+  .pay-option input:checked + span{ background:var(--red); border-color:var(--red); color:var(--white); }
+  .pay-option input:focus-visible + span{ outline:3px solid var(--ink); outline-offset:2px; }
+  .pay[aria-invalid="true"] .pay-option span{ border-color:var(--red); }
+  .pay-hint{ margin:0; padding:.75rem .95rem; background:var(--cream); border:2px solid var(--yellow); border-radius:14px; font-size:.86rem; font-weight:600; line-height:1.45; }
+  .stock-error{ margin:0; padding:.75rem .95rem; border-radius:14px; background:#FDECEA; border:2px solid var(--red); font-size:.88rem; font-weight:600; line-height:1.4; }
+  .send-hint{ margin:-.3rem 0 0; text-align:center; font-size:.8rem; color:var(--ink-soft); }
+  .checkout-cancel{ background:none; border:none; color:var(--ink-soft); font-size:.88rem; font-weight:600; cursor:pointer; text-decoration:underline; padding:.2rem; align-self:center; }
+  .checkout-cancel:hover{ color:var(--red); }
+
+  /* ---------- Pantallas grandes ---------- */
+  @media (min-width:640px){
+    .logo{ font-size:1.55rem; }
+    .topnav{ gap:.4rem; }
+    .topnav a{ font-size:.88rem; padding:.45rem .9rem; }
+    .topnav .hide-sm{ display:inline-block; }
+    .product-list{ grid-template-columns:repeat(2,1fr); }
+    .shake-list{ grid-template-columns:repeat(4,1fr); }
+    .addon-list{ grid-template-columns:repeat(2,1fr); }
+    .tag-row{ grid-template-columns:repeat(2,1fr); }
+  }
+  @media (min-width:900px){
+    .hero{ padding:3.5rem 0 4.5rem; }
+    .hero-inner{ grid-template-columns:1.1fr .9fr; gap:3rem; }
+    .product-list{ grid-template-columns:repeat(3,1fr); }
+    section{ padding:4.2rem 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ BARRA SUPERIOR ============ -->
+<header class="topbar">
+  <div class="container">
+    <a class="logo" href="#inicio" aria-label="Carnitas, inicio">CARNITAS<span>.</span></a>
+    <nav class="topnav" aria-label="Secciones">
+      <a href="#sandwiches">Sándwiches</a>
+      <a href="#malteadas">Malteadas</a>
+      <a class="hide-sm" href="#adicionales">Adicionales</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <!-- ============ HERO ============ -->
+  <section class="hero" id="inicio">
+    <div class="container hero-inner">
+      <div>
+        <span class="eyebrow">🥪 Sándwiches · 🥤 Malteadas</span>
+        <h1>Barriga llena, <em>corazón contento.</em></h1>
+        <p class="hero-copy">Sándwiches artesanales y malteadas cremosas, hechos para antojarte. Pide por WhatsApp y te lo llevamos.</p>
+
+        <div class="countdown" id="countdown" role="timer" aria-label="Cuenta regresiva para la apertura">
+          <p class="countdown-label" id="countdown-label"></p>
+          <div class="countdown-digits" id="countdown-digits">
+            <div id="cd-days-box" hidden><b id="cd-d">0</b><small id="cd-days-unit">DÍAS</small></div>
+            <div><b id="cd-h">00</b><small>HORAS</small></div>
+            <div><b id="cd-m">00</b><small>MIN</small></div>
+            <div><b id="cd-s">00</b><small>SEG</small></div>
+          </div>
+        </div>
+
+        <a class="btn btn-yellow hero-cta focus-ring" href="#productos">VER EL MENÚ</a>
+      </div>
+
+      <div class="hero-photo">
+        <img src="img/texas.webp" width="1122" height="1402" alt="Sándwich Texas BBQ desarmado: pan francés, cebolla caramelizada, queso derretido, carnitas de cerdo, pepinillos y lechuga">
+        <div class="price-sticker" aria-hidden="true"><small>DESDE</small><b data-price="sandwich"></b></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CINTA ============ -->
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker-track">
+      <span>🥪 SÁNDWICHES ARTESANALES</span><span>🥤 MALTEADAS CREMOSAS</span><span data-closed-text="⏳ APERTURA OFICIAL EL LUNES · 4:00 P. M.">📲 PEDIDOS POR WHATSAPP</span><span>🔥 BARRIGA LLENA, CORAZÓN CONTENTO</span>
+      <span>🥪 SÁNDWICHES ARTESANALES</span><span>🥤 MALTEADAS CREMOSAS</span><span data-closed-text="⏳ APERTURA OFICIAL EL LUNES · 4:00 P. M.">📲 PEDIDOS POR WHATSAPP</span><span>🔥 BARRIGA LLENA, CORAZÓN CONTENTO</span>
+    </div>
+  </div>
+
+  <!-- ============ MENÚ ============ -->
+  <section class="products" id="productos">
+    <div class="container">
+      <div class="section-head">
+        <p class="section-kicker">Nuestro menú</p>
+        <h2 class="section-title">Elige tu sabor. Arma tu antojo.</h2>
+      </div>
+
+      <!-- Sándwiches -->
+      <div class="menu-block" id="sandwiches">
+        <h3 class="menu-block-title">🥪 Sándwiches</h3>
+        <div class="product-list">
+
+          <!-- Texas BBQ -->
+          <article class="product-card">
+            <div class="product-photo">
+              <img src="img/texas.webp" width="1122" height="1402" loading="lazy" decoding="async" alt="Sándwich Texas BBQ desarmado: pan francés, cebolla caramelizada, queso derretido, carnitas de cerdo, pepinillos y lechuga fresca">
+            </div>
+            <div class="product-body">
+              <p class="product-tag">Ahumado estilo texano</p>
+              <h3 class="product-name">Texas BBQ</h3>
+              <p class="product-copy">Carne bañada en salsa BBQ ahumada, cebolla caramelizada, queso, pepinillos, lechuga y un toque de salsa picante — todo entre pan artesanal.</p>
+
+              <div class="protein-picker" role="group" aria-label="Elegir proteína del Texas BBQ">
+                <button type="button" class="protein-btn active focus-ring" id="protein-texas-res" onclick="setProtein('texas','RES')">🐄 Res</button>
+                <button type="button" class="protein-btn focus-ring" id="protein-texas-cerdo" onclick="setProtein('texas','CERDO')">🐖 Cerdo</button>
+              </div>
+
+              <div class="protein-picker" role="group" aria-label="Pepinillos del Texas BBQ">
+                <button type="button" class="protein-btn active focus-ring" id="pickles-texas-con" onclick="setPickles('texas',true)">🥒 Con pepinillos</button>
+                <button type="button" class="protein-btn focus-ring" id="pickles-texas-sin" onclick="setPickles('texas',false)">Sin pepinillos</button>
+              </div>
+
+              <div class="addon-chips" data-item="texas"></div>
+
+              <div class="price-row">
+                <div class="price-now" id="price-texas"></div>
+                <label class="coke-toggle">
+                  <input type="checkbox" id="drink-texas" onchange="updateDrink('texas')">
+                  <span class="switch" aria-hidden="true"></span>
+                  <span>+ 🥤 Gaseosa (+<span data-price="drink"></span>)</span>
+                </label>
+              </div>
+
+              <div class="add-row">
+                <p class="stock-left" data-stock-item="texas" hidden></p>
+                <button type="button" class="btn btn-primary focus-ring" id="add-texas" onclick="addToCart('texas')">AGREGAR AL CARRITO</button>
+              </div>
+            </div>
+          </article>
+
+          <!-- Bistek -->
+          <article class="product-card">
+            <div class="product-photo">
+              <img src="img/bistek.webp" width="1122" height="1402" loading="lazy" decoding="async" alt="Sándwich Bistek desarmado: pan francés, cebolla caramelizada, huevo frito, queso derretido, carne, hogao colombiano y lechuga">
+            </div>
+            <div class="product-body">
+              <p class="product-tag">A la plancha</p>
+              <h3 class="product-name">Bistek</h3>
+              <p class="product-copy">Carne con sabor ahumado, hogao colombiano, cebolla caramelizada, lechuga, huevo y queso, en pan artesanal. El sándwich criollo de toda la vida.</p>
+
+              <div class="protein-picker" role="group" aria-label="Elegir proteína del Bistek">
+                <button type="button" class="protein-btn active focus-ring" id="protein-bistek-res" onclick="setProtein('bistek','RES')">🐄 Res</button>
+                <button type="button" class="protein-btn focus-ring" id="protein-bistek-cerdo" onclick="setProtein('bistek','CERDO')">🐖 Cerdo</button>
+              </div>
+
+              <div class="addon-chips" data-item="bistek"></div>
+
+              <div class="price-row">
+                <div class="price-now" id="price-bistek"></div>
+                <label class="coke-toggle">
+                  <input type="checkbox" id="drink-bistek" onchange="updateDrink('bistek')">
+                  <span class="switch" aria-hidden="true"></span>
+                  <span>+ 🥤 Gaseosa (+<span data-price="drink"></span>)</span>
+                </label>
+              </div>
+
+              <div class="add-row">
+                <p class="stock-left" data-stock-item="bistek" hidden></p>
+                <button type="button" class="btn btn-primary focus-ring" id="add-bistek" onclick="addToCart('bistek')">AGREGAR AL CARRITO</button>
+              </div>
+            </div>
+          </article>
+
+          <!-- Azteca -->
+          <article class="product-card">
+            <div class="product-photo">
+              <img src="img/azteca.webp" width="1122" height="1402" loading="lazy" decoding="async" alt="Sándwich Azteca desarmado: pan francés, guacamole, nachos, queso derretido, pico de gallo, carne y lechuga">
+            </div>
+            <div class="product-body">
+              <p class="product-tag">Toque mexicano</p>
+              <h3 class="product-name">Azteca</h3>
+              <p class="product-copy">Carne con sabor ahumado, pico de gallo, guacamole, nachos, queso y lechuga, en pan artesanal. Picante, fresco y con personalidad.</p>
+
+              <div class="protein-picker" role="group" aria-label="Elegir proteína del Azteca">
+                <button type="button" class="protein-btn active focus-ring" id="protein-azteca-res" onclick="setProtein('azteca','RES')">🐄 Res</button>
+                <button type="button" class="protein-btn focus-ring" id="protein-azteca-cerdo" onclick="setProtein('azteca','CERDO')">🐖 Cerdo</button>
+              </div>
+
+              <div class="addon-chips" data-item="azteca"></div>
+
+              <div class="price-row">
+                <div class="price-now" id="price-azteca"></div>
+                <label class="coke-toggle">
+                  <input type="checkbox" id="drink-azteca" onchange="updateDrink('azteca')">
+                  <span class="switch" aria-hidden="true"></span>
+                  <span>+ 🥤 Gaseosa (+<span data-price="drink"></span>)</span>
+                </label>
+              </div>
+
+              <div class="add-row">
+                <p class="stock-left" data-stock-item="azteca" hidden></p>
+                <button type="button" class="btn btn-primary focus-ring" id="add-azteca" onclick="addToCart('azteca')">AGREGAR AL CARRITO</button>
+              </div>
+            </div>
+          </article>
+
+        </div>
+      </div>
+
+      <!-- Malteadas -->
+      <div class="menu-block" id="malteadas">
+        <h3 class="menu-block-title">🥤 Malteadas</h3>
+        <div class="shake-list" id="shake-list"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ADICIONALES ============ -->
+  <section class="addons" id="adicionales">
+    <div class="container">
+      <div class="section-head">
+        <p class="section-kicker">Adicionales</p>
+        <h2 class="section-title">Hazlo a tu manera.</h2>
+        <p class="section-note">Todos los adicionales cuestan lo mismo. Puedes sumarlos dentro de cada sándwich o pedirlos sueltos aquí.</p>
+      </div>
+      <div class="addon-list" id="addon-list"></div>
+    </div>
+  </section>
+
+  <!-- ============ PRECIOS ============ -->
+  <section class="pricing" id="precios">
+    <div class="container">
+      <div class="section-head">
+        <p class="section-kicker">Precios oficiales</p>
+        <h2 class="section-title">Sin sorpresas. Un solo precio.</h2>
+      </div>
+      <div class="tag-row">
+        <div class="tag"><span class="tag-label">🥪 Sándwich</span><span class="tag-price" data-price="sandwich"></span></div>
+        <div class="tag"><span class="tag-label">🥪 + 🥤 Gaseosa</span><span class="tag-price" data-price="sandwichDrink"></span></div>
+        <div class="tag"><span class="tag-label">🥤 Malteada</span><span class="tag-price" data-price="shake"></span></div>
+        <div class="tag"><span class="tag-label">➕ Adicional</span><span class="tag-price" data-price="addon"></span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ DISPONIBILIDAD (solo si el stock está activado en la configuración) ============ -->
+  <section class="stock" id="disponibilidad" hidden>
+    <div class="container">
+      <div class="section-head">
+        <p class="section-kicker">Disponibilidad</p>
+        <h2 class="section-title">Esto es lo que hay.</h2>
+      </div>
+      <div class="stock-card">
+        <p class="stock-name">🥪 Sándwiches</p>
+        <p class="stock-badge" data-stock-badge="sandwiches">STOCK HASTA AGOTAR EXISTENCIAS</p>
+        <p class="stock-meta">Res + Cerdo, en Texas BBQ, Bistek y Azteca.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CTA FINAL ============ -->
+  <section class="final-cta" id="pedir">
+    <div class="container">
+      <h2>¿Tienes hambre? <em>Nosotros también.</em></h2>
+      <p class="final-note" data-closed-text="Apertura oficial el lunes · 4:00 p. m.">Sándwiches y malteadas por WhatsApp</p>
+      <a class="btn btn-yellow focus-ring" id="final-cta-btn" href="#productos">ARMAR MI PEDIDO</a>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============ PIE / REDES ============ -->
+<footer class="site-footer">
+  <div class="container">
+    <a class="logo" href="#inicio" aria-label="Carnitas, inicio">CARNITAS<span>.</span></a>
+    <div class="social-row">
+      <a class="social-icon focus-ring" id="ig-link" href="#" target="_blank" rel="noopener" aria-label="Instagram de Carnitas">
+        <svg viewBox="0 0 24 24"><path d="M12 2.2c3.2 0 3.6 0 4.8.07 1.2.06 2 .24 2.7.52.7.28 1.3.66 1.9 1.26.6.6.98 1.2 1.26 1.9.28.7.46 1.5.52 2.7.06 1.2.07 1.6.07 4.8s0 3.6-.07 4.8c-.06 1.2-.24 2-.52 2.7-.28.7-.66 1.3-1.26 1.9-.6.6-1.2.98-1.9 1.26-.7.28-1.5.46-2.7.52-1.2.06-1.6.07-4.8.07s-3.6 0-4.8-.07c-1.2-.06-2-.24-2.7-.52-.7-.28-1.3-.66-1.9-1.26-.6-.6-.98-1.2-1.26-1.9-.28-.7-.46-1.5-.52-2.7C2.2 15.6 2.2 15.2 2.2 12s0-3.6.07-4.8c.06-1.2.24-2 .52-2.7.28-.7.66-1.3 1.26-1.9.6-.6 1.2-.98 1.9-1.26.7-.28 1.5-.46 2.7-.52C8.4 2.2 8.8 2.2 12 2.2Zm0 3.1a6.7 6.7 0 1 0 0 13.4 6.7 6.7 0 0 0 0-13.4Zm0 11a4.3 4.3 0 1 1 0-8.6 4.3 4.3 0 0 1 0 8.6Zm7-11.3a1.57 1.57 0 1 1-3.14 0 1.57 1.57 0 0 1 3.14 0Z"/></svg>
+      </a>
+      <a class="social-icon focus-ring" id="tt-link" href="#" target="_blank" rel="noopener" aria-label="TikTok de Carnitas">
+        <svg viewBox="0 0 24 24"><path d="M16.6 2h-3.2v13.7a3 3 0 1 1-2.6-3v-3.2a6.2 6.2 0 1 0 5.8 6.2V8.6a7.4 7.4 0 0 0 4.3 1.4V6.8a4.3 4.3 0 0 1-4.3-4.3Z"/></svg>
+      </a>
+      <a class="social-icon focus-ring" id="wa-link" href="#" target="_blank" rel="noopener" aria-label="WhatsApp de Carnitas">
+        <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2Zm0 18.2a8.1 8.1 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.4-.7-1.7-.8-.2-.1-.4-.1-.6.1-.2.2-.6.8-.8 1-.1.2-.3.2-.5.1-.2-.1-1-.4-1.9-1.2-.7-.6-1.2-1.4-1.3-1.6-.1-.2 0-.4.1-.5.1-.1.2-.3.4-.4.1-.1.2-.3.2-.4.1-.2 0-.3 0-.4C10.3 9.9 9.9 9 9.7 8.5c-.2-.4-.4-.4-.6-.4h-.5c-.2 0-.4.1-.7.3-.2.2-.9.9-.9 2.1 0 1.2.9 2.4 1 2.6.1.2 1.8 2.7 4.3 3.8.6.3 1.1.4 1.4.5.6.2 1.2.2 1.6.1.5-.1 1.4-.6 1.6-1.1.2-.5.2-1 .1-1.1-.1-.1-.2-.2-.5-.3Z"/></svg>
+      </a>
+    </div>
+    <p class="slogan">"Barriga llena, corazón contento"</p>
+    <p class="fine-print">© <span id="year"></span> CARNITAS. Pedidos únicamente por WhatsApp.</p>
+  </div>
+</footer>
+
+<!-- ============ CARRITO (barra fija) ============ -->
+<div class="cart-bar" id="cart-bar" hidden>
+  <div class="cart-bar-inner">
+    <button type="button" class="cart-summary focus-ring" id="cart-toggle" aria-expanded="false">
+      <span id="cart-count">0 artículos</span>
+      <span id="cart-total">$0</span>
+      <span class="cart-chevron" aria-hidden="true">▲</span>
+    </button>
+    <div class="cart-detail" id="cart-detail" hidden>
+      <div id="cart-lines"></div>
+    </div>
+    <p class="closed-note" id="closed-note" hidden>⏳ Arma tu pedido desde ya: podrás enviarlo cuando abramos.</p>
+    <button type="button" class="btn btn-primary focus-ring" id="cart-checkout-btn">HACER MI PEDIDO POR WHATSAPP</button>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<!-- ============ DATOS DE ENTREGA (antes de abrir WhatsApp) ============ -->
+<dialog class="checkout" id="checkout-dialog" aria-labelledby="checkout-title">
+  <form id="checkout-form" novalidate>
+    <h2 class="checkout-title" id="checkout-title">Confirma tu pedido</h2>
+    <p class="stock-error" id="err-stock" role="alert" hidden></p>
+
+    <div class="order-summary">
+      <ul id="checkout-lines"></ul>
+      <div class="order-total"><span>TOTAL</span><strong id="checkout-total"></strong></div>
+    </div>
+
+    <label class="field">
+      <span class="field-label">👤 ¿A nombre de quién?</span>
+      <input type="text" id="checkout-name" maxlength="60" autocomplete="name" aria-describedby="err-name" placeholder="Tu nombre">
+      <span class="field-error" id="err-name" hidden>Escribe tu nombre.</span>
+    </label>
+
+    <label class="field">
+      <span class="field-label">📞 Número de celular</span>
+      <input type="text" id="checkout-phone" inputmode="numeric" autocomplete="tel-national" maxlength="13" aria-describedby="err-phone" placeholder="Ej: 300 123 4567">
+      <span class="field-help">Para que el domiciliario te pueda llamar.</span>
+      <span class="field-error" id="err-phone" hidden></span>
+    </label>
+
+    <label class="field">
+      <span class="field-label">📍 Dirección de entrega</span>
+      <textarea id="checkout-address" rows="2" maxlength="200" autocomplete="street-address" aria-describedby="err-address" placeholder="Barrio, calle o carrera, número, apto o casa, referencias…"></textarea>
+      <span class="field-error" id="err-address" hidden>Escribe la dirección de entrega.</span>
+    </label>
+
+    <fieldset class="field pay" aria-describedby="err-payment">
+      <legend class="field-label">💳 ¿Cómo vas a pagar?</legend>
+      <div class="pay-options">
+        <label class="pay-option"><input type="radio" name="payment" value="EFECTIVO"><span>💵 Efectivo</span></label>
+        <label class="pay-option"><input type="radio" name="payment" value="TRANSFERENCIA"><span>📲 Transferencia</span></label>
+      </div>
+      <span class="field-error" id="err-payment" hidden>Elige cómo vas a pagar.</span>
+    </fieldset>
+
+    <label class="field" id="cash-field" hidden>
+      <span class="field-label">¿Con cuánto pagas? <span class="field-opt">(opcional)</span></span>
+      <input type="text" id="checkout-cash" inputmode="numeric" autocomplete="off" aria-describedby="err-cash" placeholder="Ej: $50.000">
+      <span class="field-help">Así llevamos el cambio listo.</span>
+      <span class="field-error" id="err-cash" hidden></span>
+    </label>
+
+    <p class="pay-hint" id="transfer-hint" hidden></p>
+
+    <label class="field">
+      <span class="field-label">📝 Notas <span class="field-opt">(opcional)</span></span>
+      <textarea id="checkout-notes" rows="2" maxlength="300" placeholder="Ej: sin cebolla, el queso extra va en el Texas…"></textarea>
+    </label>
+
+    <button type="submit" class="btn btn-primary focus-ring" id="checkout-submit">ENVIAR PEDIDO POR WHATSAPP</button>
+    <p class="send-hint">Se abrirá WhatsApp con tu pedido listo. Solo falta que le des enviar.</p>
+    <button type="button" class="checkout-cancel focus-ring" id="checkout-cancel">Volver al carrito</button>
+  </form>
+</dialog>
+
+<script>
+  /* =========================================================
+     CARNITAS CONFIG — edita solo lo de aquí abajo.
+     Todo lo demás en la página se actualiza solo con estos valores.
+     ========================================================= */
+  const CARNITAS_CONFIG = {
+    BRAND_NAME: "CARNITAS",
+
+    // Número de WhatsApp en formato internacional, SIN "+" y sin espacios.
+    // Ejemplo Colombia: 573001234567
+    WHATSAPP_NUMBER: "573227014207",
+
+    INSTAGRAM_URL: "https://www.instagram.com/carnitas.co",
+    TIKTOK_URL: "CAMBIAR_AQUI_TU_TIKTOK",
+
+    // Hora de apertura del servicio, con zona horaria de Colombia (-05:00).
+    // Apertura oficial: lunes 21 de septiembre, 4:00 pm.
+    OPENING_AT: "2026-09-21T16:00:00-05:00",
+
+    // false: hasta la hora de apertura las ventas están CERRADAS (no se puede agregar nada).
+    // true:  hasta la hora de apertura se puede armar el pedido, pero no enviarlo.
+    PRE_ORDERS: false,
+
+    // Control de stock de sándwiches.
+    // false: SIN LÍMITE (no se muestra ni se descuenta nada, y no se usa Firebase).
+    // true:  se cuenta el stock por proteína (res y cerdo) y baja con cada pedido enviado.
+    STOCK_ENABLED: false,
+    RES_STOCK: 5,      // solo se usa con STOCK_ENABLED: true y sin STOCK_DB_URL (modo prueba)
+    CERDO_STOCK: 18,
+    // URL de tu Firebase Realtime Database, para que el stock sea compartido entre todos los
+    // clientes. Solo se usa con STOCK_ENABLED: true. Pasos en CONFIGURAR-STOCK.md.
+    STOCK_DB_URL: "https://carnitas-7aafe-default-rtdb.firebaseio.com",
+
+    // Precios oficiales en pesos colombianos (COP), sin puntos ni símbolos.
+    SANDWICH_PRICE: 15000,
+    DRINK_PRICE: 4000,  // se suma al agregar gaseosa a un sándwich
+    ADDON_PRICE: 3000,  // precio de cada adicional (queso, huevo, etc.)
+    MALTEADA_PRICE: 0,  // precio de cada malteada. PONER AQUÍ EL PRECIO (0 = "por definir" y no se puede pedir)
+
+    // Datos para transferir (ej: "Nequi 300 123 4567 · a nombre de Carnitas").
+    // Si lo llenas, el cliente lo ve al elegir "Transferencia". Si lo dejas vacío,
+    // se le avisa que le enviarás los datos por WhatsApp.
+    TRANSFER_INFO: "",
+  };
+  /* ========================================================= */
+
+  function cop(n){ return '$' + n.toLocaleString('es-CO'); }
+
+  function buildWaLink(message){
+    return `https://wa.me/${CARNITAS_CONFIG.WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+  }
+
+  function generalMessage(){
+    return `Hola ${CARNITAS_CONFIG.BRAND_NAME} 👋🔥\nVi el lanzamiento y tengo una duda.`;
+  }
+
+  /* ---------- Carrito: líneas independientes por producto ----------
+     Cada clic en "AGREGAR AL CARRITO" toma la proteína y la gaseosa
+     seleccionadas EN ESE MOMENTO para ese producto y las guarda como
+     su propia línea. Así puedes pedir, por ejemplo, un Azteca de res
+     sin gaseosa y otro Azteca de cerdo con gaseosa en el mismo pedido:
+     cambias la selección entre un clic y otro y quedan como líneas separadas. */
+  let cartLines = []; // { key, item, protein, drink, pickles, addons, qty }
+  let orderNotes = '';
+  let deliveryName = '';
+  let deliveryPhone = ''; // 10 dígitos, sin espacios
+  let deliveryCash = 0; // con cuánto paga en efectivo (0 = no lo indicó); no se guarda
+  let deliveryAddress = '';
+  let deliveryPayment = ''; // 'EFECTIVO' | 'TRANSFERENCIA'
+  const PAYMENT_LABELS = { EFECTIVO: 'Efectivo', TRANSFERENCIA: 'Transferencia' };
+  const CART_STORAGE_KEY = 'carnitas_cart_v1';
+  const proteinState = { texas: 'RES', bistek: 'RES', azteca: 'RES' };
+  const pickleState = { texas: true }; // el Texas BBQ lleva pepinillos por defecto
+  const SANDWICH_NAMES = { texas: 'TEXAS BBQ', bistek: 'BISTEK', azteca: 'AZTECA' };
+  // Adicionales: entran al carrito como línea propia con item = 'addon:<id>'.
+  const ADDONS = {
+    queso:      { emoji: '🧀', label: 'QUESO EXTRA' },
+    huevo:      { emoji: '🍳', label: 'HUEVO' },
+    jalapenos:  { emoji: '🌶️', label: 'JALAPEÑOS' },
+    pepinillos: { emoji: '🥒', label: 'PEPINILLOS' },
+    picante:    { emoji: '🔥', label: 'SALSA EXTRA PICANTE' },
+  };
+  const isAddon = item => item.startsWith('addon:');
+
+  // Malteadas: entran al carrito como línea propia con item = 'shake:<id>'.
+  const SHAKES = {
+    oreo:      { emoji: '🍪', name: 'Oreo',      label: 'MALTEADA DE OREO',      img: 'img/malteada-oreo.svg',      copy: 'Cremosa, con galletas Oreo trituradas y crema batida.' },
+    milo:      { emoji: '🍫', name: 'Milo',      label: 'MALTEADA DE MILO',      img: 'img/malteada-milo.svg',      copy: 'Con Milo, helado cremoso y crema batida.' },
+    chocolate: { emoji: '🍫', name: 'Chocolate', label: 'MALTEADA DE CHOCOLATE', img: 'img/malteada-chocolate.svg', copy: 'Chocolate intenso, salsa de chocolate y crema batida.' },
+    fresa:     { emoji: '🍓', name: 'Fresa',     label: 'MALTEADA DE FRESA',     img: 'img/malteada-fresa.svg',     copy: 'Fresas y helado, coronada con crema batida.' },
+  };
+  const isShake = item => item.startsWith('shake:');
+  const shakePriceSet = () => CARNITAS_CONFIG.MALTEADA_PRICE > 0;
+
+  function setProtein(item, protein){
+    proteinState[item] = protein;
+    paintProtein(item);
+    renderStock(); // el contador de la tarjeta cambia según la proteína elegida
+  }
+
+  function setPickles(item, withPickles){
+    pickleState[item] = withPickles;
+    document.getElementById('pickles-' + item + '-con').classList.toggle('active', withPickles);
+    document.getElementById('pickles-' + item + '-sin').classList.toggle('active', !withPickles);
+  }
+
+  // extras = cuántos adicionales lleva pegados el sándwich (cada uno cuesta ADDON_PRICE).
+  function lineUnitPrice(item, drink, extras = 0){
+    if (isAddon(item)) return CARNITAS_CONFIG.ADDON_PRICE;
+    if (isShake(item)) return CARNITAS_CONFIG.MALTEADA_PRICE;
+    return CARNITAS_CONFIG.SANDWICH_PRICE + (drink ? CARNITAS_CONFIG.DRINK_PRICE : 0) + extras * CARNITAS_CONFIG.ADDON_PRICE;
+  }
+
+  function lineLabel(item, protein, drink, pickles, addons = []){
+    if (isAddon(item)) {
+      const a = ADDONS[item.slice(6)];
+      return '➕ ' + a.emoji + ' ' + a.label;
+    }
+    if (isShake(item)) {
+      const s = SHAKES[item.slice(6)];
+      return '🥤 ' + s.label;
+    }
+    const extras = addons.map(id => ' + ' + ADDONS[id].emoji + ' ' + ADDONS[id].label).join('');
+    const detail = item === 'texas' ? protein + ', ' + (pickles ? 'CON' : 'SIN') + ' PEPINILLOS' : protein;
+    return '🥪 ' + SANDWICH_NAMES[item] + ' (' + detail + ')' + (drink ? ' + 🥤 GASEOSA' : '') + extras;
+  }
+
+  // Adicionales marcados en la tarjeta de un sándwich, siempre en el mismo orden
+  // (así "queso + huevo" y "huevo + queso" cuentan como la misma línea).
+  function selectedAddons(item){
+    const checked = [...document.querySelectorAll('#addons-' + item + ' input:checked')].map(i => i.value);
+    return Object.keys(ADDONS).filter(id => checked.includes(id));
+  }
+
+  // El botón "AGREGAR AL CARRITO" toma la configuración actual de la tarjeta
+  // (proteína + gaseosa + adicionales) y la agrega como línea propia del pedido.
+  function addToCart(item){
+    const protein = proteinState[item];
+    const drink = document.getElementById('drink-' + item).checked;
+    const pickles = item === 'texas' ? pickleState.texas : null;
+    commitLine(item, protein, drink, pickles, selectedAddons(item));
+  }
+
+  function addAddon(id){
+    commitLine('addon:' + id, null, false, null, []);
+  }
+
+  function addShake(id){
+    if (!shakePriceSet()) { showToast('Las malteadas aún no tienen precio', 2600); return; }
+    commitLine('shake:' + id, null, false, null, []);
+  }
+
+  // Suma una unidad a la línea que coincide (o la crea) y avisa al cliente.
+  function commitLine(item, protein, drink, pickles, addons){
+    if (salesClosed()) { showToast('🔒 Ventas cerradas hasta la apertura oficial', 2600); return; }
+    if (!canAdd(item, protein)) return;
+    const key = lineKey(item, protein, drink, pickles, addons);
+    const existing = cartLines.find(l => l.key === key);
+    if (existing) {
+      existing.qty += 1;
+    } else {
+      cartLines.push({ key, item, protein, drink, pickles, addons, qty: 1 });
+    }
+    renderCart();
+    showToast('✓ ' + lineLabel(item, protein, drink, pickles, addons).replace(/ \(.*?\)/, '') + ' agregado');
+    const bar = document.getElementById('cart-bar');
+    bar.classList.remove('pulse');
+    void bar.offsetWidth;
+    bar.classList.add('pulse');
+  }
+
+  function lineKey(item, protein, drink, pickles, addons){
+    return item + '|' + (protein || '-') + '|' + (drink ? 'D' : 'N')
+      + (pickles === null ? '' : '|' + (pickles ? 'P' : 'S'))
+      + (addons && addons.length ? '|+' + addons.join(',') : '');
+  }
+
+  /* ---------- Stock ----------
+     Hay tres contadores: sándwiches de RES, sándwiches de CERDO (cada uno compartido entre
+     Texas, Bistek y Azteca). Las malteadas, adicionales y gaseosas no descuentan stock.
+     Solo funciona con STOCK_ENABLED: true; con false los sándwiches no tienen límite.
+     El stock baja UNA vez, al tocar "Enviar pedido por WhatsApp" (ver reserveStock). */
+  const STOCK_TYPES = ['res', 'cerdo'];
+  const stock = { res: null, cerdo: null }; // null = sin límite, o todavía no se sabe
+  const stockTypeOf = (item, protein) =>
+    Object.hasOwn(SANDWICH_NAMES, item) ? (protein === 'CERDO' ? 'cerdo' : 'res') : null;
+
+  function cartCounts(){
+    const counts = { res: 0, cerdo: 0 };
+    cartLines.forEach(l => { const t = stockTypeOf(l.item, l.protein); if (t) counts[t] += l.qty; });
+    return counts;
+  }
+
+  const stockWords = {
+    res:   ['sándwich de res', 'sándwiches de res'],
+    cerdo: ['sándwich de cerdo', 'sándwiches de cerdo'],
+  };
+
+  // ¿Se puede sumar una unidad más de este producto sin pasarse del stock?
+  function canAdd(item, protein){
+    const type = stockTypeOf(item, protein);
+    if (!type || stock[type] === null) return true;
+    if (cartCounts()[type] < stock[type]) return true;
+    showToast('😔 No hay más ' + stockWords[type][1] + ' para agregar', 2600);
+    return false;
+  }
+
+  const LOCAL_STOCK_KEY = 'carnitas_stock_v1';
+  const stockDbUrl = () => (CARNITAS_CONFIG.STOCK_DB_URL || '').trim().replace(/\/+$/, '');
+  let localStock = null;
+
+  // Modo sin servidor (STOCK_DB_URL vacío): el stock vive solo en este navegador. Sirve para probar.
+  function readLocalStock(){
+    if (localStock) return localStock;
+    let saved = null;
+    try {
+      const d = JSON.parse(localStorage.getItem(LOCAL_STOCK_KEY) || 'null');
+      if (d && STOCK_TYPES.every(t => Number.isInteger(d[t]) && d[t] >= 0)) saved = d;
+    } catch (e) { /* sin almacenamiento */ }
+    localStock = saved || { res: CARNITAS_CONFIG.RES_STOCK, cerdo: CARNITAS_CONFIG.CERDO_STOCK };
+    return localStock;
+  }
+  function writeLocalStock(){
+    try { localStorage.setItem(LOCAL_STOCK_KEY, JSON.stringify(localStock)); } catch (e) { /* ignorar */ }
+  }
+
+  async function dbFetch(path, options = {}){
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 8000);
+    try {
+      return await fetch(stockDbUrl() + path, { ...options, signal: ctrl.signal, cache: 'no-store' });
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
+  // Lee el stock actual (del servidor compartido, o del navegador en modo prueba).
+  async function refreshStock(){
+    if (!CARNITAS_CONFIG.STOCK_ENABLED) { renderStock(); return; } // sin límite: no hay nada que leer
+    try {
+      if (stockDbUrl()) {
+        const res = await dbFetch('/stock.json');
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const d = await res.json();
+        if (!d || !STOCK_TYPES.every(t => Number.isInteger(d[t]))) throw new Error('Falta res o cerdo en /stock de la base de datos');
+        STOCK_TYPES.forEach(t => { stock[t] = Math.max(0, d[t]); });
+      } else {
+        const s = readLocalStock();
+        STOCK_TYPES.forEach(t => { stock[t] = s[t]; });
+      }
+    } catch (e) {
+      console.warn('[stock] No se pudo leer el stock:', e.message); // se conserva lo último que se supo
+    }
+    renderStock();
+  }
+
+  // Descuenta del stock lo que lleva el pedido. Devuelve { ok: true } o { ok: false } si ya no alcanza.
+  // Con servidor, el descuento es atómico (increment de Firebase) y las reglas de la base de datos
+  // rechazan cualquier resultado negativo, así dos clientes no pueden comprar la misma última unidad.
+  async function reserveStock(counts){
+    if (!CARNITAS_CONFIG.STOCK_ENABLED) return { ok: true }; // sin límite
+    if (STOCK_TYPES.every(t => counts[t] === 0)) return { ok: true };
+
+    if (!stockDbUrl()) {
+      const s = readLocalStock();
+      if (STOCK_TYPES.some(t => counts[t] > s[t])) { await refreshStock(); return { ok: false }; }
+      STOCK_TYPES.forEach(t => { s[t] -= counts[t]; });
+      writeLocalStock();
+      await refreshStock();
+      return { ok: true };
+    }
+
+    const body = {};
+    for (const type of STOCK_TYPES) {
+      if (counts[type] > 0) body[type] = { '.sv': { increment: -counts[type] } };
+    }
+    // Hasta 3 intentos si falla la conexión (celulares con señal floja). Si Firebase responde que no
+    // alcanza (401/403), no se reintenta.
+    let lastError;
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        const res = await dbFetch('/stock.json', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+        if (res.ok) { refreshStock(); return { ok: true }; }
+        if (res.status === 401 || res.status === 403) { await refreshStock(); return { ok: false }; } // rechazado: no alcanza
+        throw new Error('HTTP ' + res.status);
+      } catch (e) {
+        lastError = e;
+        if (attempt < 2) await new Promise(r => setTimeout(r, 700 * (attempt + 1)));
+      }
+    }
+    // Sin conexión con el servidor: no se le niega el pedido al cliente, pero el stock no se descontó.
+    // Se marca para que el mensaje de WhatsApp le avise al dueño que lo descuente a mano.
+    console.warn('[stock] No se pudo descontar el stock:', lastError.message);
+    return { ok: true, unverified: true };
+  }
+
+  // "1 de res, 2 de cerdo": lo que hay que descontar a mano si el sistema no pudo.
+  function describeCounts(counts){
+    const label = { res: n => n + ' de res', cerdo: n => n + ' de cerdo' };
+    return STOCK_TYPES.filter(t => counts[t] > 0).map(t => label[t](counts[t])).join(', ');
+  }
+
+  // Si el stock bajó por debajo de lo que hay en el carrito, recorta el pedido (desde el final).
+  function clampCartToStock(){
+    let changed = false;
+    for (const type of STOCK_TYPES) {
+      if (stock[type] === null) continue;
+      let excess = cartCounts()[type] - stock[type];
+      for (let i = cartLines.length - 1; i >= 0 && excess > 0; i--) {
+        const l = cartLines[i];
+        if (stockTypeOf(l.item, l.protein) !== type) continue;
+        const cut = Math.min(excess, l.qty);
+        l.qty -= cut;
+        excess -= cut;
+        changed = true;
+      }
+    }
+    cartLines = cartLines.filter(l => l.qty > 0);
+    return changed;
+  }
+
+  // Con el stock activado, al cliente se le muestra el TOTAL de sándwiches (res + cerdo). El desglose
+  // por proteína no se muestra: solo decide si puede agregar o no (botón "Res · agotado", etc.).
+  const sandwichTotal = () => (stock.res === null || stock.cerdo === null) ? null : stock.res + stock.cerdo;
+  function stockText(n){
+    if (n === 0) return '😔 Sándwiches agotados';
+    return n === 1 ? '🔥 ¡Queda 1 sándwich!' : `🔥 Quedan ${n} sándwiches`;
+  }
+  const SANDWICH_ITEMS = Object.keys(SANDWICH_NAMES);
+
+  // Muestra un solo sabor de proteína como elegido en la tarjeta (sin tocar el stock).
+  function paintProtein(item){
+    document.getElementById('protein-' + item + '-res').classList.toggle('active', proteinState[item] === 'RES');
+    document.getElementById('protein-' + item + '-cerdo').classList.toggle('active', proteinState[item] === 'CERDO');
+  }
+
+  // Pinta el stock en las tarjetas, en la sección de disponibilidad y en los botones de agregar.
+  // En cada sándwich el contador y el botón de agregar dependen de la proteína elegida.
+  function renderStock(){
+    SANDWICH_ITEMS.forEach(item => {
+      // Si la proteína elegida se agotó y la otra no, se cambia sola a la que sí hay.
+      const other = proteinState[item] === 'RES' ? 'CERDO' : 'RES';
+      if (stock[stockTypeOf(item, proteinState[item])] === 0 && stock[stockTypeOf(item, other)] > 0) {
+        proteinState[item] = other;
+        paintProtein(item);
+      }
+      [['res', 'RES', '🐄 Res'], ['cerdo', 'CERDO', '🐖 Cerdo']].forEach(([type, protein, label]) => {
+        const btn = document.getElementById('protein-' + item + '-' + type);
+        const out = stock[type] === 0;
+        btn.disabled = out;
+        btn.textContent = out ? label + ' · agotado' : label;
+      });
+    });
+
+    const closed = salesClosed(); // con las ventas cerradas no se muestra stock ni se puede agregar
+
+    document.querySelectorAll('.addon-add').forEach(b => { b.disabled = closed; });
+    document.querySelectorAll('.shake-add').forEach(b => { b.disabled = closed || !shakePriceSet(); });
+    document.getElementById('disponibilidad').hidden = !CARNITAS_CONFIG.STOCK_ENABLED;
+
+    document.querySelectorAll('[data-stock-item]').forEach(el => {
+      const item = el.dataset.stockItem;
+      const total = sandwichTotal(); // null si el stock está apagado (sin límite) o aún no se sabe
+      el.hidden = total === null || closed;
+      if (total !== null) {
+        el.textContent = stockText(total);
+        el.classList.toggle('low', total > 0 && total <= 5);
+        el.classList.toggle('out', total === 0);
+      }
+      // El botón depende del stock de la proteína elegida, no del total.
+      const soldOut = stock[stockTypeOf(item, proteinState[item])] === 0;
+      const btn = document.getElementById('add-' + item);
+      btn.disabled = closed || soldOut;
+      btn.textContent = closed ? '🔒 VENTAS CERRADAS' : soldOut ? '😔 AGOTADO' : 'AGREGAR AL CARRITO';
+    });
+
+    // En la sección de disponibilidad: el total, o el texto normal mientras no se sepa.
+    document.querySelectorAll('[data-stock-badge]').forEach(el => {
+      if (el.dataset.default === undefined) el.dataset.default = el.textContent;
+      const total = sandwichTotal();
+      el.textContent = closed ? 'AGOTADO' : total === null ? el.dataset.default : total === 0 ? 'AGOTADO' : 'QUEDAN ' + total;
+    });
+  }
+
+  /* ---------- Cuenta regresiva de apertura ---------- */
+  let openingTs = Date.parse(CARNITAS_CONFIG.OPENING_AT);
+  const isOpen = () => !Number.isFinite(openingTs) || Date.now() >= openingTs;
+  // Ventas cerradas: todavía no es la hora de apertura y no se permiten pedidos anticipados.
+  const salesClosed = () => !isOpen() && !CARNITAS_CONFIG.PRE_ORDERS;
+
+  // Textos que cambian mientras las ventas están cerradas (los marcados con data-closed-text).
+  function setClosedTexts(closed){
+    document.querySelectorAll('[data-closed-text]').forEach(el => {
+      if (el.dataset.openText === undefined) el.dataset.openText = el.textContent;
+      el.textContent = closed ? el.dataset.closedText : el.dataset.openText;
+    });
+  }
+  const BOGOTA = { timeZone: 'America/Bogota' };
+  const pad2 = n => String(n).padStart(2, '0');
+
+  function openingTimeLabel(){
+    return new Date(openingTs).toLocaleTimeString('es-CO', { ...BOGOTA, hour: 'numeric', minute: '2-digit' }).toUpperCase();
+  }
+
+  function openingDayLabel(){
+    const ymd = d => d.toLocaleDateString('en-CA', BOGOTA);
+    const opening = ymd(new Date(openingTs));
+    if (opening === ymd(new Date())) return 'HOY';
+    if (opening === ymd(new Date(Date.now() + 864e5))) return 'MAÑANA';
+    return 'EL ' + new Date(openingTs).toLocaleDateString('es-CO', { ...BOGOTA, weekday: 'long', day: 'numeric', month: 'long' }).replace(',', '').toUpperCase();
+  }
+
+  let wasOpen = null;
+  function tickCountdown(){
+    const open = isOpen();
+    const box = document.getElementById('countdown');
+    box.classList.toggle('is-open', open);
+    document.getElementById('countdown-digits').hidden = open;
+    if (open) {
+      document.getElementById('countdown-label').textContent = '🔥 ¡YA ESTAMOS ABIERTOS! HAZ TU PEDIDO';
+    } else {
+      const left = Math.max(0, Math.floor((openingTs - Date.now()) / 1000));
+      const days = Math.floor(left / 86400);
+      document.getElementById('cd-days-box').hidden = days === 0;
+      document.getElementById('cd-d').textContent = days;
+      document.getElementById('cd-days-unit').textContent = days === 1 ? 'DÍA' : 'DÍAS';
+      document.getElementById('cd-h').textContent = pad2(Math.floor(left % 86400 / 3600));
+      document.getElementById('cd-m').textContent = pad2(Math.floor(left % 3600 / 60));
+      document.getElementById('cd-s').textContent = pad2(left % 60);
+      document.getElementById('countdown-label').textContent = salesClosed()
+        ? '🔒 VENTAS CERRADAS · APERTURA OFICIAL ' + openingDayLabel() + ' A LAS ' + openingTimeLabel()
+        : '⏳ ABRIMOS ' + openingDayLabel() + ' A LAS ' + openingTimeLabel();
+    }
+    if (open !== wasOpen) { // abre o cierra las ventas: se actualizan botones, stock y textos
+      wasOpen = open;
+      setClosedTexts(salesClosed());
+      renderCart();
+      renderStock();
+    }
+  }
+
+  /* ---------- Aviso al agregar ---------- */
+  let toastTimer;
+  function showToast(text, ms = 1800){
+    const toast = document.getElementById('toast');
+    const bar = document.getElementById('cart-bar');
+    toast.textContent = text;
+    toast.style.bottom = (bar.offsetHeight + 12) + 'px';
+    toast.hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { toast.hidden = true; }, ms);
+  }
+
+  /* ---------- Persistencia: el carrito sobrevive a recargas ---------- */
+  function saveCart(){
+    try {
+      localStorage.setItem(CART_STORAGE_KEY, JSON.stringify({ lines: cartLines, notes: orderNotes, name: deliveryName, phone: deliveryPhone, address: deliveryAddress, payment: deliveryPayment }));
+    } catch (e) { /* sin almacenamiento: el carrito funciona igual, solo no se guarda */ }
+  }
+
+  // Valida lo guardado y reconstruye cada línea: no se confía en el contenido del storage.
+  function loadCart(){
+    try {
+      const data = JSON.parse(localStorage.getItem(CART_STORAGE_KEY) || 'null');
+      if (!data || !Array.isArray(data.lines)) return;
+      data.lines.forEach(l => {
+        if (!l || typeof l.item !== 'string') return;
+        const isSandwich = Object.hasOwn(SANDWICH_NAMES, l.item);
+        const addon = isAddon(l.item) && Object.hasOwn(ADDONS, l.item.slice(6));
+        const shake = isShake(l.item) && Object.hasOwn(SHAKES, l.item.slice(6));
+        if (!(isSandwich || addon || shake)) return; // lo que ya no existe en el menú se descarta
+        const qty = Number.isInteger(l.qty) ? l.qty : 0;
+        if (qty < 1 || qty > 99) return;
+        const protein = isSandwich ? (l.protein === 'CERDO' ? 'CERDO' : 'RES') : null;
+        const drink = isSandwich && l.drink === true;
+        const pickles = l.item === 'texas' ? l.pickles !== false : null;
+        const addons = isSandwich && Array.isArray(l.addons) ? Object.keys(ADDONS).filter(id => l.addons.includes(id)) : [];
+        const key = lineKey(l.item, protein, drink, pickles, addons);
+        const existing = cartLines.find(x => x.key === key);
+        if (existing) existing.qty = Math.min(99, existing.qty + qty);
+        else cartLines.push({ key, item: l.item, protein, drink, pickles, addons, qty });
+      });
+      if (typeof data.notes === 'string') orderNotes = data.notes.slice(0, 300);
+      if (typeof data.name === 'string') deliveryName = data.name.slice(0, 60);
+      if (typeof data.phone === 'string' && /^3\d{9}$/.test(data.phone)) deliveryPhone = data.phone;
+      if (typeof data.address === 'string') deliveryAddress = data.address.slice(0, 200);
+      if (Object.hasOwn(PAYMENT_LABELS, data.payment)) deliveryPayment = data.payment;
+    } catch (e) { /* datos dañados: se ignoran */ }
+  }
+
+  // Suma o resta una unidad a una línea ya agregada; en 0 se quita del pedido.
+  function adjustLine(key, delta){
+    const line = cartLines.find(l => l.key === key);
+    if (!line) return;
+    if (delta > 0 && !canAdd(line.item, line.protein)) return;
+    line.qty += delta;
+    if (line.qty <= 0) cartLines = cartLines.filter(l => l.key !== key);
+    renderCart();
+  }
+
+  // unverifiedCounts: si no se pudo descontar el stock, se avisa aquí qué descontar a mano.
+  function cartMessage(totalPrice, unverifiedCounts = null){
+    const c = CARNITAS_CONFIG;
+    const lines = cartLines.map(l =>
+      `${l.qty}x ${lineLabel(l.item, l.protein, l.drink, l.pickles, l.addons)} — ${cop(l.qty * lineUnitPrice(l.item, l.drink, l.addons.length))}`
+    ).join('\n');
+    let payText = PAYMENT_LABELS[deliveryPayment];
+    if (deliveryPayment === 'EFECTIVO' && deliveryCash > 0) {
+      payText += deliveryCash === totalPrice
+        ? ' (valor exacto)'
+        : ` — paga con ${cop(deliveryCash)} (cambio: ${cop(deliveryCash - totalPrice)})`;
+    }
+    const delivery = `\n\n👤 Nombre:\n${deliveryName.trim()}\n\n📞 Celular:\n${formatPhone(deliveryPhone)}\n\n📍 Dirección de entrega:\n${deliveryAddress.trim()}\n\n💳 Forma de pago:\n${payText}`;
+    const notes = orderNotes.trim() ? `\n\n📝 Notas:\n${orderNotes.trim()}` : '';
+    const stockNote = unverifiedCounts ? `\n\n⚠️ Stock sin descontar (descontar a mano): ${describeCounts(unverifiedCounts)}` : '';
+    return `Hola ${c.BRAND_NAME} 👋🔥\nQuiero hacer este pedido:\n\n${lines}\n\nTOTAL:\n${cop(totalPrice)}${delivery}${notes}${stockNote}`;
+  }
+
+  function cartTotal(){
+    return cartLines.reduce((s, l) => s + l.qty * lineUnitPrice(l.item, l.drink, l.addons.length), 0);
+  }
+
+  /* ---------- Paso previo a WhatsApp: resumen, nombre, dirección y pago ---------- */
+  const checkoutDialog = document.getElementById('checkout-dialog');
+  const nameInput = document.getElementById('checkout-name');
+  const phoneInput = document.getElementById('checkout-phone');
+
+  // Celular colombiano: 10 dígitos que empiezan por 3. Acepta que peguen "+57 300 123 4567".
+  function phoneDigits(text){
+    let d = text.replace(/\D/g, '');
+    if (d.length === 12 && d.startsWith('57')) d = d.slice(2);
+    return d.slice(0, 10);
+  }
+  function formatPhone(d){
+    return [d.slice(0, 3), d.slice(3, 6), d.slice(6, 10)].filter(Boolean).join(' ');
+  }
+  const addressInput = document.getElementById('checkout-address');
+  const cashInput = document.getElementById('checkout-cash');
+  const notesInput = document.getElementById('checkout-notes');
+  const payGroup = checkoutDialog.querySelector('.pay');
+  const paymentRadios = () => checkoutDialog.querySelectorAll('input[name="payment"]');
+
+  // Muestra solo lo que corresponde a la forma de pago elegida.
+  function syncPaymentPanel(){
+    const chosen = checkoutDialog.querySelector('input[name="payment"]:checked');
+    const method = chosen ? chosen.value : '';
+    document.getElementById('cash-field').hidden = method !== 'EFECTIVO';
+    const hint = document.getElementById('transfer-hint');
+    hint.hidden = method !== 'TRANSFERENCIA';
+    const info = CARNITAS_CONFIG.TRANSFER_INFO.trim();
+    hint.textContent = info
+      ? '📲 Datos para transferir: ' + info
+      : '📲 Te enviaremos los datos de la cuenta por WhatsApp para que hagas la transferencia.';
+  }
+
+  function renderCheckoutSummary(){
+    document.getElementById('checkout-lines').innerHTML = cartLines.map(l =>
+      `<li><span>${l.qty}× ${lineLabel(l.item, l.protein, l.drink, l.pickles, l.addons)}</span><span>${cop(l.qty * lineUnitPrice(l.item, l.drink, l.addons.length))}</span></li>`
+    ).join('');
+    document.getElementById('checkout-total').textContent = cop(cartTotal());
+  }
+
+  function openCheckout(){
+    if (cartLines.length === 0 || !isOpen()) return;
+    renderCheckoutSummary();
+    document.getElementById('err-stock').hidden = true;
+    nameInput.value = deliveryName;
+    phoneInput.value = formatPhone(deliveryPhone);
+    addressInput.value = deliveryAddress;
+    notesInput.value = orderNotes;
+    cashInput.value = '';
+    paymentRadios().forEach(r => { r.checked = r.value === deliveryPayment; });
+    syncPaymentPanel();
+    showCheckoutErrors({});
+    checkoutDialog.showModal();
+    checkoutDialog.scrollTop = 0;
+  }
+
+  function showCheckoutErrors(errs){
+    const fields = { name: nameInput, phone: phoneInput, address: addressInput, cash: cashInput };
+    for (const [key, input] of Object.entries(fields)) {
+      const msg = errs[key];
+      const el = document.getElementById('err-' + key);
+      if (msg) el.textContent = msg;
+      el.hidden = !msg;
+      input.setAttribute('aria-invalid', String(!!msg));
+    }
+    document.getElementById('err-payment').hidden = !errs.payment;
+    payGroup.setAttribute('aria-invalid', String(!!errs.payment));
+  }
+
+  paymentRadios().forEach(r => r.addEventListener('change', syncPaymentPanel));
+
+  // Al escribir el celular se va agrupando: 3001234567 → 300 123 4567
+  phoneInput.addEventListener('input', () => { phoneInput.value = formatPhone(phoneDigits(phoneInput.value)); });
+
+  // Al escribir el efectivo se va dando formato de pesos: 50000 → $50.000
+  cashInput.addEventListener('input', () => {
+    const digits = cashInput.value.replace(/\D/g, '').slice(0, 9);
+    cashInput.value = digits ? cop(Number(digits)) : '';
+  });
+
+  const submitBtn = document.getElementById('checkout-submit');
+  let submitting = false;
+
+  function setSubmitting(on){
+    submitting = on;
+    submitBtn.disabled = on;
+    submitBtn.textContent = on ? 'CONFIRMANDO…' : 'ENVIAR PEDIDO POR WHATSAPP';
+  }
+
+  document.getElementById('checkout-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (submitting) return;
+    if (!isOpen()) { checkoutDialog.close(); return; }
+    const name = nameInput.value.trim();
+    const address = addressInput.value.trim();
+    const paymentInput = checkoutDialog.querySelector('input[name="payment"]:checked');
+    const total = cartTotal();
+    const cash = paymentInput && paymentInput.value === 'EFECTIVO' ? Number(cashInput.value.replace(/\D/g, '')) : 0;
+
+    const errs = {};
+    const phone = phoneDigits(phoneInput.value);
+    if (name.length < 2) errs.name = 'Escribe tu nombre.';
+    if (!/^3\d{9}$/.test(phone)) errs.phone = 'Escribe un celular de 10 dígitos que empiece por 3 (ej: 300 123 4567).';
+    if (address.length < 6) errs.address = 'Escribe la dirección de entrega.';
+    if (!paymentInput) errs.payment = 'Elige cómo vas a pagar.';
+    if (cash > 0 && cash < total) errs.cash = 'Debe ser al menos el total del pedido (' + cop(total) + ').';
+    showCheckoutErrors(errs);
+
+    const firstBad = errs.name ? nameInput : errs.phone ? phoneInput : errs.address ? addressInput : errs.payment ? paymentRadios()[0] : errs.cash ? cashInput : null;
+    if (firstBad) { firstBad.focus(); return; }
+
+    deliveryName = name;
+    deliveryPhone = phone;
+    deliveryAddress = address;
+    deliveryPayment = paymentInput.value;
+    deliveryCash = cash;
+    orderNotes = notesInput.value;
+    saveCart();
+
+    // Se abre la pestaña de WhatsApp ya, dentro del toque del cliente, para que el
+    // navegador no la bloquee; luego se confirma el stock y se le pone el enlace.
+    const waTab = window.open('about:blank', '_blank');
+    setSubmitting(true);
+    const counts = cartCounts();
+    const result = await reserveStock(counts);
+    setSubmitting(false);
+
+    if (!result.ok) {
+      if (waTab) waTab.close();
+      showStockConflict();
+      return;
+    }
+
+    const url = buildWaLink(cartMessage(total, result.unverified ? counts : null));
+    if (waTab) { waTab.opener = null; waTab.location.href = url; }
+    else { window.location.href = url; }
+
+    // El pedido ya salió y el stock ya se descontó: se vacía el carrito para no descontarlo dos veces.
+    cartLines = [];
+    renderCart();
+    checkoutDialog.close();
+    showToast('Se abrió WhatsApp: solo falta que le des enviar 🔥', 5000);
+  });
+
+  // Alguien más se llevó producto mientras el cliente armaba su pedido.
+  function showStockConflict(){
+    const before = cartCounts();
+    clampCartToStock();
+    const msg = document.getElementById('err-stock');
+    if (STOCK_TYPES.some(t => stock[t] === null)) {
+      msg.textContent = 'No pudimos confirmar el stock. Intenta de nuevo en un momento.';
+    } else {
+      const short = STOCK_TYPES.filter(t => before[t] > stock[t]).map(t => stockWords[t][1]);
+      msg.textContent = '¡Se agotó mientras pedías! Ya no alcanzaban ' + (short.join(' y ') || 'algunos productos') + '. Ajustamos tu pedido: revísalo y vuelve a enviarlo.';
+    }
+    msg.hidden = false;
+    renderCart();
+    if (cartLines.length === 0) {
+      checkoutDialog.close();
+      showToast('😔 Se agotó todo lo que tenías en el pedido', 4000);
+    } else {
+      renderCheckoutSummary();
+    }
+  }
+
+  document.getElementById('checkout-cancel').addEventListener('click', () => checkoutDialog.close());
+  // Clic en el fondo oscuro también cierra.
+  checkoutDialog.addEventListener('click', (e) => { if (e.target === checkoutDialog) checkoutDialog.close(); });
+  document.getElementById('cart-checkout-btn').addEventListener('click', openCheckout);
+  document.getElementById('final-cta-btn').addEventListener('click', (e) => {
+    if (salesClosed()) { e.preventDefault(); return; }
+    if (cartLines.length > 0) { e.preventDefault(); openCheckout(); } // cerrado: openCheckout no hace nada
+  });
+
+  function renderCart(){
+    const totalQty = cartLines.reduce((s, l) => s + l.qty, 0);
+    const totalPrice = cartTotal();
+
+    const bar = document.getElementById('cart-bar');
+    bar.hidden = totalQty === 0;
+
+    const finalBtn = document.getElementById('final-cta-btn');
+    if (totalQty === 0) {
+      // Sin pedido armado, el CTA final lleva a la carta, nunca a WhatsApp.
+      orderNotes = '';
+      finalBtn.textContent = 'ARMAR MI PEDIDO';
+      finalBtn.href = '#productos';
+      finalBtn.removeAttribute('aria-disabled');
+    }
+
+    if (totalQty > 0) {
+      document.getElementById('cart-count').textContent = totalQty + (totalQty === 1 ? ' artículo' : ' artículos');
+      document.getElementById('cart-total').textContent = cop(totalPrice);
+
+      document.getElementById('cart-lines').innerHTML = cartLines.map(l => {
+        const unit = lineUnitPrice(l.item, l.drink, l.addons.length);
+        return `<div class="cart-line">
+          <div class="cart-line-info">
+            <strong>${lineLabel(l.item, l.protein, l.drink, l.pickles, l.addons)}</strong>
+            <span class="cart-line-price">${cop(unit)} c/u</span>
+          </div>
+          <div class="cart-line-controls">
+            <div class="stepper mini">
+              <button type="button" aria-label="Quitar uno" onclick="adjustLine('${l.key}',-1)">−</button>
+              <span class="qty-value">${l.qty}</span>
+              <button type="button" aria-label="Agregar uno" onclick="adjustLine('${l.key}',1)">+</button>
+            </div>
+            <span class="cart-line-subtotal">${cop(l.qty * unit)}</span>
+          </div>
+        </div>`;
+      }).join('');
+
+      // Antes de la hora de apertura se puede armar el pedido, pero no enviarlo.
+      const open = isOpen();
+      const sendLabel = open ? 'HACER MI PEDIDO POR WHATSAPP' : '🔒 PEDIDOS DESDE LAS ' + openingTimeLabel();
+      const cartBtn = document.getElementById('cart-checkout-btn');
+      cartBtn.disabled = !open;
+      cartBtn.textContent = sendLabel;
+      document.getElementById('closed-note').hidden = open;
+      finalBtn.textContent = sendLabel;
+      finalBtn.href = '#pedir';
+      finalBtn.setAttribute('aria-disabled', String(!open));
+    }
+
+    // Ventas cerradas: sin barra de carrito y el botón final avisa cuándo abrimos.
+    if (salesClosed()) {
+      bar.hidden = true;
+      finalBtn.textContent = '🔒 ABRIMOS ' + openingDayLabel().replace(/ \d.*$/, '');
+      finalBtn.href = '#inicio';
+      finalBtn.setAttribute('aria-disabled', 'true');
+    }
+
+    saveCart();
+    syncCartSpacing();
+  }
+
+  // Reserva espacio al final de la página para que la barra fija no tape el footer.
+  function syncCartSpacing(){
+    const bar = document.getElementById('cart-bar');
+    document.body.style.paddingBottom = bar.hidden ? '' : (bar.offsetHeight + 16) + 'px';
+  }
+
+  function setCartExpanded(expanded){
+    document.getElementById('cart-toggle').setAttribute('aria-expanded', String(expanded));
+    document.getElementById('cart-detail').hidden = !expanded;
+    syncCartSpacing();
+  }
+
+  document.getElementById('cart-toggle').addEventListener('click', () => {
+    const expanded = document.getElementById('cart-toggle').getAttribute('aria-expanded') === 'true';
+    setCartExpanded(!expanded);
+  });
+
+  function updateDrink(item){
+    const drink = document.getElementById('drink-' + item).checked;
+    const price = lineUnitPrice(item, drink, selectedAddons(item).length);
+    document.getElementById('price-' + item).innerHTML = cop(price) + '<br><small>PRECIO</small>';
+  }
+
+  function paint(){
+    const c = CARNITAS_CONFIG;
+    document.getElementById('ig-link').href = c.INSTAGRAM_URL;
+    document.getElementById('tt-link').href = c.TIKTOK_URL;
+    document.getElementById('wa-link').href = buildWaLink(generalMessage());
+    document.getElementById('year').textContent = new Date().getFullYear();
+    document.getElementById('addon-list').innerHTML = Object.entries(ADDONS).map(([id, a]) => `
+      <div class="addon-row">
+        <span class="addon-name">${a.emoji} ${a.label}</span>
+        <span class="addon-price">${cop(c.ADDON_PRICE)}</span>
+        <button type="button" class="addon-add focus-ring" onclick="addAddon('${id}')" aria-label="Agregar ${a.label} al carrito">+ AGREGAR</button>
+      </div>`).join('');
+
+    // Adicionales dentro de cada tarjeta de sándwich (se suman al precio de ese sándwich).
+    document.querySelectorAll('.addon-chips').forEach(box => {
+      const item = box.dataset.item;
+      box.id = 'addons-' + item;
+      box.setAttribute('role', 'group');
+      box.setAttribute('aria-label', 'Adicionales del ' + SANDWICH_NAMES[item]);
+      box.innerHTML = `<p class="addon-chips-title">Adicionales <span>(+${cop(c.ADDON_PRICE)} c/u)</span></p>
+        <div class="chip-row">` + Object.entries(ADDONS).map(([id, a]) =>
+        `<label class="chip"><input type="checkbox" value="${id}" onchange="updateDrink('${item}')"><span>${a.emoji} ${a.label}</span></label>`
+      ).join('') + '</div>';
+    });
+
+    // Precios que aparecen en la página: siempre salen de la configuración.
+    const priceOf = {
+      sandwich: c.SANDWICH_PRICE,
+      sandwichDrink: c.SANDWICH_PRICE + c.DRINK_PRICE,
+      drink: c.DRINK_PRICE,
+      addon: c.ADDON_PRICE,
+      shake: c.MALTEADA_PRICE,
+    };
+    document.querySelectorAll('[data-price]').forEach(el => {
+      const value = priceOf[el.dataset.price];
+      el.textContent = value > 0 ? cop(value) : 'Por definir';
+    });
+
+    // Malteadas
+    document.getElementById('shake-list').innerHTML = Object.entries(SHAKES).map(([id, s]) => `
+      <article class="shake-card">
+        <img src="${s.img}" width="400" height="500" loading="lazy" decoding="async" alt="Malteada de ${s.name} con crema batida">
+        <div class="shake-body">
+          <h4 class="shake-name">Malteada de ${s.name}</h4>
+          <p class="shake-copy">${s.copy}</p>
+          <p class="shake-price${shakePriceSet() ? '' : ' pending'}">${shakePriceSet() ? cop(c.MALTEADA_PRICE) : 'Precio por definir'}</p>
+          <button type="button" class="shake-add focus-ring" onclick="addShake('${id}')" aria-label="Agregar malteada de ${s.name} al carrito">+ AGREGAR</button>
+        </div>
+      </article>`).join('');
+
+    // Precio inicial de cada sándwich (cambia al marcar gaseosa o adicionales).
+    SANDWICH_ITEMS.forEach(updateDrink);
+  }
+
+  paint();
+
+  loadCart();
+  renderCart();
+
+  tickCountdown();
+  setInterval(tickCountdown, 1000);
+
+  refreshStock().then(() => {
+    // Si lo que quedó guardado en el carrito ya no alcanza, se ajusta al stock real.
+    if (clampCartToStock()) { renderCart(); showToast('Ajustamos tu pedido al stock disponible', 3500); }
+  });
+  if (CARNITAS_CONFIG.STOCK_ENABLED && stockDbUrl()) {
+    setInterval(refreshStock, 20000);
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) refreshStock(); });
+  }
+</script>
+
+</body>
+</html>
