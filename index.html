@@ -202,6 +202,11 @@
   .opts-head{ display:flex; gap:.9rem; align-items:center; padding-right:2.6rem; margin-bottom:1.1rem; }
   .opts-head img{ width:76px; height:76px; border-radius:16px; object-fit:cover; object-position:50% 40%; flex:none; background:var(--ink); }
   .opts-head .sheet-title{ padding-right:0; font-size:1.45rem; }
+  .ing{ margin:0 0 1.1rem; padding:.7rem .75rem; background:var(--cream); border-radius:16px; }
+  .ing-title{ font-weight:800; font-size:.82rem; margin-bottom:.4rem; }
+  .ing-list{ list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:.3rem; }
+  .ing-list li{ background:var(--white); border-radius:999px; padding:.22rem .55rem; font-size:.72rem; font-weight:600; line-height:1.3; }
+  .ing-list li.off{ opacity:.45; text-decoration:line-through; }
   .opt-group{ border:none; padding:0; margin:0 0 1.1rem; min-width:0; }
   .opt-group legend{ font-weight:800; font-size:1rem; padding:0; margin-bottom:.5rem; }
   .opt-group legend small{ font-weight:500; color:var(--ink-soft); font-size:.8rem; }
@@ -411,6 +416,11 @@
       </div>
     </div>
 
+    <div class="ing">
+      <p class="ing-title">Ingredientes</p>
+      <ul class="ing-list" id="opts-ingredients"></ul>
+    </div>
+
     <fieldset class="opt-group" id="opt-protein">
       <legend>¿De qué carne?</legend>
       <div class="opt-row">
@@ -573,16 +583,30 @@
       name: 'Texas BBQ', label: 'TEXAS BBQ', tag: 'Ahumado estilo texano', img: 'img/texas.webp', pickles: true,
       alt: 'Sándwich Texas BBQ desarmado: pan francés, cebolla caramelizada, queso derretido, carnitas de cerdo, pepinillos y lechuga fresca',
       copy: 'Carne bañada en salsa BBQ ahumada, cebolla caramelizada, queso, pepinillos, lechuga y un toque de salsa picante, todo entre pan artesanal.',
+      // Ingredientes que se ven al elegir el sándwich. kind: 'meat' = carne según res/cerdo; 'pickles' = se tacha si dicen "sin pepinillos".
+      ingredients: [
+        { e: '🥖', t: 'Pan francés' }, { e: '🥩', kind: 'meat' }, { e: '🍯', t: 'Salsa BBQ ahumada' },
+        { e: '🧅', t: 'Cebolla caramelizada' }, { e: '🧀', t: 'Queso derretido' },
+        { e: '🥒', t: 'Pepinillos', kind: 'pickles' }, { e: '🥬', t: 'Lechuga fresca' }, { e: '🌶️', t: 'Toque de salsa picante' },
+      ],
     },
     bistek: {
       name: 'Bistek', label: 'BISTEK', tag: 'A la plancha', img: 'img/bistek.webp', pickles: false,
       alt: 'Sándwich Bistek desarmado: pan francés, cebolla caramelizada, huevo frito, queso derretido, carne, hogao colombiano y lechuga',
       copy: 'Carne con sabor ahumado, hogao colombiano, cebolla caramelizada, lechuga, huevo y queso, en pan artesanal. El sándwich criollo de toda la vida.',
+      ingredients: [
+        { e: '🥖', t: 'Pan francés' }, { e: '🥩', kind: 'meat' }, { e: '🍅', t: 'Hogao colombiano' },
+        { e: '🧅', t: 'Cebolla caramelizada' }, { e: '🍳', t: 'Huevo frito' }, { e: '🧀', t: 'Queso derretido' }, { e: '🥬', t: 'Lechuga' },
+      ],
     },
     azteca: {
       name: 'Azteca', label: 'AZTECA', tag: 'Toque mexicano', img: 'img/azteca.webp', pickles: false,
       alt: 'Sándwich Azteca desarmado: pan francés, guacamole, nachos, queso derretido, pico de gallo, carne y lechuga',
       copy: 'Carne con sabor ahumado, pico de gallo, guacamole, nachos, queso y lechuga, en pan artesanal. Picante, fresco y con personalidad.',
+      ingredients: [
+        { e: '🥖', t: 'Pan francés' }, { e: '🥩', kind: 'meat' }, { e: '🍅', t: 'Pico de gallo (tomate y cebolla)' },
+        { e: '🥑', t: 'Guacamole' }, { e: '🌮', t: 'Nachos' }, { e: '🧀', t: 'Queso derretido' }, { e: '🥬', t: 'Lechuga' },
+      ],
     },
   };
 
@@ -876,6 +900,12 @@
     optsDialog.querySelectorAll('[data-pickles]').forEach(b => b.setAttribute('aria-pressed', String((b.dataset.pickles === '1') === opt.pickles)));
     optsDialog.querySelectorAll('[data-drink]').forEach(b => b.setAttribute('aria-pressed', String((b.dataset.drink === '1') === opt.drink)));
     optsDialog.querySelectorAll('[data-addon]').forEach(b => b.setAttribute('aria-pressed', String(opt.addons.has(b.dataset.addon))));
+    // Ingredientes del sándwich elegido (la carne y los pepinillos siguen lo que el cliente escoge).
+    $('opts-ingredients').innerHTML = SANDWICHES[opt.item].ingredients.map(i => {
+      const text = i.kind === 'meat' ? 'Carne de ' + (opt.protein === 'RES' ? 'res' : 'cerdo') : i.t;
+      const off = i.kind === 'pickles' && !opt.pickles;
+      return `<li${off ? ' class="off"' : ''}>${i.e} ${text}</li>`;
+    }).join('');
     $('opts-qty').textContent = opt.qty;
     const unit = lineUnitPrice(opt.item, opt.drink, opt.addons.size);
     $('opts-add').textContent = 'AGREGAR ' + cop(unit * opt.qty);
