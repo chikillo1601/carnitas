@@ -570,6 +570,12 @@
     OPEN_TIME: "17:00",
     CLOSE_TIME: "23:00",
 
+    // Cierre distinto SOLO para días puntuales: "AAAA-MM-DD": "HH:MM" (hora de Colombia).
+    // Ese día la tienda cierra a esa hora; los demás días rige CLOSE_TIME. Se puede borrar después.
+    CLOSE_OVERRIDES: {
+      "2026-10-02": "21:45",
+    },
+
     // Stock de sándwiches para HOY. Es interno: el cliente nunca ve un número, solo se
     // bloquea con "agotado" cuando se acaba. Res y cerdo se cuentan por separado, compartidos
     // entre Texas BBQ, Bistek y Azteca. false = sin límite (como estaba hasta ahora).
@@ -916,15 +922,21 @@
   const DAY_MS = 864e5;
   const toMinutes = hhmm => { const [h, m] = hhmm.split(':').map(Number); return h * 60 + m; };
   const OPEN_MIN = toMinutes(CARNITAS_CONFIG.OPEN_TIME);
-  const CLOSE_MIN = toMinutes(CARNITAS_CONFIG.CLOSE_TIME);
   const pad2 = n => String(n).padStart(2, '0');
+
+  // Hora de cierre (en minutos) del día de "now": la de CLOSE_OVERRIDES si ese día tiene una, o CLOSE_TIME.
+  function closeTimeFor(now = Date.now()){
+    const day = new Date(now).toLocaleDateString('en-CA', BOGOTA); // AAAA-MM-DD en Colombia
+    const overrides = CARNITAS_CONFIG.CLOSE_OVERRIDES || {};
+    return Object.hasOwn(overrides, day) ? overrides[day] : CARNITAS_CONFIG.CLOSE_TIME;
+  }
 
   // Estado de la tienda en un momento dado: si está abierta y cuándo cambia (cierra o abre).
   function scheduleState(now = Date.now()){
     if (Number.isFinite(openingTs) && now < openingTs) return { open: false, next: openingTs, official: true };
     const dayStart = Math.floor((now - BOGOTA_OFFSET) / DAY_MS) * DAY_MS + BOGOTA_OFFSET; // las 00:00 de hoy en Colombia
     const openAt = dayStart + OPEN_MIN * 60e3;
-    const closeAt = dayStart + CLOSE_MIN * 60e3;
+    const closeAt = dayStart + toMinutes(closeTimeFor(now)) * 60e3;
     if (now >= openAt && now < closeAt) return { open: true, next: closeAt };
     return { open: false, next: now < openAt ? openAt : openAt + DAY_MS };
   }
@@ -1370,6 +1382,10 @@
   /* ---------- Arranque ---------- */
   renderMenu();
   $('hours-line').textContent = '🕓 Todos los días · ' + hourOfDay(CARNITAS_CONFIG.OPEN_TIME) + ' a ' + hourOfDay(CARNITAS_CONFIG.CLOSE_TIME);
+  // Si hoy tiene un cierre especial, el aviso lo dice.
+  if (closeTimeFor() !== CARNITAS_CONFIG.CLOSE_TIME) {
+    $('hours-line').textContent = '🕓 Hoy · ' + hourOfDay(CARNITAS_CONFIG.OPEN_TIME) + ' a ' + hourOfDay(closeTimeFor());
+  }
   loadCart();
   renderMenuState();
   renderCart();
