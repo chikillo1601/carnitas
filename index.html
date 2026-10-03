@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Carnitas · Sándwiches y malteadas</title>
-<meta name="description" content="Carnitas - Sándwiches artesanales y malteadas. Pide por WhatsApp en 1 minuto. Barriga llena, corazón contento.">
+<title>Carnitas · Sándwiches artesanales</title>
+<meta name="description" content="Carnitas - Sándwiches artesanales. Pide por WhatsApp en 1 minuto. Barriga llena, corazón contento.">
 <meta name="theme-color" content="#0C0B0A">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -335,7 +335,7 @@
   <section class="hero" id="inicio">
     <div class="container hero-inner">
       <div>
-        <span class="eyebrow">🥪 Sándwiches · 🥤 Malteadas</span>
+        <span class="eyebrow">🥪 Sándwiches artesanales</span>
         <h1>Barriga llena, <em>corazón contento.</em></h1>
         <p class="hero-copy">Elige, toca y pide por WhatsApp. Así de fácil.</p>
 
@@ -580,8 +580,8 @@
     // bloquea con "agotado" cuando se acaba. Res y cerdo se cuentan por separado, compartidos
     // entre Texas BBQ, Bistek y Azteca. false = sin límite (como estaba hasta ahora).
     STOCK_ENABLED: true,
-    RES_STOCK: 5,
-    CERDO_STOCK: 5,
+    RES_STOCK: 8,
+    CERDO_STOCK: 8,
     // Mismo proyecto que ORDERS_DB_URL: ahí se guarda el contador compartido /stock.
     STOCK_DB_URL: "https://carnitas-7aafe-default-rtdb.firebaseio.com",
 
@@ -590,6 +590,9 @@
     DRINK_PRICE: 4000,   // gaseosa, se suma al sándwich
     ADDON_PRICE: 3000,   // cada adicional (queso, huevo, etc.)
     MALTEADA_PRICE: 10000, // cada malteada (0 = "por definir" y no se puede pedir)
+
+    // false = las malteadas no aparecen en el menú (ni se pueden pedir). true = se muestran.
+    SHOW_SHAKES: false,
 
     // Malteadas agotadas por hoy: pon aquí los sabores que se acabaron (oreo, chocolate, fresa).
     // Ej: ["oreo"] agota solo la de Oreo. Vacío [] = todas disponibles.
@@ -658,7 +661,8 @@
   const isSandwich = item => Object.hasOwn(SANDWICHES, item);
   const isShake = item => item.startsWith('shake:') && Object.hasOwn(SHAKES, item.slice(6));
   const shakePriceSet = () => CARNITAS_CONFIG.MALTEADA_PRICE > 0;
-  const shakeSoldOut = id => (CARNITAS_CONFIG.SOLD_OUT_SHAKES || []).includes(id);
+  // Con SHOW_SHAKES en false, ninguna malteada se puede pedir (también se quitan de carritos viejos).
+  const shakeSoldOut = id => !CARNITAS_CONFIG.SHOW_SHAKES || (CARNITAS_CONFIG.SOLD_OUT_SHAKES || []).includes(id);
 
   /* ---------- Utilidades ---------- */
   const $ = id => document.getElementById(id);
@@ -1409,6 +1413,10 @@
   // Si hoy tiene un cierre especial, el aviso lo dice.
   if (closeTimeFor() !== CARNITAS_CONFIG.CLOSE_TIME) {
     $('hours-line').textContent = '🕓 Hoy · ' + hourOfDay(CARNITAS_CONFIG.OPEN_TIME) + ' a ' + hourOfDay(closeTimeFor());
+  }
+  if (!CARNITAS_CONFIG.SHOW_SHAKES) { // malteadas fuera del menú
+    $('malteadas').hidden = true;
+    document.querySelectorAll('a[href="#malteadas"]').forEach(a => { a.hidden = true; });
   }
   loadCart();
   dropSoldOutShakes();
