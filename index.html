@@ -591,6 +591,10 @@
     ADDON_PRICE: 3000,   // cada adicional (queso, huevo, etc.)
     MALTEADA_PRICE: 10000, // cada malteada (0 = "por definir" y no se puede pedir)
 
+    // Malteadas agotadas por hoy: pon aquí los sabores que se acabaron (oreo, chocolate, fresa).
+    // Ej: ["oreo"] agota solo la de Oreo. Vacío [] = todas disponibles.
+    SOLD_OUT_SHAKES: ["oreo", "chocolate", "fresa"],
+
     // Datos para transferir (ej: "Nequi 300 123 4567 · a nombre de Carnitas").
     // Si lo llenas, el cliente lo ve al elegir "Transferencia". Si lo dejas vacío,
     // se le avisa que le enviarás los datos por WhatsApp.
@@ -654,6 +658,7 @@
   const isSandwich = item => Object.hasOwn(SANDWICHES, item);
   const isShake = item => item.startsWith('shake:') && Object.hasOwn(SHAKES, item.slice(6));
   const shakePriceSet = () => CARNITAS_CONFIG.MALTEADA_PRICE > 0;
+  const shakeSoldOut = id => (CARNITAS_CONFIG.SOLD_OUT_SHAKES || []).includes(id);
 
   /* ---------- Utilidades ---------- */
   const $ = id => document.getElementById(id);
@@ -824,6 +829,13 @@
     return STOCK_TYPES.filter(t => counts[t] > 0).map(t => label[t](counts[t])).join(', ');
   }
 
+  // Quita del carrito las malteadas que ya se agotaron (por ejemplo, las que quedaron guardadas de antes).
+  function dropSoldOutShakes(){
+    const before = cartLines.length;
+    cartLines = cartLines.filter(l => !(isShake(l.item) && shakeSoldOut(l.item.slice(6))));
+    return cartLines.length !== before;
+  }
+
   // Si el stock bajó por debajo de lo que hay en el carrito, recorta el pedido (desde el final).
   function clampCartToStock(){
     if (!CARNITAS_CONFIG.STOCK_ENABLED) return false;
@@ -876,6 +888,7 @@
   }
 
   function addShake(id){
+    if (shakeSoldOut(id)) { showToast('😔 Esa malteada se agotó por hoy', 2600); return; }
     if (!shakePriceSet()) { showToast('Las malteadas aún no tienen precio', 2600); return; }
     commitLine('shake:' + id, null, false, null, []);
   }
@@ -1040,7 +1053,11 @@
       b.disabled = closed || stockedOut;
       b.textContent = closed ? '🔒 CERRADO' : stockedOut ? '😔 AGOTADO' : '+ AGREGAR';
     });
-    document.querySelectorAll('[data-shake]').forEach(b => { b.disabled = closed || !shakePriceSet(); b.textContent = closed ? '🔒 CERRADO' : '+ AGREGAR'; });
+    document.querySelectorAll('[data-shake]').forEach(b => {
+      const out = shakeSoldOut(b.dataset.shake);
+      b.disabled = closed || out || !shakePriceSet();
+      b.textContent = closed ? '🔒 CERRADO' : out ? '😔 AGOTADO' : '+ AGREGAR';
+    });
     const note = $('menu-closed-note');
     note.hidden = !closed;
     if (closed) note.textContent = '🔒 ' + closedMessage() + ' ¡Mira el menú mientras tanto!';
@@ -1308,6 +1325,13 @@
     e.preventDefault();
     if (submitting) return;
     if (salesClosed()) { checkoutDialog.close(); return; }
+    if (dropSoldOutShakes()) { // se agotó una malteada mientras armaba el pedido
+      renderCart();
+      if (cartLines.length === 0) { checkoutDialog.close(); showToast('😔 Se agotó lo que tenías en el pedido.', 4500); return; }
+      goStep(1); renderOrderList();
+      showToast('😔 Una malteada se agotó y la quitamos. Revisa tu pedido y envíalo de nuevo.', 4500);
+      return;
+    }
     const name = nameInput.value.trim();
     const phone = phoneDigits(phoneInput.value);
     const address = addressInput.value.trim();
@@ -1387,6 +1411,7 @@
     $('hours-line').textContent = '🕓 Hoy · ' + hourOfDay(CARNITAS_CONFIG.OPEN_TIME) + ' a ' + hourOfDay(closeTimeFor());
   }
   loadCart();
+  dropSoldOutShakes();
   renderMenuState();
   renderCart();
   tickCountdown();
