@@ -226,6 +226,9 @@
   .opt-btn[aria-pressed="true"]{ background:var(--red); border-color:var(--red); color:var(--white); }
   .opt-btn:disabled{ opacity:.4; cursor:not-allowed; text-decoration:line-through; }
   .opt-btn:disabled[aria-pressed="true"]{ background:var(--white); border-color:var(--line); color:var(--ink); }
+  .mix-count{ margin:0 0 .6rem; font-weight:800; font-size:.85rem; color:var(--red); }
+  .chip-btn:disabled{ opacity:.4; cursor:not-allowed; text-decoration:line-through; }
+  .item-ing li.span2{ grid-column:1 / -1; }
   .chip-row{ display:flex; flex-wrap:wrap; gap:.45rem; }
   .chip-btn{
     padding:.55rem .95rem; border:2px solid transparent; border-radius:999px; background:var(--cream); color:var(--ink);
@@ -426,7 +429,7 @@
       </div>
     </div>
 
-    <div class="ing">
+    <div class="ing" id="opt-ing-box">
       <p class="ing-title">Ingredientes</p>
       <ul class="ing-list" id="opts-ingredients"></ul>
     </div>
@@ -447,13 +450,19 @@
       </div>
     </fieldset>
 
-    <fieldset class="opt-group">
+    <fieldset class="opt-group" id="opt-build" hidden>
+      <legend>Arma tu sándwich <small id="opt-mix-info"></small></legend>
+      <p class="mix-count" id="opt-mix-count" aria-live="polite"></p>
+      <div class="chip-row" id="opt-mix"></div>
+    </fieldset>
+
+    <fieldset class="opt-group" id="opt-extras">
       <legend>¿Quieres algo extra? <small id="opt-addon-price"></small></legend>
       <div class="chip-row" id="opt-addons"></div>
     </fieldset>
 
     <fieldset class="opt-group">
-      <legend>¿Con gaseosa?</legend>
+      <legend>¿Con Coca-Cola?</legend>
       <div class="opt-row">
         <button type="button" class="opt-btn" data-drink="0" aria-pressed="true">No</button>
         <button type="button" class="opt-btn" data-drink="1" aria-pressed="false" id="opt-drink-yes">🥤 Sí</button>
@@ -591,9 +600,15 @@
 
     // Precios oficiales en pesos colombianos (COP), sin puntos ni símbolos.
     SANDWICH_PRICE: 15000,
-    DRINK_PRICE: 4000,   // gaseosa, se suma al sándwich
+    DRINK_PRICE: 4000,   // Coca-Cola (la única gaseosa), se suma al sándwich
     ADDON_PRICE: 3000,   // cada adicional (queso, huevo, etc.)
     MALTEADA_PRICE: 10000, // cada malteada (0 = "por definir" y no se puede pedir)
+
+    // "Lo que sea": el cliente arma su sándwich. Precio base = SANDWICH_PRICE con
+    // COMMUNITY_INCLUDED ingredientes incluidos; cada ingrediente de más cuesta ADDON_PRICE.
+    COMMUNITY_INCLUDED: 4,
+    COMMUNITY_MAX: 8,            // máximo de ingredientes por sándwich
+    SOLD_OUT_INGREDIENTS: [],    // ingredientes agotados, ej: ["guacamole", "nachos"] (ver ids en INGREDIENTS)
 
     // false = las malteadas no aparecen en el menú (ni se pueden pedir). true = se muestran.
     SHOW_SHAKES: false,
@@ -636,13 +651,37 @@
     },
     azteca: {
       name: 'Azteca', label: 'AZTECA', tag: 'Toque mexicano', img: 'img/azteca.webp', pickles: false,
-      alt: 'Sándwich Azteca desarmado: pan francés, guacamole, nachos, queso derretido, pico de gallo, carne y lechuga',
+      alt: 'Sándwich Azteca desarmado: pan francés, salsa de guacamole, nachos, queso derretido, pico de gallo, carne y lechuga',
       ingredients: [
         { e: '🥖', t: 'Pan francés' }, { e: '🥩', kind: 'meat' }, { e: '🍅', t: 'Pico de gallo (tomate y cebolla)' },
-        { e: '🥑', t: 'Guacamole' }, { e: '🌮', t: 'Nachos' }, { e: '🧀', t: 'Queso derretido' }, { e: '🥬', t: 'Lechuga' },
+        { e: '🥑', t: 'Salsa de guacamole' }, { e: '🌮', t: 'Nachos' }, { e: '🧀', t: 'Queso derretido' }, { e: '🥬', t: 'Lechuga' },
       ],
     },
+    comunidad: {
+      custom: true, // el cliente elige sus ingredientes
+      name: 'Lo que sea', label: 'LO QUE SEA', tag: 'Arma el tuyo', img: 'img/lo-que-sea.webp', pickles: false,
+      alt: 'Lo que sea: pan francés con un signo de interrogación de carne, queso y salsa, el sándwich que armas tú',
+    },
   };
+
+  // Ingredientes que el cliente puede elegir en "Lo que sea": los mismos que ya existen en la carta
+  // (los de los sándwiches y los adicionales, sin repetir).
+  const INGREDIENTS = {
+    bbq:        { e: '🍯', label: 'SALSA BBQ' },
+    cebolla:    { e: '🧅', label: 'CEBOLLA CARAMELIZADA' },
+    queso:      { e: '🧀', label: 'QUESO' },
+    cheddar:    { e: '🧀', label: 'QUESO CHEDDAR' },
+    pepinillos: { e: '🥒', label: 'PEPINILLOS' },
+    lechuga:    { e: '🥬', label: 'LECHUGA' },
+    picante:    { e: '🌶️', label: 'SALSA PICANTE' },
+    jalapenos:  { e: '🌶️', label: 'JALAPEÑOS' },
+    hogao:      { e: '🍅', label: 'HOGAO' },
+    huevo:      { e: '🍳', label: 'HUEVO' },
+    pico:       { e: '🥗', label: 'PICO DE GALLO' },
+    guacamole:  { e: '🥑', label: 'SALSA DE GUACAMOLE' },
+    nachos:     { e: '🌮', label: 'NACHOS' },
+  };
+  const ingredientSoldOut = id => (CARNITAS_CONFIG.SOLD_OUT_INGREDIENTS || []).includes(id);
 
   const SHAKES = {
     oreo:      { name: 'Oreo',      label: 'MALTEADA DE OREO',      img: 'img/malteada-oreo.svg',
@@ -699,14 +738,21 @@
 
   function lineUnitPrice(item, drink, extras = 0){
     if (isShake(item)) return CARNITAS_CONFIG.MALTEADA_PRICE;
-    return CARNITAS_CONFIG.SANDWICH_PRICE + (drink ? CARNITAS_CONFIG.DRINK_PRICE : 0) + extras * CARNITAS_CONFIG.ADDON_PRICE;
+    // En "Lo que sea", "extras" es la cantidad de ingredientes elegidos: los primeros
+    // COMMUNITY_INCLUDED vienen en el precio base y el resto se cobra como adicional.
+    const paid = SANDWICHES[item]?.custom ? Math.max(0, extras - CARNITAS_CONFIG.COMMUNITY_INCLUDED) : extras;
+    return CARNITAS_CONFIG.SANDWICH_PRICE + (drink ? CARNITAS_CONFIG.DRINK_PRICE : 0) + paid * CARNITAS_CONFIG.ADDON_PRICE;
   }
 
   function lineLabel(item, protein, drink, pickles, addons = []){
     if (isShake(item)) return '🥤 ' + SHAKES[item.slice(6)].label;
+    if (SANDWICHES[item].custom) { // los "addons" de este sándwich son los ingredientes que eligió
+      const list = addons.map(id => INGREDIENTS[id].e + ' ' + INGREDIENTS[id].label).join(', ');
+      return '🥪 ' + SANDWICHES[item].label + ' (' + protein + ': ' + list + ')' + (drink ? ' + 🥤 COCA-COLA' : '');
+    }
     const detail = item === 'texas' ? protein + ', ' + (pickles ? 'CON' : 'SIN') + ' PEPINILLOS' : protein;
     const extras = addons.map(id => ' + ' + ADDONS[id].emoji + ' ' + ADDONS[id].label).join('');
-    return '🥪 ' + SANDWICHES[item].label + ' (' + detail + ')' + (drink ? ' + 🥤 GASEOSA' : '') + extras;
+    return '🥪 ' + SANDWICHES[item].label + ' (' + detail + ')' + (drink ? ' + 🥤 COCA-COLA' : '') + extras;
   }
 
   function lineKey(item, protein, drink, pickles, addons){
@@ -922,7 +968,9 @@
         const protein = sandwich ? (l.protein === 'CERDO' ? 'CERDO' : 'RES') : null;
         const drink = sandwich && l.drink === true;
         const pickles = l.item === 'texas' ? l.pickles !== false : null;
-        const addons = sandwich && Array.isArray(l.addons) ? Object.keys(ADDONS).filter(id => l.addons.includes(id)) : [];
+        const pool = sandwich && SANDWICHES[l.item].custom ? INGREDIENTS : ADDONS; // en la Comunidad, los "addons" son ingredientes
+        const addons = sandwich && Array.isArray(l.addons) ? Object.keys(pool).filter(id => l.addons.includes(id)) : [];
+        if (sandwich && SANDWICHES[l.item].custom && (addons.length === 0 || addons.length > CARNITAS_CONFIG.COMMUNITY_MAX)) return;
         const key = lineKey(l.item, protein, drink, pickles, addons);
         const existing = cartLines.find(x => x.key === key);
         if (existing) existing.qty = Math.min(99, existing.qty + qty);
@@ -1033,7 +1081,9 @@
         <div>
           <p class="item-tag">${s.tag}</p>
           <h4 class="item-name">${s.name}</h4>
-          <ul class="item-ing" aria-label="Ingredientes">${ingredientList(s.ingredients)}</ul>
+          <ul class="item-ing" aria-label="Ingredientes">${s.custom
+            ? `<li class="span2">🧩 Tú eliges la carne y los ingredientes: ${c.COMMUNITY_INCLUDED} incluidos, +${cop(c.ADDON_PRICE)} cada extra</li>`
+            : ingredientList(s.ingredients)}</ul>
           <div class="item-foot">
             <span class="item-price">${cop(c.SANDWICH_PRICE)}</span>
             <button type="button" class="item-add" data-add="${id}" aria-label="Agregar ${s.name}">+ AGREGAR</button>
@@ -1091,7 +1141,8 @@
   const opt = { item: null, protein: 'CERDO', pickles: true, addons: new Set(), drink: false, qty: 1 };
 
   function optionsAddons(){ // en el mismo orden siempre, para que "queso + huevo" = "huevo + queso"
-    return Object.keys(ADDONS).filter(id => opt.addons.has(id));
+    const pool = SANDWICHES[opt.item].custom ? INGREDIENTS : ADDONS;
+    return Object.keys(pool).filter(id => opt.addons.has(id));
   }
 
   function openOptions(item){
@@ -1106,6 +1157,10 @@
     $('opts-photo').alt = '';
     $('opts-title').textContent = s.name;
     $('opt-pickles').hidden = !s.pickles;
+    // "Lo que sea": se muestran los ingredientes para elegir y se ocultan los adicionales sueltos.
+    $('opt-build').hidden = !s.custom;
+    $('opt-extras').hidden = !!s.custom;
+    $('opt-ing-box').hidden = !!s.custom;
     renderOptions();
     optsDialog.showModal();
     optsDialog.scrollTop = 0;
@@ -1129,12 +1184,25 @@
     optsDialog.querySelectorAll('[data-pickles]').forEach(b => b.setAttribute('aria-pressed', String((b.dataset.pickles === '1') === opt.pickles)));
     optsDialog.querySelectorAll('[data-drink]').forEach(b => b.setAttribute('aria-pressed', String((b.dataset.drink === '1') === opt.drink)));
     optsDialog.querySelectorAll('[data-addon]').forEach(b => b.setAttribute('aria-pressed', String(opt.addons.has(b.dataset.addon))));
-    // Ingredientes del sándwich elegido (la carne y los pepinillos siguen lo que el cliente escoge).
-    $('opts-ingredients').innerHTML = SANDWICHES[opt.item].ingredients.map(i => {
-      const text = i.kind === 'meat' ? 'Carne de ' + (opt.protein === 'RES' ? 'res' : 'cerdo') : i.t;
-      const off = i.kind === 'pickles' && !opt.pickles;
-      return `<li${off ? ' class="off"' : ''}>${i.e} ${text}</li>`;
-    }).join('');
+    const sel = SANDWICHES[opt.item];
+    if (sel.custom) {
+      optsDialog.querySelectorAll('[data-mix]').forEach(b => {
+        const out = ingredientSoldOut(b.dataset.mix);
+        b.disabled = out;
+        b.setAttribute('aria-pressed', String(!out && opt.addons.has(b.dataset.mix)));
+      });
+      const n = opt.addons.size, inc = c.COMMUNITY_INCLUDED;
+      $('opt-mix-count').textContent = n <= inc
+        ? `Llevas ${n} de ${inc} incluidos`
+        : `${inc} incluidos + ${n - inc} extra${n - inc === 1 ? '' : 's'} (+${cop((n - inc) * c.ADDON_PRICE)})`;
+    } else {
+      // Ingredientes del sándwich elegido (la carne y los pepinillos siguen lo que el cliente escoge).
+      $('opts-ingredients').innerHTML = sel.ingredients.map(i => {
+        const text = i.kind === 'meat' ? 'Carne de ' + (opt.protein === 'RES' ? 'res' : 'cerdo') : i.t;
+        const off = i.kind === 'pickles' && !opt.pickles;
+        return `<li${off ? ' class="off"' : ''}>${i.e} ${text}</li>`;
+      }).join('');
+    }
     $('opts-qty').textContent = opt.qty;
     const unit = lineUnitPrice(opt.item, opt.drink, opt.addons.size);
     $('opts-add').textContent = 'AGREGAR ' + cop(unit * opt.qty);
@@ -1148,6 +1216,12 @@
     else if (b.dataset.pickles) opt.pickles = b.dataset.pickles === '1';
     else if (b.dataset.drink) opt.drink = b.dataset.drink === '1';
     else if (b.dataset.addon) { opt.addons.has(b.dataset.addon) ? opt.addons.delete(b.dataset.addon) : opt.addons.add(b.dataset.addon); }
+    else if (b.dataset.mix) { // ingrediente de "Lo que sea"
+      const id = b.dataset.mix;
+      if (opt.addons.has(id)) opt.addons.delete(id);
+      else if (opt.addons.size >= CARNITAS_CONFIG.COMMUNITY_MAX) showToast('Máximo ' + CARNITAS_CONFIG.COMMUNITY_MAX + ' ingredientes', 2200);
+      else opt.addons.add(id);
+    }
     else if (b.id === 'opts-minus') opt.qty = Math.max(1, opt.qty - 1);
     else if (b.id === 'opts-plus') {
       const type = stockTypeOf(opt.item, opt.protein);
@@ -1158,6 +1232,7 @@
     else if (b.id === 'opts-close') { optsDialog.close(); return; }
     else if (b.id === 'opts-add') {
       const pickles = opt.item === 'texas' ? opt.pickles : null;
+      if (SANDWICHES[opt.item].custom && opt.addons.size === 0) { showToast('Elige al menos 1 ingrediente', 2200); return; }
       if (commitLine(opt.item, opt.protein, opt.drink, pickles, optionsAddons(), opt.qty)) optsDialog.close();
       return;
     } else return;
@@ -1452,8 +1527,11 @@
   // Se llena la lista de adicionales de la ventana de opciones.
   $('opt-addons').innerHTML = Object.entries(ADDONS).map(([id, a]) =>
     `<button type="button" class="chip-btn" data-addon="${id}" aria-pressed="false">${a.emoji} ${a.label}</button>`).join('');
+  $('opt-mix').innerHTML = Object.entries(INGREDIENTS).map(([id, i]) =>
+    `<button type="button" class="chip-btn" data-mix="${id}" aria-pressed="false">${i.e} ${i.label}</button>`).join('');
+  $('opt-mix-info').textContent = '(máx. ' + CARNITAS_CONFIG.COMMUNITY_MAX + ')';
   $('opt-addon-price').textContent = '(+' + cop(CARNITAS_CONFIG.ADDON_PRICE) + ' cada uno)';
-  $('opt-drink-yes').textContent = '🥤 Sí, +' + cop(CARNITAS_CONFIG.DRINK_PRICE);
+  $('opt-drink-yes').textContent = '🥤 Coca-Cola, +' + cop(CARNITAS_CONFIG.DRINK_PRICE);
 </script>
 
 </body>
