@@ -570,6 +570,10 @@
     OPEN_TIME: "17:00",
     CLOSE_TIME: "23:00",
 
+    // Días de la semana en que la tienda NO abre: 0 = domingo, 1 = lunes … 6 = sábado.
+    // Esos días todo aparece cerrado y el contador cuenta hasta el siguiente día con servicio.
+    CLOSED_WEEKDAYS: [0],
+
     // Cierre distinto SOLO para días puntuales: "AAAA-MM-DD": "HH:MM" (hora de Colombia).
     // Ese día la tienda cierra a esa hora; los demás días rige CLOSE_TIME. Se puede borrar después.
     CLOSE_OVERRIDES: {
@@ -941,6 +945,9 @@
   const OPEN_MIN = toMinutes(CARNITAS_CONFIG.OPEN_TIME);
   const pad2 = n => String(n).padStart(2, '0');
 
+  // ¿Ese día (medianoche de Colombia, en ms) la tienda no abre? Según CLOSED_WEEKDAYS (0 = domingo).
+  const dayIsClosed = dayStartMs => (CARNITAS_CONFIG.CLOSED_WEEKDAYS || []).includes(new Date(dayStartMs).getUTCDay());
+
   // Hora de cierre (en minutos) del día de "now": la de CLOSE_OVERRIDES si ese día tiene una, o CLOSE_TIME.
   function closeTimeFor(now = Date.now()){
     const day = new Date(now).toLocaleDateString('en-CA', BOGOTA); // AAAA-MM-DD en Colombia
@@ -954,8 +961,13 @@
     const dayStart = Math.floor((now - BOGOTA_OFFSET) / DAY_MS) * DAY_MS + BOGOTA_OFFSET; // las 00:00 de hoy en Colombia
     const openAt = dayStart + OPEN_MIN * 60e3;
     const closeAt = dayStart + toMinutes(closeTimeFor(now)) * 60e3;
-    if (now >= openAt && now < closeAt) return { open: true, next: closeAt };
-    return { open: false, next: now < openAt ? openAt : openAt + DAY_MS };
+    const todayCloses = dayIsClosed(dayStart); // hoy es un día sin servicio (p. ej. domingo)
+    if (!todayCloses && now >= openAt && now < closeAt) return { open: true, next: closeAt };
+    if (!todayCloses && now < openAt) return { open: false, next: openAt };
+    // La próxima apertura es el siguiente día con servicio.
+    let day = dayStart + DAY_MS;
+    for (let i = 0; i < 7 && dayIsClosed(day); i++) day += DAY_MS;
+    return { open: false, next: day + OPEN_MIN * 60e3 };
   }
   const isOpen = () => scheduleState().open;
   const salesClosed = () => !isOpen();
@@ -1409,7 +1421,10 @@
 
   /* ---------- Arranque ---------- */
   renderMenu();
-  $('hours-line').textContent = '🕓 Todos los días · ' + hourOfDay(CARNITAS_CONFIG.OPEN_TIME) + ' a ' + hourOfDay(CARNITAS_CONFIG.CLOSE_TIME);
+  const DAY_NAMES = ['domingos', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábados'];
+  const closedNames = (CARNITAS_CONFIG.CLOSED_WEEKDAYS || []).map(d => DAY_NAMES[d]);
+  $('hours-line').textContent = '🕓 ' + (closedNames.length ? '' : 'Todos los días · ') + hourOfDay(CARNITAS_CONFIG.OPEN_TIME) + ' a ' + hourOfDay(CARNITAS_CONFIG.CLOSE_TIME)
+    + (closedNames.length ? ' · Cerrado los ' + closedNames.join(' y ') : '');
   // Si hoy tiene un cierre especial, el aviso lo dice.
   if (closeTimeFor() !== CARNITAS_CONFIG.CLOSE_TIME) {
     $('hours-line').textContent = '🕓 Hoy · ' + hourOfDay(CARNITAS_CONFIG.OPEN_TIME) + ' a ' + hourOfDay(closeTimeFor());
