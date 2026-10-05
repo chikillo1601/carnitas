@@ -601,7 +601,7 @@
 
     // Stock de sándwiches para HOY. Es interno: el cliente nunca ve un número, solo se
     // bloquea con "agotado" cuando se acaba. Res y cerdo se cuentan por separado, compartidos
-    // entre Texas BBQ, Bistek y Azteca. false = sin límite (como estaba hasta ahora).
+    // entre Texas BBQ, Cheese Spicy y Azteca. false = sin límite (como estaba hasta ahora).
     STOCK_ENABLED: true,
     RES_STOCK: 8,
     CERDO_STOCK: 8,
@@ -651,12 +651,12 @@
         { e: '🥒', t: 'Pepinillos', kind: 'pickles' }, { e: '🥬', t: 'Lechuga fresca' }, { e: '🌶️', t: 'Toque de salsa picante' },
       ],
     },
-    bistek: {
-      name: 'Bistek', label: 'BISTEK', tag: 'A la plancha', img: 'img/bistek.webp', pickles: false,
-      alt: 'Sándwich Bistek desarmado: pan francés, cebolla caramelizada, huevo frito, queso derretido, carne, hogao colombiano y lechuga',
+    cheese: {
+      name: 'Cheese Spicy', label: 'CHEESE SPICY', tag: 'Cheddar y picante', img: 'img/cheese-spicy.jpg', pickles: false,
+      alt: 'Sándwich Cheese Spicy desarmado: pan francés, cebolla caramelizada, jalapeños, queso cheddar, queso, carne y lechuga',
       ingredients: [
-        { e: '🥖', t: 'Pan francés' }, { e: '🥩', kind: 'meat' }, { e: '🍅', t: 'Hogao colombiano' },
-        { e: '🧅', t: 'Cebolla caramelizada' }, { e: '🍳', t: 'Huevo frito' }, { e: '🧀', t: 'Queso derretido' }, { e: '🥬', t: 'Lechuga' },
+        { e: '🥖', t: 'Pan francés' }, { e: '🥩', kind: 'meat' }, { e: '🧅', t: 'Cebolla caramelizada' },
+        { e: '🌶️', t: 'Jalapeños' }, { e: '🧀', t: 'Queso cheddar' }, { e: '🧀', t: 'Queso' }, { e: '🥬', t: 'Lechuga' },
       ],
     },
     azteca: {
