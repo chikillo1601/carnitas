@@ -100,6 +100,7 @@
   .countdown.is-open{ background:var(--red); color:var(--white); }
   .countdown.is-open .countdown-label{ color:var(--white); font-size:.95rem; }
 
+  .notice{ margin:1.2rem 0 0; max-width:400px; padding:.85rem 1rem; border-radius:16px; background:var(--white); color:var(--ink); font-weight:800; font-size:.95rem; line-height:1.4; border-left:6px solid var(--yellow); box-shadow:var(--shadow); }
   .hours{ margin-top:.7rem; font-size:.85rem; font-weight:600; color:var(--muted); }
   .hero-cta{ margin-top:1.1rem; max-width:320px; }
   .hero-photo{ display:none; position:relative; max-width:400px; margin:0 auto; width:100%; }
@@ -342,6 +343,8 @@
         <h1>Barriga llena, <em>corazón contento.</em></h1>
         <p class="hero-copy">Elige, toca y pide por WhatsApp. Así de fácil.</p>
 
+        <p class="notice" id="notice" role="status" hidden></p>
+
         <div class="countdown" id="countdown" role="timer" aria-label="Cuenta regresiva para la apertura">
           <p class="countdown-label" id="countdown-label"></p>
           <div class="countdown-digits" id="countdown-digits">
@@ -582,6 +585,13 @@
     // Días de la semana en que la tienda NO abre: 0 = domingo, 1 = lunes … 6 = sábado.
     // Esos días todo aparece cerrado y el contador cuenta hasta el siguiente día con servicio.
     CLOSED_WEEKDAYS: [0],
+
+    // Fechas puntuales en que NO se abre, con el aviso que verán los clientes: "AAAA-MM-DD": "mensaje".
+    // Ese día todo aparece cerrado, con el aviso arriba, y el contador cuenta hasta la próxima apertura.
+    // Cuando pase la fecha, se puede borrar la línea.
+    CLOSED_DATES: {
+      "2026-10-05": "Disculpa, hoy no abrimos. Continuaremos con nuestro horario habitual el día de mañana.",
+    },
 
     // Cierre distinto SOLO para días puntuales: "AAAA-MM-DD": "HH:MM" (hora de Colombia).
     // Ese día la tienda cierra a esa hora; los demás días rige CLOSE_TIME. Se puede borrar después.
@@ -994,7 +1004,13 @@
   const pad2 = n => String(n).padStart(2, '0');
 
   // ¿Ese día (medianoche de Colombia, en ms) la tienda no abre? Según CLOSED_WEEKDAYS (0 = domingo).
-  const dayIsClosed = dayStartMs => (CARNITAS_CONFIG.CLOSED_WEEKDAYS || []).includes(new Date(dayStartMs).getUTCDay());
+  const dateKey = ms => new Date(ms).toLocaleDateString('en-CA', BOGOTA); // AAAA-MM-DD en Colombia
+  const dayIsClosed = dayStartMs =>
+    (CARNITAS_CONFIG.CLOSED_WEEKDAYS || []).includes(new Date(dayStartMs).getUTCDay())
+    || Object.hasOwn(CARNITAS_CONFIG.CLOSED_DATES || {}, dateKey(dayStartMs)); // también las fechas puntuales
+
+  // Aviso especial de hoy (si hoy es una fecha de CLOSED_DATES), o '' si no hay.
+  const todayNotice = () => (CARNITAS_CONFIG.CLOSED_DATES || {})[dateKey(Date.now())] || '';
 
   // Hora de cierre (en minutos) del día de "now": la de CLOSE_OVERRIDES si ese día tiene una, o CLOSE_TIME.
   function closeTimeFor(now = Date.now()){
@@ -1033,6 +1049,7 @@
 
   // "Estamos cerrados. Abrimos hoy a las 4:00 p. m."
   function closedMessage(){
+    if (todayNotice()) return todayNotice();
     const next = scheduleState().next;
     return 'Estamos cerrados. Abrimos ' + dayLabel(next).toLowerCase() + ' a las ' + timeLabel(next).toLowerCase();
   }
@@ -1127,6 +1144,10 @@
     const note = $('menu-closed-note');
     note.hidden = !closed;
     if (closed) note.textContent = '🔒 ' + closedMessage() + ' ¡Mira el menú mientras tanto!';
+    // Aviso destacado arriba cuando hoy es una fecha especial cerrada.
+    const notice = $('notice');
+    notice.hidden = !(closed && todayNotice());
+    notice.textContent = '📢 ' + todayNotice();
   }
 
   document.addEventListener('click', e => {
