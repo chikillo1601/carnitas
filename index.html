@@ -630,6 +630,7 @@
 
     // "Lo que sea": el cliente arma su sándwich. Precio base = SANDWICH_PRICE con
     // COMMUNITY_INCLUDED ingredientes incluidos; cada ingrediente de más cuesta ADDON_PRICE.
+    SHOW_CUSTOM: false,          // false = "Lo que sea" no aparece en el menú. true = se muestra.
     COMMUNITY_INCLUDED: 4,
     COMMUNITY_MAX: 8,            // máximo de ingredientes por sándwich
     SOLD_OUT_INGREDIENTS: [],    // ingredientes agotados, ej: ["guacamole", "nachos"] (ver ids en INGREDIENTS)
@@ -985,7 +986,7 @@
       if (!data || !Array.isArray(data.lines)) return;
       data.lines.forEach(l => {
         if (!l || typeof l.item !== 'string') return;
-        const sandwich = isSandwich(l.item);
+        const sandwich = isSandwich(l.item) && (!SANDWICHES[l.item].custom || CARNITAS_CONFIG.SHOW_CUSTOM); // "Lo que sea" oculto = se descarta
         if (!(sandwich || isShake(l.item))) return; // lo que ya no existe en el menú se descarta
         const qty = Number.isInteger(l.qty) ? l.qty : 0;
         if (qty < 1 || qty > 99) return;
@@ -1106,7 +1107,7 @@
 
   function renderMenu(){
     const c = CARNITAS_CONFIG;
-    $('sandwich-list').innerHTML = Object.entries(SANDWICHES).map(([id, s]) => `
+    $('sandwich-list').innerHTML = Object.entries(SANDWICHES).filter(([, s]) => !s.custom || c.SHOW_CUSTOM).map(([id, s]) => `
       <article class="item">
         <img class="item-photo" src="${s.img}" width="112" height="112" loading="lazy" decoding="async" alt="${s.alt}">
         <div>
