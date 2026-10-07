@@ -478,7 +478,7 @@
       <div class="chip-row" id="opt-addons"></div>
     </fieldset>
 
-    <fieldset class="opt-group opt-drink">
+    <fieldset class="opt-group opt-drink" id="opt-drink-group">
       <legend>¿Con Coca-Cola? <img class="drink-mascot" src="img/mascota-coca.jpg" width="262" height="340" loading="lazy" alt=""></legend>
       <div class="opt-row">
         <button type="button" class="opt-btn" data-drink="0" aria-pressed="true">No</button>
@@ -624,6 +624,7 @@
 
     // Precios oficiales en pesos colombianos (COP), sin puntos ni símbolos.
     SANDWICH_PRICE: 15000,
+    SHOW_DRINK: false,   // false = no se ofrece Coca-Cola (agotada). true = se ofrece.
     DRINK_PRICE: 4000,   // Coca-Cola (la única gaseosa), se suma al sándwich
     ADDON_PRICE: 3000,   // cada adicional (queso, huevo, etc.)
     MALTEADA_PRICE: 10000, // cada malteada (0 = "por definir" y no se puede pedir)
@@ -991,7 +992,7 @@
         const qty = Number.isInteger(l.qty) ? l.qty : 0;
         if (qty < 1 || qty > 99) return;
         const protein = sandwich ? (l.protein === 'CERDO' ? 'CERDO' : 'RES') : null;
-        const drink = sandwich && l.drink === true;
+        const drink = sandwich && l.drink === true && CARNITAS_CONFIG.SHOW_DRINK; // sin Coca-Cola, se quita de carritos viejos
         const pickles = l.item === 'texas' ? l.pickles !== false : null;
         const pool = sandwich && SANDWICHES[l.item].custom ? INGREDIENTS : ADDONS; // en la Comunidad, los "addons" son ingredientes
         const addons = sandwich && Array.isArray(l.addons) ? Object.keys(pool).filter(id => l.addons.includes(id)) : [];
@@ -1194,6 +1195,7 @@
     $('opts-title').textContent = s.name;
     $('opt-pickles').hidden = !s.pickles;
     // "Lo que sea": se muestran los ingredientes para elegir y se ocultan los adicionales sueltos.
+    $('opt-drink-group').hidden = !CARNITAS_CONFIG.SHOW_DRINK;
     $('opt-build').hidden = !s.custom;
     $('opt-extras').hidden = !!s.custom;
     $('opt-ing-box').hidden = !!s.custom;
@@ -1250,7 +1252,7 @@
     if (!b) return;
     if (b.dataset.protein) opt.protein = b.dataset.protein;
     else if (b.dataset.pickles) opt.pickles = b.dataset.pickles === '1';
-    else if (b.dataset.drink) opt.drink = b.dataset.drink === '1';
+    else if (b.dataset.drink) opt.drink = CARNITAS_CONFIG.SHOW_DRINK && b.dataset.drink === '1';
     else if (b.dataset.addon) { opt.addons.has(b.dataset.addon) ? opt.addons.delete(b.dataset.addon) : opt.addons.add(b.dataset.addon); }
     else if (b.dataset.mix) { // ingrediente de "Lo que sea"
       const id = b.dataset.mix;
