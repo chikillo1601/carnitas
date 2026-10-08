@@ -861,7 +861,7 @@
         const d = await res.json();
         if (!d || !STOCK_TYPES.every(t => Number.isInteger(d[t]))) throw new Error('Falta res o cerdo en /stock de la base de datos');
         STOCK_TYPES.forEach(t => { stock[t] = Math.max(0, d[t]); });
-        stock.gaseosa = Number.isInteger(d.gaseosa) ? Math.max(0, d.gaseosa) : 0; // sin el campo = agotada
+        stock.gaseosa = Number.isInteger(d.coca) ? Math.max(0, d.coca) : 0; // en Firebase el campo se llama "coca"; sin él = agotada
       } else {
         const s = readLocalStock();
         ALL_TYPES.forEach(t => { stock[t] = s[t]; });
@@ -891,7 +891,7 @@
 
     const body = {};
     for (const type of ALL_TYPES) {
-      if (counts[type] > 0) body[type] = { '.sv': { increment: -counts[type] } };
+      if (counts[type] > 0) body[type === 'gaseosa' ? 'coca' : type] = { '.sv': { increment: -counts[type] } }; // la Coca-Cola es "coca" en Firebase
     }
     // Hasta 3 intentos si falla la conexión (celulares con señal floja). Si el servidor responde
     // que no alcanza (401/403 por la regla), no se reintenta.
@@ -905,8 +905,8 @@
           // ¿De verdad ya no alcanza algo? Si todo parece disponible, el rechazo es de las reglas de Firebase
           // (p. ej. todavía no permiten /stock/gaseosa): el pedido sale igual, con aviso para descontarlo a mano.
           const short = ALL_TYPES.some(t => stock[t] !== null && counts[t] > stock[t]);
-          if (short || !body.gaseosa) return { ok: false };
-          const retry = { ...body }; delete retry.gaseosa;
+          if (short || !body.coca) return { ok: false };
+          const retry = { ...body }; delete retry.coca;
           if (Object.keys(retry).length) {
             const r2 = await dbFetch('/stock.json', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(retry) });
             if (!r2.ok) return { ok: false };
