@@ -85,9 +85,11 @@
     background:
       radial-gradient(70% 60% at 88% 0%, rgba(218,41,28,.6), transparent 65%),
       var(--black);
-    padding:1.6rem 0 2.2rem;
+    padding:0 0 2rem;
   }
-  .hero-inner{ display:grid; gap:2rem; align-items:center; }
+  .hero-inner{ display:grid; gap:0; align-items:center; }
+  .hero-text{ position:relative; z-index:2; margin-top:-5.2rem; }
+  .hero h1{ text-shadow:0 4px 26px rgba(0,0,0,.85); }
   .eyebrow{ display:inline-block; background:var(--yellow); color:var(--ink); font-weight:800; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; padding:.3rem .85rem; border-radius:999px; }
   .hero h1{ font-weight:900; font-size:clamp(2.1rem,8.5vw,4rem); line-height:1.04; letter-spacing:-.02em; margin-top:.8rem; text-wrap:balance; }
   .hero h1 em{ font-style:normal; color:var(--yellow); }
@@ -103,20 +105,56 @@
   .countdown.is-open .countdown-label{ color:var(--white); font-size:.95rem; }
 
   .notice{ display:flex; align-items:center; gap:.8rem; margin:1.2rem 0 0; max-width:400px; padding:.85rem 1rem; border-radius:16px; background:var(--white); color:var(--ink); font-weight:800; font-size:.95rem; line-height:1.4; border-left:6px solid var(--yellow); box-shadow:var(--shadow); }
-  .notice::before{ content:''; flex:none; width:46px; height:46px; border-radius:50%; background:url(img/mascota-cara.jpg) center/cover; border:2px solid var(--yellow); }
+  .notice::before{ content:''; flex:none; width:46px; height:46px; border-radius:50%; background:url(img/oso-cara.jpg) center/cover; border:2px solid var(--yellow); }
   .hours{ margin-top:.7rem; font-size:.85rem; font-weight:600; color:var(--muted); }
-  .hero-cta{ margin-top:1.1rem; max-width:320px; }
-  .hero-photo{ position:relative; max-width:400px; margin:.4rem auto 0; width:100%; }
-  .hero-photo img{ width:100%; aspect-ratio:4/3; object-fit:cover; object-position:50% 30%; }
-  .hero-photo::before{ content:''; position:absolute; inset:-6% -8% -4% -8%; background:var(--red); border-radius:50% 46% 54% 50% / 52% 50% 50% 48%; transform:rotate(-6deg); }
-  .hero-photo img{ position:relative; border-radius:28px; box-shadow:0 22px 44px -18px rgba(0,0,0,.7); border:5px solid var(--yellow); }
+  .hero-cta{ margin-top:1.1rem; max-width:360px; min-height:64px; font-size:1.2rem; animation:cta-pulse 2.4s ease-in-out infinite; }
+  @keyframes cta-pulse{
+    0%,100%{ box-shadow:0 8px 18px -8px rgba(218,41,28,.7), 0 0 0 0 rgba(218,41,28,.55); }
+    50%{ box-shadow:0 8px 18px -8px rgba(218,41,28,.7), 0 0 0 12px rgba(218,41,28,0); }
+  }
+
+  /* Foto del oso: en celular ocupa todo el ancho arriba, se funde con el negro y el título se monta encima. */
+  .hero-photo{ order:-1; position:relative; margin:0 -1.25rem; width:auto; max-width:none; overflow:hidden; }
+  .hero-photo img{
+    width:100%; aspect-ratio:1/1; object-fit:cover; object-position:50% 22%;
+    -webkit-mask-image:linear-gradient(to bottom, #000 62%, transparent 100%); mask-image:linear-gradient(to bottom, #000 62%, transparent 100%);
+    animation:bear-zoom 16s ease-in-out infinite alternate; transform-origin:60% 40%;
+  }
+  @keyframes bear-zoom{ from{ transform:scale(1); } to{ transform:scale(1.07); } }
+  .bear-bubble{
+    position:absolute; top:.9rem; left:1.1rem; z-index:3; max-width:55%;
+    background:var(--yellow); color:var(--ink); font-weight:800; font-size:.92rem; line-height:1.25;
+    padding:.6rem .9rem; border-radius:18px 18px 18px 4px; box-shadow:0 10px 22px -10px rgba(0,0,0,.7);
+    animation:bubble-bob 3.2s ease-in-out infinite;
+  }
+  @keyframes bubble-bob{ 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(-5px); } }
   .price-sticker{
-    position:absolute; right:-6px; bottom:-14px; z-index:2; width:104px; height:104px; border-radius:50%;
-    background:var(--yellow); color:var(--ink); display:flex; flex-direction:column; align-items:center; justify-content:center;
+    display:none; position:absolute; right:-6px; bottom:-14px; z-index:3; width:104px; height:104px; border-radius:50%;
+    background:var(--yellow); color:var(--ink); flex-direction:column; align-items:center; justify-content:center;
     text-align:center; font-weight:900; line-height:1; transform:rotate(8deg); box-shadow:0 10px 22px -8px rgba(0,0,0,.6);
   }
   .price-sticker small{ font-size:.62rem; font-weight:800; letter-spacing:.06em; color:var(--red); }
   .price-sticker b{ font-size:1.35rem; margin-top:.15rem; }
+
+  /* Cómo pedir: 3 pasos grandes y claros */
+  .steps{ list-style:none; margin:1.4rem 0 0; padding:0; display:grid; grid-template-columns:repeat(3,1fr); gap:.6rem; max-width:460px; }
+  .steps li{
+    position:relative; text-align:center; padding:1.1rem .4rem .7rem;
+    background:rgba(255,255,255,.07); border:2px solid rgba(255,199,44,.35); border-radius:18px;
+    font-weight:800; font-size:.8rem; line-height:1.2;
+  }
+  .steps li span{ display:block; font-size:1.9rem; line-height:1; margin-bottom:.35rem; }
+  .steps li b{
+    position:absolute; top:-.7rem; left:50%; transform:translateX(-50%); width:26px; height:26px; border-radius:50%;
+    background:var(--yellow); color:var(--ink); font-size:.85rem; display:flex; align-items:center; justify-content:center;
+  }
+
+  /* Entrega: el oso en moto */
+  .delivery{ position:relative; display:flex; align-items:center; gap:1rem; margin:1.6rem auto 0; max-width:560px; background:var(--black-2); border:2px solid rgba(255,255,255,.09); border-radius:22px; overflow:hidden; }
+  .delivery img{ width:46%; aspect-ratio:431/337; object-fit:cover; flex:none; }
+  .delivery div{ padding:.8rem 1rem .8rem 0; }
+  .delivery b{ display:block; font-weight:900; font-size:1.15rem; line-height:1.15; color:var(--yellow); }
+  .delivery p{ margin-top:.3rem; font-size:.85rem; color:var(--muted); line-height:1.35; }
 
   /* ---------- Menú ---------- */
   .menu{ padding:2.4rem 0 3rem; }
@@ -124,10 +162,9 @@
   .section-sub{ text-align:center; color:var(--muted); margin-top:.4rem; font-size:.95rem; }
   .section-sub strong{ color:var(--yellow); }
   .mascot-say{ display:flex; align-items:center; justify-content:center; gap:.8rem; margin-top:1.1rem; }
-  .mascot-say img{ width:58px; height:58px; border-radius:50%; object-fit:cover; object-position:30% 20%; border:3px solid var(--yellow); background:#000; flex:none; }
+  .mascot-say img{ width:58px; height:58px; border-radius:50%; object-fit:cover; object-position:50% 40%; border:3px solid var(--yellow); background:#000; flex:none; }
   .mascot-say p{ background:var(--yellow); color:var(--ink); font-weight:800; font-size:.95rem; padding:.55rem 1rem; border-radius:6px 18px 18px 18px; }
-  .footer-mascot{ width:150px; height:150px; margin:0 auto 1.1rem; border-radius:26px; object-fit:cover; border:3px solid var(--yellow); box-shadow:0 14px 30px -14px rgba(0,0,0,.8); }
-  .drink-mascot{ display:inline-block; vertical-align:middle; width:40px; height:40px; margin-left:.4rem; border-radius:50%; object-fit:cover; object-position:40% 30%; border:2px solid var(--yellow); background:#000; }
+  .footer-mascot{ width:100%; max-width:420px; height:auto; aspect-ratio:3/2; margin:0 auto 1.1rem; border-radius:22px; object-fit:cover; border:3px solid var(--yellow); box-shadow:0 14px 30px -14px rgba(0,0,0,.8); }
   .closed-note{
     margin:1.2rem auto 0; max-width:560px; text-align:center; padding:.8rem 1rem; border-radius:16px;
     background:rgba(255,199,44,.1); border:2px solid var(--yellow); color:var(--yellow); font-weight:700; font-size:.9rem;
@@ -147,6 +184,7 @@
     box-shadow:var(--shadow); transition:border-color .2s ease, transform .2s ease;
   }
   .item:hover{ border-color:var(--yellow); }
+  .item.tappable{ cursor:pointer; }
   .item > div{ display:contents; }
   .item-photo{ grid-area:photo; width:104px; height:104px; object-fit:cover; object-position:50% 40%; border-radius:16px; background:#000; }
   .item-tag{ grid-area:tag; align-self:end; color:var(--yellow); font-weight:800; font-size:.66rem; letter-spacing:.08em; text-transform:uppercase; }
@@ -159,8 +197,8 @@
   .item-price{ font-weight:900; font-size:1.25rem; color:var(--yellow); letter-spacing:-.02em; font-variant-numeric:tabular-nums; }
   .item-price.pending{ font-size:.8rem; color:var(--muted); font-weight:700; }
   .item-add{
-    min-height:44px; padding:0 1rem; border:none; border-radius:999px; cursor:pointer;
-    background:var(--red); color:var(--white); font-weight:800; font-size:.82rem; white-space:nowrap;
+    min-height:50px; padding:0 1.15rem; border:none; border-radius:999px; cursor:pointer;
+    background:var(--red); color:var(--white); font-weight:800; font-size:.9rem; white-space:nowrap;
     transition:background .15s ease, transform .15s ease;
   }
   .item-add:hover:not(:disabled){ background:var(--red-dark); }
@@ -321,9 +359,16 @@
     .sheet{ margin:auto; border-radius:26px; }
   }
   @media (min-width:900px){
-    .hero{ padding:3rem 0 4rem; }
-    .hero-inner{ grid-template-columns:1.1fr .9fr; gap:3rem; }
-    .hero-photo img{ aspect-ratio:363/340; }
+    .hero{ padding:3.4rem 0 4.4rem; }
+    .hero-inner{ grid-template-columns:1.05fr .95fr; gap:3.5rem; }
+    .hero-text{ margin-top:0; }
+    .hero h1{ text-shadow:none; }
+    /* En computador la foto va a la derecha, enmarcada, con el mancha roja detrás. */
+    .hero-photo{ order:0; margin:0; max-width:500px; justify-self:center; overflow:visible; }
+    .hero-photo::before{ content:''; position:absolute; inset:-6% -8% -4% -8%; background:var(--red); border-radius:50% 46% 54% 50% / 52% 50% 50% 48%; transform:rotate(-6deg); }
+    .hero-photo img{ position:relative; border-radius:28px; border:5px solid var(--yellow); box-shadow:0 22px 44px -18px rgba(0,0,0,.7); -webkit-mask-image:none; mask-image:none; }
+    .bear-bubble{ top:-1.1rem; left:-1.4rem; font-size:1rem; }
+    .price-sticker{ display:flex; }
     .item-list.sandwiches{ grid-template-columns:repeat(3,1fr); }
     .menu{ padding:3.4rem 0 4rem; }
   }
@@ -334,7 +379,7 @@
 <!-- ============ BARRA SUPERIOR ============ -->
 <header class="topbar">
   <div class="container">
-    <a class="logo" href="#inicio" aria-label="Carnitas, inicio"><img class="logo-mascot" src="img/mascota-cara.jpg" width="38" height="38" alt="">CARNITAS<span>.</span></a>
+    <a class="logo" href="#inicio" aria-label="Carnitas, inicio"><img class="logo-mascot" src="img/oso-cara.jpg" width="38" height="38" alt="">CARNITAS<span>.</span></a>
     <nav class="topnav" aria-label="Secciones">
       <a href="#sandwiches">Sándwiches</a>
       <a href="#malteadas">Malteadas</a>
@@ -347,10 +392,10 @@
   <!-- ============ HERO ============ -->
   <section class="hero" id="inicio">
     <div class="container hero-inner">
-      <div>
+      <div class="hero-text">
         <span class="eyebrow">🥪 Sándwiches artesanales</span>
         <h1>Barriga llena, <em>corazón contento.</em></h1>
-        <p class="hero-copy">Elige, toca y pide por WhatsApp. Así de fácil.</p>
+        <p class="hero-copy">Pedir es facilísimo: elige, toca y listo.</p>
 
         <p class="notice" id="notice" role="status" hidden></p>
 
@@ -366,11 +411,18 @@
 
         <p class="hours" id="hours-line"></p>
 
-        <a class="btn btn-primary hero-cta" href="#menu">VER EL MENÚ</a>
+        <a class="btn btn-primary hero-cta" href="#menu">👉 PEDIR AHORA</a>
+
+        <ol class="steps" aria-label="Cómo pedir en tres pasos">
+          <li><b>1</b><span>👆</span>Elige tu sándwich</li>
+          <li><b>2</b><span>✅</span>Toca Agregar</li>
+          <li><b>3</b><span>📲</span>Envía por WhatsApp</li>
+        </ol>
       </div>
 
       <div class="hero-photo">
-        <img src="img/mascota-hamburguesa.jpg" width="363" height="340" alt="La mascota de Carnitas, un cerdo con gorra y cadena de oro, sosteniendo un sándwich">
+        <img src="img/oso-hero.jpg" width="655" height="663" alt="El oso de Carnitas, con gorra y gafas, entregándote una caja de Carnitas">
+        <p class="bear-bubble" aria-hidden="true">👋 ¡Hola! ¿Qué se te antoja hoy?</p>
         <div class="price-sticker" aria-hidden="true"><small>DESDE</small><b id="sticker-price"></b></div>
       </div>
     </div>
@@ -381,9 +433,12 @@
     <div class="container">
       <h2 class="section-title">Elige tu antojo</h2>
       <p class="section-sub">Toca <strong>Agregar</strong> y personalízalo a tu gusto.</p>
-      <div class="mascot-say">
-        <img src="img/mascota-senala.jpg" width="214" height="258" loading="lazy" alt="La mascota de Carnitas señalándote">
-        <p>¿Qué se te antoja hoy?</p>
+      <div class="delivery">
+        <img src="img/oso-moto.jpg" width="431" height="337" loading="lazy" alt="El oso de Carnitas en su moto con la mochila de domicilios">
+        <div>
+          <b>🛵 ¡Te lo llevamos!</b>
+          <p>Pide y el oso te lo lleva hasta tu casa.</p>
+        </div>
       </div>
       <p class="closed-note" id="menu-closed-note" hidden></p>
 
@@ -406,7 +461,7 @@
 <!-- ============ PIE / REDES ============ -->
 <footer class="site-footer">
   <div class="container">
-    <img class="footer-mascot" src="img/mascota-graffiti.jpg" width="253" height="258" loading="lazy" alt="La mascota de Carnitas frente a un muro con el graffiti de la marca">
+    <img class="footer-mascot" src="img/oso-foodtruck.jpg" width="960" height="640" loading="lazy" alt="El oso de Carnitas atendiendo desde su food truck negro mientras la gente hace fila de noche">
     <a class="logo" href="#inicio" aria-label="Carnitas, inicio">CARNITAS<span>.</span></a>
     <div class="social-row">
       <a class="social-icon" id="ig-link" href="#" target="_blank" rel="noopener" aria-label="Instagram de Carnitas">
@@ -479,7 +534,7 @@
     </fieldset>
 
     <fieldset class="opt-group opt-drink" id="opt-drink-group">
-      <legend>¿Con Coca-Cola? <img class="drink-mascot" src="img/mascota-coca.jpg" width="262" height="340" loading="lazy" alt=""></legend>
+      <legend>¿Con Coca-Cola?</legend>
       <div class="opt-row">
         <button type="button" class="opt-btn" data-drink="0" aria-pressed="true">No</button>
         <button type="button" class="opt-btn" data-drink="1" aria-pressed="false" id="opt-drink-yes">🥤 Sí</button>
@@ -1152,7 +1207,7 @@
   function renderMenu(){
     const c = CARNITAS_CONFIG;
     $('sandwich-list').innerHTML = Object.entries(SANDWICHES).filter(([, s]) => !s.custom || c.SHOW_CUSTOM).map(([id, s]) => `
-      <article class="item">
+      <article class="item tappable" data-card="${id}">
         <img class="item-photo" src="${s.img}" width="112" height="112" loading="lazy" decoding="async" alt="${s.alt}">
         <div>
           <p class="item-tag">${s.tag}</p>
@@ -1213,7 +1268,10 @@
     const add = e.target.closest('[data-add]');
     if (add) { openOptions(add.dataset.add); return; }
     const shake = e.target.closest('[data-shake]');
-    if (shake) addShake(shake.dataset.shake);
+    if (shake) { addShake(shake.dataset.shake); return; }
+    // Tocar la tarjeta del sándwich (foto o nombre) también abre las opciones: no hace falta apuntarle al botón.
+    const card = e.target.closest('[data-card]');
+    if (card && !salesClosed()) openOptions(card.dataset.card);
   });
 
   /* ---------- Ventana de opciones del sándwich ---------- */
