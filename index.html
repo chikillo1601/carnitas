@@ -1053,6 +1053,7 @@
   // La Coca-Cola ("gaseosa") tiene su propio contador. A diferencia de res y cerdo es opcional en la
   // base de datos: mientras no exista /stock/gaseosa se considera agotada (0), así nunca se ofrece sin límite.
   const ALL_TYPES = ['res', 'cerdo', 'gaseosa'];
+  let cocaKey = 'coca'; // nombre del campo de la Coca-Cola en Firebase: 'coca' o 'Coca-Cola' (se detecta al leer)
   const stock = { res: null, cerdo: null, gaseosa: null }; // null = sin límite, o todavía no se sabe
   const stockTypeOf = (item, protein) => isSandwich(item) ? (protein === 'CERDO' ? 'cerdo' : 'res') : null;
 
@@ -1115,7 +1116,8 @@
         const d = await res.json();
         if (!d || !STOCK_TYPES.every(t => Number.isInteger(d[t]))) throw new Error('Falta res o cerdo en /stock de la base de datos');
         STOCK_TYPES.forEach(t => { stock[t] = Math.max(0, d[t]); });
-        stock.gaseosa = Number.isInteger(d.coca) ? Math.max(0, d.coca) : 0; // en Firebase el campo se llama "coca"; sin él = agotada
+        cocaKey = Number.isInteger(d.coca) || !Number.isInteger(d['Coca-Cola']) ? 'coca' : 'Coca-Cola';
+        stock.gaseosa = Number.isInteger(d[cocaKey]) ? Math.max(0, d[cocaKey]) : 0; // sin el campo = agotada
       } else {
         const s = readLocalStock();
         ALL_TYPES.forEach(t => { stock[t] = s[t]; });
@@ -1145,7 +1147,7 @@
 
     const body = {};
     for (const type of ALL_TYPES) {
-      if (counts[type] > 0) body[type === 'gaseosa' ? 'coca' : type] = { '.sv': { increment: -counts[type] } }; // la Coca-Cola es "coca" en Firebase
+      if (counts[type] > 0) body[type === 'gaseosa' ? cocaKey : type] = { '.sv': { increment: -counts[type] } };
     }
     // Hasta 3 intentos si falla la conexión (celulares con señal floja). Si el servidor responde
     // que no alcanza (401/403 por la regla), no se reintenta.
@@ -1159,8 +1161,8 @@
           // ¿De verdad ya no alcanza algo? Si todo parece disponible, el rechazo es de las reglas de Firebase
           // (p. ej. todavía no permiten /stock/gaseosa): el pedido sale igual, con aviso para descontarlo a mano.
           const short = ALL_TYPES.some(t => stock[t] !== null && counts[t] > stock[t]);
-          if (short || !body.coca) return { ok: false };
-          const retry = { ...body }; delete retry.coca;
+          if (short || !body[cocaKey]) return { ok: false };
+          const retry = { ...body }; delete retry[cocaKey];
           if (Object.keys(retry).length) {
             const r2 = await dbFetch('/stock.json', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(retry) });
             if (!r2.ok) return { ok: false };
