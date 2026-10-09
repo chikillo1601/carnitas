@@ -804,7 +804,7 @@
     SHOW_PAPAS: true,            // false = la sección de papas no aparece
     PAPAS_SOON: true,            // true = se ven con el letrero PRÓXIMAMENTE y todavía no se pueden pedir. Ponlo en false el día que abran
     HIDDEN_PAPAS: ["boyacense"], // platos fuera del menú por ahora (para volver a mostrarlo: quítalo de la lista)
-    SOLD_OUT_PAPAS: [],          // platos agotados, ej: ["gringa"] (ids: clasica, gringa, boyacense)
+    SOLD_OUT_PAPAS: [],          // platos agotados, ej: ["gringa"] (ids: clasica, gringa, tocinetuda, boyacense)
     SOLD_OUT_PAPA_EXTRAS: [],    // extras agotados, ej: ["pina"] (ver PAPA_EXTRAS)
     PAPA_COMBO_PRICE: 3000,      // Coca-Cola con la Clásica personal (combo $21.900 = $18.900 + $3.000)
 
@@ -942,6 +942,14 @@
       ingredients: [
         { e: '🥔', t: 'Papa criolla' }, { e: '🍟', t: 'Papa francesa' }, { e: '🥩', t: 'Carnitas de cerdo' }, { e: '🌭', t: 'Longaniza' },
         { e: '🧀', t: 'Queso Paipa' }, { e: '🧀', t: 'Queso mozzarella' }, { e: '🌽', t: 'Mazorca desgranada' }, { e: '🫙', t: 'Salsa Carnitas' },
+      ],
+    },
+    tocinetuda: {
+      name: 'La Tocinetuda', label: 'LA TOCINETUDA', tag: 'Mozzarella y tocineta', img: 'img/papas-tocinetuda.svg',
+      prices: { P: 12900, C: 23900 }, combo: null,
+      alt: 'Ilustración de La Tocinetuda: papas fritas con mozzarella gratinada, tocineta y salsa Carnitas',
+      ingredients: [
+        { e: '🍟', t: 'Papa francesa' }, { e: '🧀', t: 'Mozzarella gratinada' }, { e: '🥓', t: 'Tocineta dorada y picada' }, { e: '🫙', t: 'Salsa Carnitas' },
       ],
     },
   };
