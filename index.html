@@ -453,7 +453,7 @@
     .price-sticker{ display:flex; }
     .item-list.sandwiches{ grid-template-columns:repeat(3,1fr); }
     .menu{ padding:3.4rem 0 4rem; }
-    .papas-list{ grid-template-columns:repeat(3,minmax(0,1fr)); }
+    .papas-list{ grid-template-columns:repeat(auto-fit,minmax(0,360px)); justify-content:center; }
     .directory{ max-width:560px; }
   }
 </style>
@@ -803,6 +803,7 @@
     // Piso 2: las Papas (precios y extras en PAPAS y PAPA_EXTRAS, más abajo).
     SHOW_PAPAS: true,            // false = la sección de papas no aparece
     PAPAS_SOON: true,            // true = se ven con el letrero PRÓXIMAMENTE y todavía no se pueden pedir. Ponlo en false el día que abran
+    HIDDEN_PAPAS: ["boyacense"], // platos fuera del menú por ahora (para volver a mostrarlo: quítalo de la lista)
     SOLD_OUT_PAPAS: [],          // platos agotados, ej: ["gringa"] (ids: clasica, gringa, boyacense)
     SOLD_OUT_PAPA_EXTRAS: [],    // extras agotados, ej: ["pina"] (ver PAPA_EXTRAS)
     PAPA_COMBO_PRICE: 3000,      // Coca-Cola con la Clásica personal (combo $21.900 = $18.900 + $3.000)
@@ -957,7 +958,7 @@
     const m = /^papa:([a-z]+):([PC])$/.exec(item);
     return m && Object.hasOwn(PAPAS, m[1]) ? { id: m[1], size: m[2] } : null;
   };
-  const papaSoldOut = id => !CARNITAS_CONFIG.SHOW_PAPAS || !!CARNITAS_CONFIG.PAPAS_SOON || (CARNITAS_CONFIG.SOLD_OUT_PAPAS || []).includes(id);
+  const papaSoldOut = id => !CARNITAS_CONFIG.SHOW_PAPAS || !!CARNITAS_CONFIG.PAPAS_SOON || (CARNITAS_CONFIG.HIDDEN_PAPAS || []).includes(id) || (CARNITAS_CONFIG.SOLD_OUT_PAPAS || []).includes(id);
   const papaExtraSoldOut = id => (CARNITAS_CONFIG.SOLD_OUT_PAPA_EXTRAS || []).includes(id);
 
   const isSandwich = item => Object.hasOwn(SANDWICHES, item);
@@ -1435,7 +1436,7 @@
       </article>`).join('');
 
     // Piso 2: tarjetas de papas (precios por tamaño; todo sale de PAPAS).
-    $('papas-list').innerHTML = Object.entries(PAPAS).map(([id, p]) => `
+    $('papas-list').innerHTML = Object.entries(PAPAS).filter(([id]) => !(c.HIDDEN_PAPAS || []).includes(id)).map(([id, p]) => `
       <article class="papa-card${CARNITAS_CONFIG.PAPAS_SOON ? ' soon' : ''}" data-papa="${id}">${CARNITAS_CONFIG.PAPAS_SOON ? '<span class="papa-ribbon">🔜 PRÓXIMAMENTE</span>' : ''}
         <div class="papa-img"><img src="${p.img}" width="400" height="300" loading="lazy" decoding="async" alt="${p.alt}"></div>
         <div class="papa-body">
