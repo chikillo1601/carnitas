@@ -248,6 +248,7 @@
   .papas-title{ margin-top:1rem; font-weight:900; font-size:clamp(2.3rem,10vw,3.8rem); line-height:1; letter-spacing:-.03em; text-transform:uppercase; }
   .papas-title span{ color:var(--red); }
   .papas-sub{ margin:.7rem auto 0; max-width:36ch; font-weight:600; font-size:1rem; }
+  .papas-soon{ display:inline-block; margin:.2rem 0 1rem; background:var(--ink); color:var(--yellow); border:3px solid var(--yellow); border-radius:14px; padding:.55rem .9rem; font-weight:900; font-size:.95rem; }
   .papas-welcome{
     display:flex; align-items:center; gap:.9rem; max-width:520px; margin:1.4rem auto 0; padding:.6rem;
     background:var(--black-3); color:var(--white); border-radius:20px; text-align:left; box-shadow:6px 6px 0 var(--ink);
@@ -261,6 +262,10 @@
     cursor:pointer; background:var(--white); color:var(--ink); border:4px solid var(--ink); border-radius:24px; overflow:hidden;
     box-shadow:8px 8px 0 var(--ink); transition:transform .15s ease, box-shadow .15s ease;
   }
+  .papa-card{ position:relative; }
+  .papa-card.soon{ cursor:default; }
+  .papa-card.soon .papa-img img{ filter:grayscale(.55) brightness(.9); }
+  .papa-ribbon{ position:absolute; top:1rem; left:-.4rem; z-index:2; background:var(--yellow); color:var(--ink); border:3px solid var(--ink); border-radius:10px; padding:.3rem .8rem; font-weight:900; font-size:.85rem; letter-spacing:.04em; box-shadow:3px 3px 0 var(--ink); transform:rotate(-4deg); }
   .papa-card:hover{ transform:translate(-2px,-2px); box-shadow:10px 10px 0 var(--ink); }
   .papa-img{ background:var(--red); border-bottom:4px solid var(--ink); }
   .papa-img img{ width:100%; aspect-ratio:4/3; object-fit:cover; }
@@ -511,7 +516,7 @@
   <!-- ============ DIRECTORIO DE PISOS ============ -->
   <nav class="directory container" id="directory" aria-label="Pisos de la tienda">
     <a class="floor floor-1" href="#sandwiches"><small>PISO 1</small><b>🥪 Sándwiches</b></a>
-    <a class="floor floor-2" id="floor-2" href="#papas"><small>PISO 2 · NUEVO</small><b>🍟 Papas</b></a>
+    <a class="floor floor-2" id="floor-2" href="#papas"><small id="floor-2-tag">PISO 2 · NUEVO</small><b>🍟 Papas</b></a>
   </nav>
 
   <!-- ============ MENÚ ============ -->
@@ -550,6 +555,7 @@
     <div class="container">
       <div class="neon-sign" aria-hidden="true">PISO 2</div>
       <h2 class="papas-title">Las <span>Papas</span> Carnitas</h2>
+      <p class="papas-soon" id="papas-soon" hidden>🔜 Muy pronto abrimos el Piso 2. ¡Ve eligiendo tu plato favorito!</p>
       <p class="papas-sub">Papa doble frita, carnitas doradas y mucha salsa. Elige tu plato y tu tamaño.</p>
       <div class="papas-welcome">
         <img src="img/oso-cocina.jpg" width="419" height="262" loading="lazy" alt="El oso de Carnitas cocinando en la cocina del Piso 2">
@@ -796,6 +802,7 @@
     SANDWICH_PRICE: 15000,
     // Piso 2: las Papas (precios y extras en PAPAS y PAPA_EXTRAS, más abajo).
     SHOW_PAPAS: true,            // false = la sección de papas no aparece
+    PAPAS_SOON: true,            // true = se ven con el letrero PRÓXIMAMENTE y todavía no se pueden pedir. Ponlo en false el día que abran
     SOLD_OUT_PAPAS: [],          // platos agotados, ej: ["gringa"] (ids: clasica, gringa, boyacense)
     SOLD_OUT_PAPA_EXTRAS: [],    // extras agotados, ej: ["pina"] (ver PAPA_EXTRAS)
     PAPA_COMBO_PRICE: 3000,      // Coca-Cola con la Clásica personal (combo $21.900 = $18.900 + $3.000)
@@ -950,7 +957,7 @@
     const m = /^papa:([a-z]+):([PC])$/.exec(item);
     return m && Object.hasOwn(PAPAS, m[1]) ? { id: m[1], size: m[2] } : null;
   };
-  const papaSoldOut = id => !CARNITAS_CONFIG.SHOW_PAPAS || (CARNITAS_CONFIG.SOLD_OUT_PAPAS || []).includes(id);
+  const papaSoldOut = id => !CARNITAS_CONFIG.SHOW_PAPAS || !!CARNITAS_CONFIG.PAPAS_SOON || (CARNITAS_CONFIG.SOLD_OUT_PAPAS || []).includes(id);
   const papaExtraSoldOut = id => (CARNITAS_CONFIG.SOLD_OUT_PAPA_EXTRAS || []).includes(id);
 
   const isSandwich = item => Object.hasOwn(SANDWICHES, item);
@@ -1429,7 +1436,7 @@
 
     // Piso 2: tarjetas de papas (precios por tamaño; todo sale de PAPAS).
     $('papas-list').innerHTML = Object.entries(PAPAS).map(([id, p]) => `
-      <article class="papa-card" data-papa="${id}">
+      <article class="papa-card${CARNITAS_CONFIG.PAPAS_SOON ? ' soon' : ''}" data-papa="${id}">${CARNITAS_CONFIG.PAPAS_SOON ? '<span class="papa-ribbon">🔜 PRÓXIMAMENTE</span>' : ''}
         <div class="papa-img"><img src="${p.img}" width="400" height="300" loading="lazy" decoding="async" alt="${p.alt}"></div>
         <div class="papa-body">
           <p class="papa-tag">${p.tag}</p>
@@ -1460,8 +1467,9 @@
     });
     document.querySelectorAll('.papa-add').forEach(b => {
       const out = papaSoldOut(b.dataset.papa);
-      b.disabled = closed || out;
-      b.textContent = closed ? '🔒 CERRADO' : out ? '😔 AGOTADO' : '+ AGREGAR';
+      const soon = !!CARNITAS_CONFIG.PAPAS_SOON;
+      b.disabled = soon || closed || out;
+      b.textContent = soon ? '🔜 PRÓXIMAMENTE' : closed ? '🔒 CERRADO' : out ? '😔 AGOTADO' : '+ AGREGAR';
     });
     document.querySelectorAll('[data-shake]').forEach(b => {
       const out = shakeSoldOut(b.dataset.shake);
@@ -1501,6 +1509,7 @@
 
   // Abre la ventana de un plato de papas: tamaño, extras y (solo en el combo) Coca-Cola.
   function openPapa(id){
+    if (CARNITAS_CONFIG.PAPAS_SOON) { showToast('🔜 ¡Las papas llegan muy pronto!', 3000); return; }
     if (salesClosed()) { showToast('🔒 ' + closedMessage(), 3200); return; }
     if (papaSoldOut(id)) { showToast('😔 Ese plato de papas se agotó por hoy', 3000); return; }
     const p = PAPAS[id];
@@ -1930,6 +1939,10 @@
   }
   if (!CARNITAS_CONFIG.SHOW_PAPAS) { // sin Piso 2: se oculta todo lo de las papas
     ['papas', 'elevator', 'nav-papas', 'directory'].forEach(id => { $(id).hidden = true; });
+  }
+  if (CARNITAS_CONFIG.SHOW_PAPAS && CARNITAS_CONFIG.PAPAS_SOON) { // Piso 2 visible pero todavía sin abrir
+    $('papas-soon').hidden = false;
+    $('floor-2-tag').textContent = 'PISO 2 · PRÓXIMAMENTE';
   }
   $('opt-pextras').innerHTML = Object.entries(PAPA_EXTRAS).map(([id, x]) =>
     `<button type="button" class="chip-btn" data-pextra="${id}" aria-pressed="false">${x.e} ${x.label} +${cop(x.price)}</button>`).join('');
