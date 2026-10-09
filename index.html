@@ -76,7 +76,7 @@
   .topbar .logo{ display:inline-flex; align-items:center; }
   .logo-mascot{ width:38px; height:38px; margin-right:.55rem; border-radius:50%; object-fit:cover; border:2px solid var(--yellow); background:#000; }
   .topnav{ display:flex; gap:.15rem; }
-  .topnav a{ text-decoration:none; font-weight:700; font-size:.82rem; padding:.45rem .7rem; border-radius:999px; color:var(--white); transition:background .15s ease; }
+  .topnav a{ white-space:nowrap; text-decoration:none; font-weight:700; font-size:.8rem; padding:.45rem .55rem; border-radius:999px; color:var(--white); transition:background .15s ease; }
   .topnav a:hover{ background:rgba(255,199,44,.16); color:var(--yellow); }
 
   /* ---------- Hero ---------- */
@@ -204,6 +204,83 @@
   .item-add:hover:not(:disabled){ background:var(--red-dark); }
   .item-add:active:not(:disabled){ transform:scale(.96); }
   .item-add:disabled{ background:#38332E; color:#8E877B; cursor:not-allowed; }
+
+  /* ---------- Directorio de pisos ---------- */
+  .directory{ display:grid; grid-template-columns:1fr 1fr; gap:.7rem; margin-top:1.3rem; }
+  .floor{
+    position:relative; display:flex; flex-direction:column; justify-content:center; gap:.15rem;
+    padding:.9rem 1rem; border-radius:18px; text-decoration:none; min-height:78px;
+    transition:transform .15s ease;
+  }
+  .floor:active{ transform:scale(.97); }
+  .floor small{ font-weight:800; font-size:.66rem; letter-spacing:.1em; opacity:.85; }
+  .floor b{ font-weight:900; font-size:1.15rem; line-height:1.1; }
+  .floor-1{ background:var(--black-2); color:var(--white); border:2px solid rgba(255,255,255,.14); }
+  .floor-1 small{ color:var(--yellow); }
+  .floor-2{ background:var(--yellow); color:var(--ink); border:2px solid var(--yellow); box-shadow:0 8px 20px -10px rgba(255,199,44,.8); }
+  .floor-2 small{ color:var(--red); }
+
+  /* ---------- Ascensor y Piso 2: otra tienda dentro de la tienda ---------- */
+  .elevator{ margin-top:2.2rem; padding:12px 0; background:repeating-linear-gradient(45deg, var(--black) 0 16px, var(--yellow) 16px 32px); }
+  .elevator-btn{
+    display:flex; align-items:center; justify-content:center; gap:.8rem; max-width:560px; margin:0 auto; padding:.9rem 1rem;
+    background:var(--black-3); color:var(--white); border-radius:16px; text-decoration:none; font-weight:700; font-size:.95rem; text-align:left;
+    box-shadow:0 10px 24px -10px rgba(0,0,0,.8);
+  }
+  .elevator-btn b{ display:block; color:var(--yellow); font-weight:900; font-size:1.2rem; }
+  .elevator-arrow{ font-size:1.8rem; animation:elevator-up 1.6s ease-in-out infinite; }
+  @keyframes elevator-up{ 0%,100%{ transform:translateY(3px); } 50%{ transform:translateY(-5px); } }
+
+  .papas{
+    position:relative; padding:2.6rem 0 3.2rem; color:var(--ink); text-align:center;
+    background:
+      radial-gradient(60% 40% at 15% 0%, rgba(255,255,255,.45), transparent 70%),
+      radial-gradient(50% 35% at 90% 100%, rgba(218,41,28,.22), transparent 70%),
+      var(--yellow);
+  }
+  .neon-sign{
+    display:inline-block; padding:.4rem 1.5rem; border-radius:14px; background:var(--black-3); color:var(--yellow);
+    border:4px solid var(--red); font-weight:900; font-size:1.1rem; letter-spacing:.2em;
+    box-shadow:0 0 0 4px var(--black-3), 0 0 26px 4px rgba(218,41,28,.55); text-shadow:0 0 12px rgba(255,199,44,.9);
+    animation:neon 3.4s ease-in-out infinite alternate;
+  }
+  @keyframes neon{ 0%,100%{ opacity:1; } 45%{ opacity:.78; } 50%{ opacity:1; } 58%{ opacity:.85; } }
+  .papas-title{ margin-top:1rem; font-weight:900; font-size:clamp(2.3rem,10vw,3.8rem); line-height:1; letter-spacing:-.03em; text-transform:uppercase; }
+  .papas-title span{ color:var(--red); }
+  .papas-sub{ margin:.7rem auto 0; max-width:36ch; font-weight:600; font-size:1rem; }
+  .papas-welcome{
+    display:flex; align-items:center; gap:.9rem; max-width:520px; margin:1.4rem auto 0; padding:.6rem;
+    background:var(--black-3); color:var(--white); border-radius:20px; text-align:left; box-shadow:6px 6px 0 var(--ink);
+  }
+  .papas-welcome img{ width:42%; aspect-ratio:419/262; object-fit:cover; border-radius:14px; flex:none; }
+  .papas-welcome p{ font-weight:700; font-size:.88rem; line-height:1.35; padding-right:.4rem; }
+  .papas-welcome b{ color:var(--yellow); }
+
+  .papas-list{ display:grid; gap:1.5rem; grid-template-columns:minmax(0,1fr); margin-top:2rem; text-align:left; }
+  .papa-card{
+    cursor:pointer; background:var(--white); color:var(--ink); border:4px solid var(--ink); border-radius:24px; overflow:hidden;
+    box-shadow:8px 8px 0 var(--ink); transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .papa-card:hover{ transform:translate(-2px,-2px); box-shadow:10px 10px 0 var(--ink); }
+  .papa-img{ background:var(--red); border-bottom:4px solid var(--ink); }
+  .papa-img img{ width:100%; aspect-ratio:4/3; object-fit:cover; }
+  .papa-body{ padding:1.1rem 1.2rem 1.3rem; }
+  .papa-tag{ color:var(--red); font-weight:900; font-size:.72rem; letter-spacing:.1em; text-transform:uppercase; }
+  .papa-name{ font-weight:900; font-size:1.55rem; line-height:1.1; letter-spacing:-.02em; margin-top:.15rem; }
+  .papa-ing{ list-style:none; margin:.7rem 0 0; padding:0; display:grid; grid-template-columns:1fr 1fr; gap:.2rem .6rem; font-size:.8rem; font-weight:600; color:#4A453C; line-height:1.3; }
+  .papa-sizes{ display:grid; grid-template-columns:1fr 1fr; gap:.5rem; margin-top:.9rem; }
+  .papa-sizes span{ background:var(--yellow); border:3px solid var(--ink); border-radius:14px; padding:.45rem .5rem; text-align:center; font-weight:700; font-size:.72rem; line-height:1.2; }
+  .papa-sizes b{ display:block; font-weight:900; font-size:1.2rem; letter-spacing:-.02em; }
+  .papa-add{
+    width:100%; min-height:56px; margin-top:1rem; border:3px solid var(--ink); border-radius:999px; cursor:pointer;
+    background:var(--red); color:var(--white); font-weight:900; font-size:1rem; letter-spacing:.02em; box-shadow:0 5px 0 var(--ink);
+    transition:transform .1s ease, box-shadow .1s ease;
+  }
+  .papa-add:hover:not(:disabled){ background:var(--red-dark); }
+  .papa-add:active:not(:disabled){ transform:translateY(4px); box-shadow:0 1px 0 var(--ink); }
+  .papa-add:disabled{ background:#BDB6AA; color:#5E584D; cursor:not-allowed; box-shadow:0 5px 0 #8E877B; }
+  .opt-size-btn{ display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.1rem; padding:.5rem .4rem; font-size:.88rem; line-height:1.15; }
+  .opt-size-btn small{ font-weight:900; font-size:1.05rem; }
 
   /* ---------- Pie ---------- */
   .site-footer{ background:var(--black-3); color:var(--white); border-top:3px solid var(--red); padding:2rem 0 2.4rem; text-align:center; }
@@ -371,6 +448,8 @@
     .price-sticker{ display:flex; }
     .item-list.sandwiches{ grid-template-columns:repeat(3,1fr); }
     .menu{ padding:3.4rem 0 4rem; }
+    .papas-list{ grid-template-columns:repeat(3,minmax(0,1fr)); }
+    .directory{ max-width:560px; }
   }
 </style>
 </head>
@@ -381,7 +460,8 @@
   <div class="container">
     <a class="logo" href="#inicio" aria-label="Carnitas, inicio"><img class="logo-mascot" src="img/oso-cara.jpg" width="38" height="38" alt="">CARNITAS<span>.</span></a>
     <nav class="topnav" aria-label="Secciones">
-      <a href="#sandwiches">Sándwiches</a>
+      <a href="#sandwiches">🥪 Sándwiches</a>
+      <a href="#papas" id="nav-papas">🍟 Papas</a>
       <a href="#malteadas">Malteadas</a>
     </nav>
   </div>
@@ -428,6 +508,12 @@
     </div>
   </section>
 
+  <!-- ============ DIRECTORIO DE PISOS ============ -->
+  <nav class="directory container" id="directory" aria-label="Pisos de la tienda">
+    <a class="floor floor-1" href="#sandwiches"><small>PISO 1</small><b>🥪 Sándwiches</b></a>
+    <a class="floor floor-2" id="floor-2" href="#papas"><small>PISO 2 · NUEVO</small><b>🍟 Papas</b></a>
+  </nav>
+
   <!-- ============ MENÚ ============ -->
   <section class="menu" id="menu">
     <div class="container">
@@ -451,6 +537,25 @@
         <h3 class="menu-block-title">🥤 Malteadas</h3>
         <div class="item-list shakes" id="shake-list"></div>
       </div>
+    </div>
+  </section>
+
+  <!-- ============ ASCENSOR AL PISO 2 ============ -->
+  <div class="elevator" id="elevator">
+    <a class="elevator-btn" href="#papas"><span class="elevator-arrow" aria-hidden="true">⬆️</span><span>¿Antojo de papas? <b>Sube al Piso 2</b></span></a>
+  </div>
+
+  <!-- ============ PISO 2: LAS PAPAS ============ -->
+  <section class="papas" id="papas">
+    <div class="container">
+      <div class="neon-sign" aria-hidden="true">PISO 2</div>
+      <h2 class="papas-title">Las <span>Papas</span> Carnitas</h2>
+      <p class="papas-sub">Papa doble frita, carnitas doradas y mucha salsa. Elige tu plato y tu tamaño.</p>
+      <div class="papas-welcome">
+        <img src="img/oso-cocina.jpg" width="419" height="262" loading="lazy" alt="El oso de Carnitas cocinando en la cocina del Piso 2">
+        <p>¡Bienvenido al Piso 2! Aquí las papas se fríen <b>dos veces</b> para que queden crocantes.</p>
+      </div>
+      <div class="papas-list" id="papas-list"></div>
     </div>
   </section>
 
@@ -506,6 +611,11 @@
       <ul class="ing-list" id="opts-ingredients"></ul>
     </div>
 
+    <fieldset class="opt-group" id="opt-size" hidden>
+      <legend>¿Qué tamaño?</legend>
+      <div class="opt-row" id="opt-size-row"></div>
+    </fieldset>
+
     <fieldset class="opt-group" id="opt-protein">
       <legend>¿De qué carne?</legend>
       <div class="opt-row">
@@ -526,6 +636,11 @@
       <legend>Arma tu sándwich <small id="opt-mix-info"></small></legend>
       <p class="mix-count" id="opt-mix-count" aria-live="polite"></p>
       <div class="chip-row" id="opt-mix"></div>
+    </fieldset>
+
+    <fieldset class="opt-group" id="opt-papa-extras" hidden>
+      <legend>¿Quieres algo extra?</legend>
+      <div class="chip-row" id="opt-pextras"></div>
     </fieldset>
 
     <fieldset class="opt-group" id="opt-extras">
@@ -679,6 +794,12 @@
 
     // Precios oficiales en pesos colombianos (COP), sin puntos ni símbolos.
     SANDWICH_PRICE: 15000,
+    // Piso 2: las Papas (precios y extras en PAPAS y PAPA_EXTRAS, más abajo).
+    SHOW_PAPAS: true,            // false = la sección de papas no aparece
+    SOLD_OUT_PAPAS: [],          // platos agotados, ej: ["gringa"] (ids: clasica, gringa, boyacense)
+    SOLD_OUT_PAPA_EXTRAS: [],    // extras agotados, ej: ["pina"] (ver PAPA_EXTRAS)
+    PAPA_COMBO_PRICE: 3000,      // Coca-Cola con la Clásica personal (combo $21.900 = $18.900 + $3.000)
+
     SHOW_DRINK: true,    // false = no se ofrece Coca-Cola. true = se ofrece (con su propio stock, ver GASEOSA_STOCK).
     GASEOSA_STOCK: 0,    // respaldo de Coca-Cola, solo si no hay conexión con Firebase (modo de prueba)
     DRINK_PRICE: 4000,   // Coca-Cola (la única gaseosa), se suma al sándwich
@@ -783,6 +904,55 @@
     picante:    { emoji: '🔥', label: 'SALSA EXTRA PICANTE' },
   };
 
+  /* ---------- Piso 2: Papas ----------
+     Precios en COP, tomados del Excel de costeo (columna "Precio de venta"). En el carrito, cada plato y tamaño
+     es un producto distinto: 'papa:<plato>:P' (personal) o 'papa:<plato>:C' (para compartir). */
+  const PAPA_SIZES = { P: 'Personal', C: 'Para compartir (2)' };
+  const PAPAS = {
+    clasica: {
+      name: 'La Clásica Carnitas', label: 'LA CLÁSICA CARNITAS', tag: 'La de siempre', img: 'img/papas-clasica.svg',
+      prices: { P: 18900, C: 36900 }, combo: 'P', // combo con Coca-Cola solo en el tamaño personal
+      alt: 'Ilustración de La Clásica Carnitas: papas fritas con carnitas, salchicha, queso y maíz',
+      ingredients: [
+        { e: '🍟', t: 'Papa francesa doble frita' }, { e: '🥩', t: 'Carnitas de cerdo' }, { e: '🌭', t: 'Salchicha' },
+        { e: '🧀', t: 'Queso mozzarella' }, { e: '🌽', t: 'Maíz tierno' }, { e: '✨', t: 'Ripio de papa' }, { e: '🫙', t: 'Salsa Carnitas' },
+      ],
+    },
+    gringa: {
+      name: 'La Gringa Carnitas', label: 'LA GRINGA CARNITAS', tag: 'Cheddar y tocineta', img: 'img/papas-gringa.svg',
+      prices: { P: 26900, C: 47900 }, combo: null,
+      alt: 'Ilustración de La Gringa Carnitas: papas fritas con salsa cheddar, tocineta, aros de cebolla y jalapeños',
+      ingredients: [
+        { e: '🍟', t: 'Papa francesa doble frita' }, { e: '🥩', t: 'Carnitas de cerdo' }, { e: '🧀', t: 'Salsa cheddar' },
+        { e: '🥓', t: 'Tocineta' }, { e: '🧅', t: 'Aros de cebolla' }, { e: '🌶️', t: 'Jalapeño encurtido' }, { e: '🫙', t: 'Salsa Carnitas' },
+      ],
+    },
+    boyacense: {
+      name: 'La Boyacense', label: 'LA BOYACENSE', tag: 'Plato firma', img: 'img/papas-boyacense.svg',
+      prices: { P: 27900, C: 49900 }, combo: null,
+      alt: 'Ilustración de La Boyacense: papa criolla y francesa con carnitas, longaniza, queso Paipa y mazorca',
+      ingredients: [
+        { e: '🥔', t: 'Papa criolla' }, { e: '🍟', t: 'Papa francesa' }, { e: '🥩', t: 'Carnitas de cerdo' }, { e: '🌭', t: 'Longaniza' },
+        { e: '🧀', t: 'Queso Paipa' }, { e: '🧀', t: 'Queso mozzarella' }, { e: '🌽', t: 'Mazorca desgranada' }, { e: '🫙', t: 'Salsa Carnitas' },
+      ],
+    },
+  };
+  // Extras de las papas, cada uno con su precio.
+  const PAPA_EXTRAS = {
+    carnitas: { e: '🥩', label: 'CARNITAS EXTRA',        price: 5000 },
+    paipa:    { e: '🧀', label: 'QUESO PAIPA EXTRA',     price: 3500 },
+    tocineta: { e: '🥓', label: 'TOCINETA EXTRA',        price: 3000 },
+    pina:     { e: '🍍', label: 'PIÑA ASADA',            price: 2500 },
+    salsa:    { e: '🫙', label: 'SALSA CARNITAS EXTRA',  price: 2000 },
+    picante:  { e: '🌶️', label: 'VERSIÓN PICANTE',       price: 1000 },
+  };
+  const parsePapa = item => {
+    const m = /^papa:([a-z]+):([PC])$/.exec(item);
+    return m && Object.hasOwn(PAPAS, m[1]) ? { id: m[1], size: m[2] } : null;
+  };
+  const papaSoldOut = id => !CARNITAS_CONFIG.SHOW_PAPAS || (CARNITAS_CONFIG.SOLD_OUT_PAPAS || []).includes(id);
+  const papaExtraSoldOut = id => (CARNITAS_CONFIG.SOLD_OUT_PAPA_EXTRAS || []).includes(id);
+
   const isSandwich = item => Object.hasOwn(SANDWICHES, item);
   const isShake = item => item.startsWith('shake:') && Object.hasOwn(SHAKES, item.slice(6));
   const shakePriceSet = () => CARNITAS_CONFIG.MALTEADA_PRICE > 0;
@@ -818,8 +988,16 @@
   const PAYMENT_LABELS = { EFECTIVO: 'Efectivo', TRANSFERENCIA: 'Transferencia' };
   const CART_STORAGE_KEY = 'carnitas_cart_v1';
 
+  // extras: lista de ids elegidos (o solo la cantidad, en sándwiches). En papas cada extra tiene su precio.
   function lineUnitPrice(item, drink, extras = 0){
     if (isShake(item)) return CARNITAS_CONFIG.MALTEADA_PRICE;
+    const papa = parsePapa(item);
+    if (papa) {
+      const ids = Array.isArray(extras) ? extras : [];
+      return PAPAS[papa.id].prices[papa.size] + (drink ? CARNITAS_CONFIG.PAPA_COMBO_PRICE : 0)
+        + ids.reduce((sum, id) => sum + PAPA_EXTRAS[id].price, 0);
+    }
+    if (Array.isArray(extras)) extras = extras.length;
     // En "Lo que sea", "extras" es la cantidad de ingredientes elegidos: los primeros
     // COMMUNITY_INCLUDED vienen en el precio base y el resto se cobra como adicional.
     const paid = SANDWICHES[item]?.custom ? Math.max(0, extras - CARNITAS_CONFIG.COMMUNITY_INCLUDED) : extras;
@@ -828,6 +1006,11 @@
 
   function lineLabel(item, protein, drink, pickles, addons = []){
     if (isShake(item)) return '🥤 ' + SHAKES[item.slice(6)].label;
+    const papa = parsePapa(item);
+    if (papa) {
+      const ex = addons.map(id => ' + ' + PAPA_EXTRAS[id].e + ' ' + PAPA_EXTRAS[id].label).join('');
+      return '🍟 ' + PAPAS[papa.id].label + ' (' + (papa.size === 'P' ? 'PERSONAL' : 'PARA COMPARTIR, 2 PERSONAS') + ')' + (drink ? ' + 🥤 COCA-COLA, COMBO' : '') + ex;
+    }
     if (SANDWICHES[item].custom) { // los "addons" de este sándwich son los ingredientes que eligió
       const list = addons.map(id => INGREDIENTS[id].e + ' ' + INGREDIENTS[id].label).join(', ');
       return '🥪 ' + SANDWICHES[item].label + ' (' + protein + ': ' + list + ')' + (drink ? ' + 🥤 COCA-COLA' : '');
@@ -843,7 +1026,7 @@
       + (addons && addons.length ? '|+' + addons.join(',') : '');
   }
 
-  const cartTotal = () => cartLines.reduce((s, l) => s + l.qty * lineUnitPrice(l.item, l.drink, l.addons.length), 0);
+  const cartTotal = () => cartLines.reduce((s, l) => s + l.qty * lineUnitPrice(l.item, l.drink, l.addons), 0);
   const cartQty = () => cartLines.reduce((s, l) => s + l.qty, 0);
 
   /* ---------- Stock (interno) ----------
@@ -862,7 +1045,7 @@
     cartLines.forEach(l => {
       const t = stockTypeOf(l.item, l.protein);
       if (t) counts[t] += l.qty;
-      if (t && l.drink) counts.gaseosa += l.qty; // cada unidad con Coca-Cola gasta una
+      if (l.drink) counts.gaseosa += l.qty; // cada unidad con Coca-Cola (en sándwiches o en el combo de papas) gasta una
     });
     return counts;
   }
@@ -990,7 +1173,11 @@
   // Quita del carrito las malteadas que ya se agotaron (por ejemplo, las que quedaron guardadas de antes).
   function dropSoldOutShakes(){
     const before = cartLines.length;
-    cartLines = cartLines.filter(l => !(isShake(l.item) && shakeSoldOut(l.item.slice(6))));
+    cartLines = cartLines.filter(l => {
+      if (isShake(l.item)) return !shakeSoldOut(l.item.slice(6));
+      const p = parsePapa(l.item);
+      return !(p && papaSoldOut(p.id)); // también las papas que ya no están disponibles
+    });
     return cartLines.length !== before;
   }
 
@@ -1036,7 +1223,9 @@
   function commitLine(item, protein, drink, pickles, addons, qty = 1){
     if (salesClosed()) { showToast('🔒 ' + closedMessage(), 3200); return false; }
     if (!canAddSandwich(item, protein, qty)) { showToast('😔 Se agotó esa carne por hoy. Prueba con la otra.', 3000); return false; }
-    if (drink && !canAddSandwich(item, protein, qty, true)) { showToast('😔 Se acabó la Coca-Cola. Pídelo sin bebida.', 3000); return false; }
+    if (drink && remainingStock('gaseosa') < qty) { showToast('😔 Se acabó la Coca-Cola. Pídelo sin bebida.', 3000); return false; }
+    const papaItem = parsePapa(item);
+    if (papaItem && papaSoldOut(papaItem.id)) { showToast('😔 Ese plato de papas se agotó por hoy', 3000); return false; }
     const key = lineKey(item, protein, drink, pickles, addons);
     const existing = cartLines.find(l => l.key === key);
     if (existing) existing.qty = Math.min(99, existing.qty + qty);
@@ -1055,7 +1244,7 @@
     const line = cartLines.find(l => l.key === key);
     if (!line) return;
     if (delta > 0 && !canAddSandwich(line.item, line.protein, 1)) { showToast('😔 Se agotó esa carne por hoy.', 2600); return; }
-    if (delta > 0 && line.drink && !canAddSandwich(line.item, line.protein, 1, true)) { showToast('😔 Se acabó la Coca-Cola.', 2600); return; }
+    if (delta > 0 && line.drink && remainingStock('gaseosa') < 1) { showToast('😔 Se acabó la Coca-Cola.', 2600); return; }
     line.qty = Math.min(99, line.qty + delta);
     if (line.qty <= 0) cartLines = cartLines.filter(l => l.key !== key);
     renderCart();
@@ -1086,14 +1275,17 @@
       data.lines.forEach(l => {
         if (!l || typeof l.item !== 'string') return;
         const sandwich = isSandwich(l.item) && (!SANDWICHES[l.item].custom || CARNITAS_CONFIG.SHOW_CUSTOM); // "Lo que sea" oculto = se descarta
-        if (!(sandwich || isShake(l.item))) return; // lo que ya no existe en el menú se descarta
+        const papa = parsePapa(l.item);
+        if (papa && papaSoldOut(papa.id)) return; // papas fuera del menú o agotadas
+        if (!(sandwich || isShake(l.item) || papa)) return; // lo que ya no existe en el menú se descarta
         const qty = Number.isInteger(l.qty) ? l.qty : 0;
         if (qty < 1 || qty > 99) return;
         const protein = sandwich ? (l.protein === 'CERDO' ? 'CERDO' : 'RES') : null;
-        const drink = sandwich && l.drink === true && CARNITAS_CONFIG.SHOW_DRINK; // sin Coca-Cola, se quita de carritos viejos
+        const comboOk = papa && PAPAS[papa.id].combo === papa.size; // el combo con Coca-Cola solo existe en la Clásica personal
+        const drink = ((sandwich) || comboOk) && l.drink === true && CARNITAS_CONFIG.SHOW_DRINK; // sin Coca-Cola, se quita de carritos viejos
         const pickles = l.item === 'texas' ? l.pickles !== false : null;
-        const pool = sandwich && SANDWICHES[l.item].custom ? INGREDIENTS : ADDONS; // en la Comunidad, los "addons" son ingredientes
-        const addons = sandwich && Array.isArray(l.addons) ? Object.keys(pool).filter(id => l.addons.includes(id)) : [];
+        const pool = papa ? PAPA_EXTRAS : (sandwich && SANDWICHES[l.item].custom ? INGREDIENTS : ADDONS); // en la Comunidad, los "addons" son ingredientes
+        const addons = (sandwich || papa) && Array.isArray(l.addons) ? Object.keys(pool).filter(id => l.addons.includes(id)) : [];
         if (sandwich && SANDWICHES[l.item].custom && (addons.length === 0 || addons.length > CARNITAS_CONFIG.COMMUNITY_MAX)) return;
         const key = lineKey(l.item, protein, drink, pickles, addons);
         const existing = cartLines.find(x => x.key === key);
@@ -1235,6 +1427,22 @@
         </div>
       </article>`).join('');
 
+    // Piso 2: tarjetas de papas (precios por tamaño; todo sale de PAPAS).
+    $('papas-list').innerHTML = Object.entries(PAPAS).map(([id, p]) => `
+      <article class="papa-card" data-papa="${id}">
+        <div class="papa-img"><img src="${p.img}" width="400" height="300" loading="lazy" decoding="async" alt="${p.alt}"></div>
+        <div class="papa-body">
+          <p class="papa-tag">${p.tag}</p>
+          <h3 class="papa-name">${p.name}</h3>
+          <ul class="papa-ing" aria-label="Ingredientes">${p.ingredients.map(i => `<li>${i.e} ${i.t}</li>`).join('')}</ul>
+          <div class="papa-sizes">
+            <span>Personal<b>${cop(p.prices.P)}</b></span>
+            <span>Para compartir (2)<b>${cop(p.prices.C)}</b></span>
+          </div>
+          <button type="button" class="papa-add" data-papa="${id}" aria-label="Agregar ${p.name}">+ AGREGAR</button>
+        </div>
+      </article>`).join('');
+
     $('sticker-price').textContent = cop(c.SANDWICH_PRICE);
     $('ig-link').href = c.INSTAGRAM_URL;
     $('tt-link').href = c.TIKTOK_URL;
@@ -1249,6 +1457,11 @@
     document.querySelectorAll('[data-add]').forEach(b => {
       b.disabled = closed || stockedOut;
       b.textContent = closed ? '🔒 CERRADO' : stockedOut ? '😔 AGOTADO' : '+ AGREGAR';
+    });
+    document.querySelectorAll('.papa-add').forEach(b => {
+      const out = papaSoldOut(b.dataset.papa);
+      b.disabled = closed || out;
+      b.textContent = closed ? '🔒 CERRADO' : out ? '😔 AGOTADO' : '+ AGREGAR';
     });
     document.querySelectorAll('[data-shake]').forEach(b => {
       const out = shakeSoldOut(b.dataset.shake);
@@ -1269,6 +1482,8 @@
     if (add) { openOptions(add.dataset.add); return; }
     const shake = e.target.closest('[data-shake]');
     if (shake) { addShake(shake.dataset.shake); return; }
+    const papaBtn = e.target.closest('[data-papa]'); // botón o tarjeta de un plato de papas
+    if (papaBtn) { openPapa(papaBtn.dataset.papa); return; }
     // Tocar la tarjeta del sándwich (foto o nombre) también abre las opciones: no hace falta apuntarle al botón.
     const card = e.target.closest('[data-card]');
     if (card && !salesClosed()) openOptions(card.dataset.card);
@@ -1276,11 +1491,58 @@
 
   /* ---------- Ventana de opciones del sándwich ---------- */
   const optsDialog = $('opts-dialog');
-  const opt = { item: null, protein: 'CERDO', pickles: true, addons: new Set(), drink: false, qty: 1 };
+  // papa = id del plato de papas que se está personalizando (null si es un sándwich); size = 'P' o 'C'.
+  const opt = { item: null, papa: null, size: 'P', protein: 'CERDO', pickles: true, addons: new Set(), drink: false, qty: 1 };
 
   function optionsAddons(){ // en el mismo orden siempre, para que "queso + huevo" = "huevo + queso"
-    const pool = SANDWICHES[opt.item].custom ? INGREDIENTS : ADDONS;
+    const pool = opt.papa ? PAPA_EXTRAS : (SANDWICHES[opt.item].custom ? INGREDIENTS : ADDONS);
     return Object.keys(pool).filter(id => opt.addons.has(id));
+  }
+
+  // Abre la ventana de un plato de papas: tamaño, extras y (solo en el combo) Coca-Cola.
+  function openPapa(id){
+    if (salesClosed()) { showToast('🔒 ' + closedMessage(), 3200); return; }
+    if (papaSoldOut(id)) { showToast('😔 Ese plato de papas se agotó por hoy', 3000); return; }
+    const p = PAPAS[id];
+    Object.assign(opt, { item: null, papa: id, size: 'P', protein: null, pickles: true, drink: false, qty: 1 });
+    opt.addons.clear();
+    $('opts-photo').src = p.img;
+    $('opts-photo').alt = '';
+    $('opts-title').textContent = p.name;
+    ['opt-protein', 'opt-pickles', 'opt-build', 'opt-extras'].forEach(g => { $(g).hidden = true; });
+    $('opt-ing-box').hidden = false;
+    $('opt-size').hidden = false;
+    $('opt-papa-extras').hidden = false;
+    renderOptions();
+    optsDialog.showModal();
+    optsDialog.scrollTop = 0;
+  }
+
+  function renderPapaOptions(){
+    const c = CARNITAS_CONFIG, p = PAPAS[opt.papa];
+    // Tamaño: dos botones grandes con su precio.
+    $('opt-size-row').innerHTML = Object.entries(PAPA_SIZES).map(([k, label]) =>
+      `<button type="button" class="opt-btn opt-size-btn" data-size="${k}" aria-pressed="${k === opt.size}">${k === 'P' ? '🍟' : '🍟🍟'} ${label}<small>${cop(p.prices[k])}</small></button>`).join('');
+    // Extras con su precio.
+    optsDialog.querySelectorAll('[data-pextra]').forEach(b => {
+      const out = papaExtraSoldOut(b.dataset.pextra);
+      b.disabled = out;
+      b.setAttribute('aria-pressed', String(!out && opt.addons.has(b.dataset.pextra)));
+    });
+    // Coca-Cola: solo en el combo (Clásica personal).
+    const comboOn = c.SHOW_DRINK && p.combo === opt.size;
+    $('opt-drink-group').hidden = !comboOn;
+    if (!comboOn) opt.drink = false;
+    const drinkOut = remainingStock('gaseosa') <= 0;
+    if (drinkOut) opt.drink = false;
+    const drinkYes = $('opt-drink-yes');
+    drinkYes.disabled = drinkOut;
+    drinkYes.textContent = drinkOut ? '🥤 Coca-Cola · agotada' : '🥤 Combo con Coca-Cola, +' + cop(c.PAPA_COMBO_PRICE);
+    optsDialog.querySelectorAll('[data-drink]').forEach(b => b.setAttribute('aria-pressed', String((b.dataset.drink === '1') === opt.drink)));
+    $('opts-ingredients').innerHTML = p.ingredients.map(i => `<li>${i.e} ${i.t}</li>`).join('');
+    $('opts-qty').textContent = opt.qty;
+    const unit = lineUnitPrice('papa:' + opt.papa + ':' + opt.size, opt.drink, optionsAddons());
+    $('opts-add').textContent = 'AGREGAR ' + cop(unit * opt.qty);
   }
 
   function openOptions(item){
@@ -1289,11 +1551,14 @@
     const s = SANDWICHES[item];
     // Cerdo por defecto; si se agotó, arranca en res.
     const defaultProtein = remainingStock('cerdo') > 0 ? 'CERDO' : 'RES';
-    Object.assign(opt, { item, protein: defaultProtein, pickles: true, drink: false, qty: 1 });
+    Object.assign(opt, { item, papa: null, protein: defaultProtein, pickles: true, drink: false, qty: 1 });
     opt.addons.clear();
     $('opts-photo').src = s.img;
     $('opts-photo').alt = '';
     $('opts-title').textContent = s.name;
+    $('opt-size').hidden = true;
+    $('opt-papa-extras').hidden = true;
+    $('opt-protein').hidden = false;
     $('opt-pickles').hidden = !s.pickles;
     // "Lo que sea": se muestran los ingredientes para elegir y se ocultan los adicionales sueltos.
     $('opt-drink-group').hidden = !CARNITAS_CONFIG.SHOW_DRINK;
@@ -1306,6 +1571,7 @@
   }
 
   function renderOptions(){
+    if (opt.papa) { renderPapaOptions(); return; }
     const c = CARNITAS_CONFIG;
     // Si la proteína elegida se agotó justo ahora y la otra sigue disponible, se cambia sola.
     const otherProtein = opt.protein === 'RES' ? 'CERDO' : 'RES';
@@ -1358,6 +1624,8 @@
     const b = e.target.closest('button');
     if (!b) return;
     if (b.dataset.protein) opt.protein = b.dataset.protein;
+    else if (b.dataset.size) opt.size = b.dataset.size;
+    else if (b.dataset.pextra) { opt.addons.has(b.dataset.pextra) ? opt.addons.delete(b.dataset.pextra) : opt.addons.add(b.dataset.pextra); }
     else if (b.dataset.pickles) opt.pickles = b.dataset.pickles === '1';
     else if (b.dataset.drink) {
       opt.drink = CARNITAS_CONFIG.SHOW_DRINK && b.dataset.drink === '1';
@@ -1373,7 +1641,7 @@
     }
     else if (b.id === 'opts-minus') opt.qty = Math.max(1, opt.qty - 1);
     else if (b.id === 'opts-plus') {
-      const type = stockTypeOf(opt.item, opt.protein);
+      const type = opt.papa ? null : stockTypeOf(opt.item, opt.protein);
       let max = type ? Math.min(20, remainingStock(type)) : 20;
       if (opt.drink) max = Math.min(max, remainingStock('gaseosa'));
       if (opt.qty >= max) showToast(opt.drink && opt.qty >= remainingStock('gaseosa') ? '😔 No queda más Coca-Cola' : '😔 No queda más de esa carne por hoy', 1800);
@@ -1381,6 +1649,10 @@
     }
     else if (b.id === 'opts-close') { optsDialog.close(); return; }
     else if (b.id === 'opts-add') {
+      if (opt.papa) {
+        if (commitLine('papa:' + opt.papa + ':' + opt.size, null, opt.drink, null, optionsAddons(), opt.qty)) optsDialog.close();
+        return;
+      }
       const pickles = opt.item === 'texas' ? opt.pickles : null;
       if (SANDWICHES[opt.item].custom && opt.addons.size === 0) { showToast('Elige al menos 1 ingrediente', 2200); return; }
       if (commitLine(opt.item, opt.protein, opt.drink, pickles, optionsAddons(), opt.qty)) optsDialog.close();
@@ -1415,7 +1687,7 @@
 
   function renderOrderList(){
     $('order-list').innerHTML = cartLines.map(l => {
-      const unit = lineUnitPrice(l.item, l.drink, l.addons.length);
+      const unit = lineUnitPrice(l.item, l.drink, l.addons);
       return `<div class="order-row">
         <div class="order-row-top">
           <span class="order-row-name">${lineLabel(l.item, l.protein, l.drink, l.pickles, l.addons)}</span>
@@ -1524,7 +1796,7 @@
   // unverifiedCounts: si no se pudo descontar el stock, avisa aquí qué descontar a mano.
   function cartMessage(totalPrice, unverifiedCounts = null){
     const lines = cartLines.map(l =>
-      `${l.qty}x ${lineLabel(l.item, l.protein, l.drink, l.pickles, l.addons)} — ${cop(l.qty * lineUnitPrice(l.item, l.drink, l.addons.length))}`
+      `${l.qty}x ${lineLabel(l.item, l.protein, l.drink, l.pickles, l.addons)} — ${cop(l.qty * lineUnitPrice(l.item, l.drink, l.addons))}`
     ).join('\n');
     let payText = PAYMENT_LABELS[deliveryPayment];
     if (deliveryPayment === 'EFECTIVO' && deliveryCash > 0) {
@@ -1549,9 +1821,11 @@
         name: deliveryName, phone: deliveryPhone, address: deliveryAddress,
         pay: deliveryPayment, notes: orderNotes.trim(),
         lines: cartLines.map(l => ({
-          product: isSandwich(l.item) ? SANDWICHES[l.item].name : 'Malteada ' + SHAKES[l.item.slice(6)].name,
+          product: isSandwich(l.item) ? SANDWICHES[l.item].name
+            : parsePapa(l.item) ? 'Papas ' + PAPAS[parsePapa(l.item).id].name + ' (' + PAPA_SIZES[parsePapa(l.item).size] + ')'
+            : 'Malteada ' + SHAKES[l.item.slice(6)].name,
           qty: l.qty, drink: !!l.drink, addons: l.addons.length,
-          unit: lineUnitPrice(l.item, l.drink, l.addons.length),
+          unit: lineUnitPrice(l.item, l.drink, l.addons),
           label: lineLabel(l.item, l.protein, l.drink, l.pickles, l.addons)
         }))
       };
@@ -1654,6 +1928,11 @@
   if (closeTimeFor() !== CARNITAS_CONFIG.CLOSE_TIME) {
     $('hours-line').textContent = '🕓 Hoy · ' + hourOfDay(CARNITAS_CONFIG.OPEN_TIME) + ' a ' + hourOfDay(closeTimeFor());
   }
+  if (!CARNITAS_CONFIG.SHOW_PAPAS) { // sin Piso 2: se oculta todo lo de las papas
+    ['papas', 'elevator', 'nav-papas', 'directory'].forEach(id => { $(id).hidden = true; });
+  }
+  $('opt-pextras').innerHTML = Object.entries(PAPA_EXTRAS).map(([id, x]) =>
+    `<button type="button" class="chip-btn" data-pextra="${id}" aria-pressed="false">${x.e} ${x.label} +${cop(x.price)}</button>`).join('');
   if (!CARNITAS_CONFIG.SHOW_SHAKES) { // malteadas fuera del menú
     $('malteadas').hidden = true;
     document.querySelectorAll('a[href="#malteadas"]').forEach(a => { a.hidden = true; });
