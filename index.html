@@ -783,6 +783,12 @@
       "2026-10-05": "Disculpa, hoy no abrimos. Continuaremos con nuestro horario habitual el día de mañana.",
     },
 
+    // Apertura distinta SOLO para días puntuales: "AAAA-MM-DD": "HH:MM" (hora de Colombia, 24 h).
+    // Ese día la tienda abre a esa hora; los demás días rige OPEN_TIME. Se puede borrar después.
+    OPEN_OVERRIDES: {
+      "2026-10-10": "19:00",
+    },
+
     // Cierre distinto SOLO para días puntuales: "AAAA-MM-DD": "HH:MM" (hora de Colombia).
     // Ese día la tienda cierra a esa hora; los demás días rige CLOSE_TIME. Se puede borrar después.
     CLOSE_OVERRIDES: {
@@ -1343,11 +1349,15 @@
     return Object.hasOwn(overrides, day) ? overrides[day] : CARNITAS_CONFIG.CLOSE_TIME;
   }
 
+  // Hora de apertura (en minutos) del día que empieza en dayStartMs: la de OPEN_OVERRIDES si ese día tiene una, o OPEN_TIME.
+  const openTimeFor = (ms = Date.now()) => (CARNITAS_CONFIG.OPEN_OVERRIDES || {})[dateKey(ms)] || CARNITAS_CONFIG.OPEN_TIME;
+  const openMinFor = ms => toMinutes(openTimeFor(ms));
+
   // Estado de la tienda en un momento dado: si está abierta y cuándo cambia (cierra o abre).
   function scheduleState(now = Date.now()){
     if (Number.isFinite(openingTs) && now < openingTs) return { open: false, next: openingTs, official: true };
     const dayStart = Math.floor((now - BOGOTA_OFFSET) / DAY_MS) * DAY_MS + BOGOTA_OFFSET; // las 00:00 de hoy en Colombia
-    const openAt = dayStart + OPEN_MIN * 60e3;
+    const openAt = dayStart + openMinFor(dayStart) * 60e3;
     const closeAt = dayStart + toMinutes(closeTimeFor(now)) * 60e3;
     const todayCloses = dayIsClosed(dayStart); // hoy es un día sin servicio (p. ej. domingo)
     if (!todayCloses && now >= openAt && now < closeAt) return { open: true, next: closeAt };
@@ -1355,7 +1365,7 @@
     // La próxima apertura es el siguiente día con servicio.
     let day = dayStart + DAY_MS;
     for (let i = 0; i < 7 && dayIsClosed(day); i++) day += DAY_MS;
-    return { open: false, next: day + OPEN_MIN * 60e3 };
+    return { open: false, next: day + openMinFor(day) * 60e3 };
   }
   const isOpen = () => scheduleState().open;
   const salesClosed = () => !isOpen();
@@ -1945,8 +1955,8 @@
   $('hours-line').textContent = '🕓 ' + (closedNames.length ? '' : 'Todos los días · ') + hourOfDay(CARNITAS_CONFIG.OPEN_TIME) + ' a ' + hourOfDay(CARNITAS_CONFIG.CLOSE_TIME)
     + (closedNames.length ? ' · Cerrado los ' + closedNames.join(' y ') : '');
   // Si hoy tiene un cierre especial, el aviso lo dice.
-  if (closeTimeFor() !== CARNITAS_CONFIG.CLOSE_TIME) {
-    $('hours-line').textContent = '🕓 Hoy · ' + hourOfDay(CARNITAS_CONFIG.OPEN_TIME) + ' a ' + hourOfDay(closeTimeFor());
+  if (closeTimeFor() !== CARNITAS_CONFIG.CLOSE_TIME || openTimeFor() !== CARNITAS_CONFIG.OPEN_TIME) {
+    $('hours-line').textContent = '🕓 Hoy · ' + hourOfDay(openTimeFor()) + ' a ' + hourOfDay(closeTimeFor());
   }
   if (!CARNITAS_CONFIG.SHOW_PAPAS) { // sin Piso 2: se oculta todo lo de las papas
     ['papas', 'elevator', 'nav-papas', 'directory'].forEach(id => { $(id).hidden = true; });
