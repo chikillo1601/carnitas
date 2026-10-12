@@ -317,6 +317,35 @@
     padding:.7rem 1.2rem; border-radius:999px; box-shadow:0 10px 28px -10px rgba(0,0,0,.7); pointer-events:none;
   }
 
+  /* ---------- Anuncio grande (mantenimiento, avisos especiales) ---------- */
+  .mega-banner{
+    display:block; text-align:center; padding:1rem 1rem 1.1rem; background:var(--red); color:var(--white);
+    border-bottom:5px solid var(--ink); font-weight:900; line-height:1.15; cursor:pointer; text-decoration:none;
+    background-image:repeating-linear-gradient(-45deg, rgba(0,0,0,.14) 0 14px, transparent 14px 28px);
+  }
+  .mega-banner[hidden]{ display:none; }
+  .mega-banner b{ display:block; font-size:clamp(1.25rem,5.2vw,2rem); letter-spacing:-.01em; text-transform:uppercase; animation:mega-pulse 1.3s ease-in-out infinite; }
+  .mega-banner span{ display:block; margin-top:.35rem; font-size:clamp(.95rem,3.6vw,1.2rem); font-weight:800; color:var(--yellow); }
+  @keyframes mega-pulse{ 0%,100%{ transform:scale(1); } 50%{ transform:scale(1.04); } }
+  .announce{
+    width:min(92vw,520px); max-height:94vh; overflow-y:auto; padding:0; margin:auto; text-align:center;
+    background:var(--yellow); color:var(--ink); border:5px solid var(--ink); border-radius:26px; box-shadow:10px 10px 0 var(--ink);
+  }
+  .announce[open]{ animation:announce-pop .35s cubic-bezier(.2,1.4,.4,1); }
+  @keyframes announce-pop{ from{ transform:scale(.7); opacity:0; } to{ transform:none; opacity:1; } }
+  .announce::backdrop{ background:rgba(20,18,16,.85); }
+  .announce-stripes{ height:26px; background:repeating-linear-gradient(-45deg, var(--ink) 0 18px, var(--yellow) 18px 36px); border-bottom:5px solid var(--ink); }
+  .announce-stripes.bottom{ border-bottom:none; border-top:5px solid var(--ink); }
+  .announce-body{ padding:1.4rem 1.3rem 1.6rem; }
+  .announce-bear{ width:110px; height:110px; border-radius:50%; object-fit:cover; border:5px solid var(--ink); background:var(--ink); }
+  .announce-title{ margin-top:.9rem; font-weight:900; font-size:clamp(1.7rem,8vw,2.4rem); line-height:1.05; letter-spacing:-.02em; text-transform:uppercase; color:var(--red); }
+  .announce-text{ margin-top:.9rem; font-weight:800; font-size:clamp(1.1rem,4.6vw,1.45rem); line-height:1.3; }
+  .announce-btn{
+    margin-top:1.4rem; width:100%; padding:1rem; border:4px solid var(--ink); border-radius:999px; background:var(--red); color:var(--white);
+    font:inherit; font-weight:900; font-size:1.15rem; cursor:pointer; box-shadow:0 6px 0 var(--ink);
+  }
+  .announce-btn:active{ transform:translateY(4px); box-shadow:0 2px 0 var(--ink); }
+
   /* ---------- Ventanas (opciones y pedido) ---------- */
   .sheet{
     width:min(100%,520px); max-height:94vh; overflow-y:auto; overflow-x:hidden; padding:0; margin:auto auto 0;
@@ -459,6 +488,19 @@
 </style>
 </head>
 <body>
+
+<!-- ============ ANUNCIO GRANDE (solo los días con aviso en ANNOUNCEMENTS) ============ -->
+<a class="mega-banner" id="mega-banner" href="#inicio" hidden><b id="mega-title"></b><span id="mega-text"></span></a>
+<dialog class="announce" id="announce-dialog" aria-labelledby="announce-title">
+  <div class="announce-stripes" aria-hidden="true"></div>
+  <div class="announce-body">
+    <img class="announce-bear" src="img/oso-cara.jpg" width="110" height="110" alt="">
+    <h2 class="announce-title" id="announce-title"></h2>
+    <p class="announce-text" id="announce-text"></p>
+    <button type="button" class="announce-btn" id="announce-ok">VER EL MENÚ 👀</button>
+  </div>
+  <div class="announce-stripes bottom" aria-hidden="true"></div>
+</dialog>
 
 <!-- ============ BARRA SUPERIOR ============ -->
 <header class="topbar">
@@ -780,7 +822,17 @@
     // Ese día todo aparece cerrado, con el aviso arriba, y el contador cuenta hasta la próxima apertura.
     // Cuando pase la fecha, se puede borrar la línea.
     CLOSED_DATES: {
+      "2026-10-12": "Carnitas está en mantenimiento y mejora. Mañana abrimos de 5:00 p. m. a 11:00 p. m., como siempre.",
       "2026-10-05": "Disculpa, hoy no abrimos. Continuaremos con nuestro horario habitual el día de mañana.",
+    },
+
+    // Anuncio GRANDE (ventana al entrar + franja roja arriba) solo ese día: "AAAA-MM-DD": { title, text }.
+    // Para que además la tienda quede cerrada ese día, pon también la fecha en CLOSED_DATES.
+    ANNOUNCEMENTS: {
+      "2026-10-12": {
+        title: "🛠️ Carnitas en mantenimiento y mejora",
+        text: "Hoy no abrimos para dejar todo mejor. ¡Mañana volvemos como siempre, de 5:00 p. m. a 11:00 p. m.! 🔥🐻",
+      },
     },
 
     // Apertura distinta SOLO para días puntuales: "AAAA-MM-DD": "HH:MM" (hora de Colombia, 24 h).
@@ -1957,6 +2009,17 @@
   // Si hoy tiene un cierre especial, el aviso lo dice.
   if (closeTimeFor() !== CARNITAS_CONFIG.CLOSE_TIME || openTimeFor() !== CARNITAS_CONFIG.OPEN_TIME) {
     $('hours-line').textContent = '🕓 Hoy · ' + hourOfDay(openTimeFor()) + ' a ' + hourOfDay(closeTimeFor());
+  }
+  // Anuncio grande del día (si hay uno en ANNOUNCEMENTS para hoy): ventana al entrar + franja roja arriba.
+  const announcement = (CARNITAS_CONFIG.ANNOUNCEMENTS || {})[dateKey(Date.now())];
+  if (announcement) {
+    $('mega-title').textContent = announcement.title;
+    $('mega-text').textContent = announcement.text;
+    $('mega-banner').hidden = false;
+    $('announce-title').textContent = announcement.title;
+    $('announce-text').textContent = announcement.text;
+    $('announce-ok').addEventListener('click', () => $('announce-dialog').close());
+    $('announce-dialog').showModal();
   }
   if (!CARNITAS_CONFIG.SHOW_PAPAS) { // sin Piso 2: se oculta todo lo de las papas
     ['papas', 'elevator', 'nav-papas', 'directory'].forEach(id => { $(id).hidden = true; });
