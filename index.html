@@ -874,6 +874,7 @@
 
     SHOW_DRINK: true,    // false = no se ofrece Coca-Cola. true = se ofrece (con su propio stock, ver GASEOSA_STOCK).
     GASEOSA_STOCK: 0,    // respaldo de Coca-Cola, solo si no hay conexión con Firebase (modo de prueba)
+    PAPAS_STOCK: 10,     // respaldo de papas (en porciones: personal = 1, para compartir = 2), solo en modo de prueba sin Firebase
     DRINK_PRICE: 4000,   // Coca-Cola (la única gaseosa), se suma al sándwich
     ADDON_PRICE: 3000,   // cada adicional (queso, huevo, etc.)
     MALTEADA_PRICE: 10000, // cada malteada (0 = "por definir" y no se puede pedir)
@@ -1116,17 +1117,23 @@
   const STOCK_TYPES = ['res', 'cerdo'];
   // La Coca-Cola ("gaseosa") tiene su propio contador. A diferencia de res y cerdo es opcional en la
   // base de datos: mientras no exista /stock/gaseosa se considera agotada (0), así nunca se ofrece sin límite.
-  const ALL_TYPES = ['res', 'cerdo', 'gaseosa'];
+  // Las papas también tienen su contador ("papas", campo PAPAS en Firebase), en porciones: el plato
+  // personal gasta 1 y el de compartir gasta 2. Si el campo no existe en la base, no hay límite.
+  const ALL_TYPES = ['res', 'cerdo', 'gaseosa', 'papas'];
   let cocaKey = 'coca'; // nombre del campo de la Coca-Cola en Firebase: 'coca' o 'Coca-Cola' (se detecta al leer)
-  const stock = { res: null, cerdo: null, gaseosa: null }; // null = sin límite, o todavía no se sabe
+  let papasKey = 'PAPAS'; // nombre del campo de las papas en Firebase: 'PAPAS' o 'papas' (se detecta al leer)
+  const stock = { res: null, cerdo: null, gaseosa: null, papas: null }; // null = sin límite, o todavía no se sabe
   const stockTypeOf = (item, protein) => isSandwich(item) ? (protein === 'CERDO' ? 'cerdo' : 'res') : null;
+  const PAPA_PORTIONS = { P: 1, C: 2 };
+  const papaPortions = item => { const p = parsePapa(item); return p ? PAPA_PORTIONS[p.size] : 0; };
 
   function cartCounts(){
-    const counts = { res: 0, cerdo: 0, gaseosa: 0 };
+    const counts = { res: 0, cerdo: 0, gaseosa: 0, papas: 0 };
     cartLines.forEach(l => {
       const t = stockTypeOf(l.item, l.protein);
       if (t) counts[t] += l.qty;
       if (l.drink) counts.gaseosa += l.qty; // cada unidad con Coca-Cola (en sándwiches o en el combo de papas) gasta una
+      counts.papas += l.qty * papaPortions(l.item);
     });
     return counts;
   }
@@ -1140,6 +1147,8 @@
     if (!type) return true;
     return remainingStock(type) >= extra && (!withDrink || remainingStock('gaseosa') >= extra);
   }
+  // ¿Alcanzan las porciones de papas para qty unidades de ese plato/tamaño?
+  const canAddPapa = (item, qty = 1) => remainingStock('papas') >= qty * papaPortions(item);
 
   const stockDbUrl = () => (CARNITAS_CONFIG.STOCK_DB_URL || '').trim().replace(/\/+$/, '');
   const LOCAL_STOCK_KEY = 'carnitas_stock_v1';
@@ -1153,7 +1162,7 @@
       const d = JSON.parse(localStorage.getItem(LOCAL_STOCK_KEY) || 'null');
       if (d && ALL_TYPES.every(t => Number.isInteger(d[t]) && d[t] >= 0)) saved = d;
     } catch (e) { /* sin almacenamiento */ }
-    localStock = saved || { res: CARNITAS_CONFIG.RES_STOCK, cerdo: CARNITAS_CONFIG.CERDO_STOCK, gaseosa: CARNITAS_CONFIG.GASEOSA_STOCK };
+    localStock = saved || { res: CARNITAS_CONFIG.RES_STOCK, cerdo: CARNITAS_CONFIG.CERDO_STOCK, gaseosa: CARNITAS_CONFIG.GASEOSA_STOCK, papas: CARNITAS_CONFIG.PAPAS_STOCK };
     return localStock;
   }
   function writeLocalStock(){
@@ -1182,6 +1191,8 @@
         STOCK_TYPES.forEach(t => { stock[t] = Math.max(0, d[t]); });
         cocaKey = Number.isInteger(d.coca) || !Number.isInteger(d['Coca-Cola']) ? 'coca' : 'Coca-Cola';
         stock.gaseosa = Number.isInteger(d[cocaKey]) ? Math.max(0, d[cocaKey]) : 0; // sin el campo = agotada
+        papasKey = Number.isInteger(d.PAPAS) || !Number.isInteger(d.papas) ? 'PAPAS' : 'papas';
+        stock.papas = Number.isInteger(d[papasKey]) ? Math.max(0, d[papasKey]) : null; // sin el campo = sin límite
       } else {
         const s = readLocalStock();
         ALL_TYPES.forEach(t => { stock[t] = s[t]; });
@@ -1210,8 +1221,11 @@
     }
 
     const body = {};
+    const optionalFields = [cocaKey, papasKey]; // Coca-Cola y papas: si Firebase aún no las permite, el pedido sale con aviso
     for (const type of ALL_TYPES) {
-      if (counts[type] > 0) body[type === 'gaseosa' ? cocaKey : type] = { '.sv': { increment: -counts[type] } };
+      const field = type === 'gaseosa' ? cocaKey : type === 'papas' ? papasKey : type;
+      // Las papas sin contador en la base (sin límite) no se descuentan.
+      if (counts[type] > 0 && !(type === 'papas' && stock.papas === null)) body[field] = { '.sv': { increment: -counts[type] } };
     }
     // Hasta 3 intentos si falla la conexión (celulares con señal floja). Si el servidor responde
     // que no alcanza (401/403 por la regla), no se reintenta.
@@ -1225,14 +1239,15 @@
           // ¿De verdad ya no alcanza algo? Si todo parece disponible, el rechazo es de las reglas de Firebase
           // (p. ej. todavía no permiten /stock/gaseosa): el pedido sale igual, con aviso para descontarlo a mano.
           const short = ALL_TYPES.some(t => stock[t] !== null && counts[t] > stock[t]);
-          if (short || !body[cocaKey]) return { ok: false };
-          const retry = { ...body }; delete retry[cocaKey];
+          const skipped = optionalFields.filter(f => body[f]);
+          if (short || skipped.length === 0) return { ok: false };
+          const retry = { ...body }; skipped.forEach(f => { delete retry[f]; });
           if (Object.keys(retry).length) {
             const r2 = await dbFetch('/stock.json', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(retry) });
             if (!r2.ok) return { ok: false };
           }
           refreshStock();
-          return { ok: true, unverified: true, unverifiedCounts: { res: 0, cerdo: 0, gaseosa: counts.gaseosa } };
+          return { ok: true, unverified: true, unverifiedCounts: { res: 0, cerdo: 0, gaseosa: body[cocaKey] ? counts.gaseosa : 0, papas: body[papasKey] ? counts.papas : 0 } };
         }
         throw new Error('HTTP ' + res.status);
       } catch (e) {
@@ -1248,7 +1263,7 @@
 
   // "1 de res, 2 de cerdo": lo que hay que descontar a mano si el sistema no pudo.
   function describeCounts(counts){
-    const label = { res: n => n + ' de res', cerdo: n => n + ' de cerdo', gaseosa: n => n + ' Coca-Cola' };
+    const label = { res: n => n + ' de res', cerdo: n => n + ' de cerdo', gaseosa: n => n + ' Coca-Cola', papas: n => n + ' de papas (porciones: personal 1, compartir 2)' };
     return ALL_TYPES.filter(t => counts[t] > 0).map(t => label[t](counts[t])).join(', ');
   }
 
@@ -1280,6 +1295,19 @@
       }
     }
     cartLines = cartLines.filter(l => l.qty > 0);
+    // Papas: si ya no alcanzan las porciones, se recorta el pedido desde el final.
+    if (stock.papas !== null) {
+      let excess = cartCounts().papas - stock.papas;
+      for (let i = cartLines.length - 1; i >= 0 && excess > 0; i--) {
+        const l = cartLines[i], u = papaPortions(l.item);
+        if (!u) continue;
+        const cut = Math.min(l.qty, Math.ceil(excess / u));
+        l.qty -= cut;
+        excess -= cut * u;
+        changed = true;
+      }
+      cartLines = cartLines.filter(l => l.qty > 0);
+    }
     // Si ya no alcanza la Coca-Cola, se le quita a las últimas unidades (el sándwich se conserva sin bebida).
     if (stock.gaseosa !== null) {
       let excess = cartCounts().gaseosa - stock.gaseosa;
@@ -1308,6 +1336,7 @@
     if (drink && remainingStock('gaseosa') < qty) { showToast('😔 Se acabó la Coca-Cola. Pídelo sin bebida.', 3000); return false; }
     const papaItem = parsePapa(item);
     if (papaItem && papaSoldOut(papaItem.id)) { showToast('😔 Ese plato de papas se agotó por hoy', 3000); return false; }
+    if (papaItem && !canAddPapa(item, qty)) { showToast(remainingStock('papas') >= papaPortions(item) ? '😔 No quedan tantas papas' : '😔 Las papas se acabaron por hoy', 3000); return false; }
     const key = lineKey(item, protein, drink, pickles, addons);
     const existing = cartLines.find(l => l.key === key);
     if (existing) existing.qty = Math.min(99, existing.qty + qty);
@@ -1327,6 +1356,7 @@
     if (!line) return;
     if (delta > 0 && !canAddSandwich(line.item, line.protein, 1)) { showToast('😔 Se agotó esa carne por hoy.', 2600); return; }
     if (delta > 0 && line.drink && remainingStock('gaseosa') < 1) { showToast('😔 Se acabó la Coca-Cola.', 2600); return; }
+    if (delta > 0 && parsePapa(line.item) && !canAddPapa(line.item, 1)) { showToast('😔 No quedan más papas por hoy.', 2600); return; }
     line.qty = Math.min(99, line.qty + delta);
     if (line.qty <= 0) cartLines = cartLines.filter(l => l.key !== key);
     renderCart();
@@ -1545,7 +1575,7 @@
       b.textContent = closed ? '🔒 CERRADO' : stockedOut ? '😔 AGOTADO' : '+ AGREGAR';
     });
     document.querySelectorAll('.papa-add').forEach(b => {
-      const out = papaSoldOut(b.dataset.papa);
+      const out = papaSoldOut(b.dataset.papa) || remainingStock('papas') < 1; // sin porciones de papas = agotado
       const soon = !!CARNITAS_CONFIG.PAPAS_SOON;
       b.disabled = soon || closed || out;
       b.textContent = soon ? '🔜 PRÓXIMAMENTE' : closed ? '🔒 CERRADO' : out ? '😔 AGOTADO' : '+ AGREGAR';
@@ -1590,7 +1620,7 @@
   function openPapa(id){
     if (CARNITAS_CONFIG.PAPAS_SOON) { showToast('🔜 ¡Las papas llegan muy pronto!', 3000); return; }
     if (salesClosed()) { showToast('🔒 ' + closedMessage(), 3200); return; }
-    if (papaSoldOut(id)) { showToast('😔 Ese plato de papas se agotó por hoy', 3000); return; }
+    if (papaSoldOut(id) || remainingStock('papas') < 1) { showToast('😔 Ese plato de papas se agotó por hoy', 3000); return; }
     const p = PAPAS[id];
     Object.assign(opt, { item: null, papa: id, size: 'P', protein: null, pickles: true, drink: false, qty: 1 });
     opt.addons.clear();
@@ -1608,9 +1638,14 @@
 
   function renderPapaOptions(){
     const c = CARNITAS_CONFIG, p = PAPAS[opt.papa];
-    // Tamaño: dos botones grandes con su precio.
-    $('opt-size-row').innerHTML = Object.entries(PAPA_SIZES).map(([k, label]) =>
-      `<button type="button" class="opt-btn opt-size-btn" data-size="${k}" aria-pressed="${k === opt.size}">${k === 'P' ? '🍟' : '🍟🍟'} ${label}<small>${cop(p.prices[k])}</small></button>`).join('');
+    // Tamaño: dos botones grandes con su precio. Si quedan pocas porciones, el tamaño grande (gasta 2) se agota primero.
+    const left = remainingStock('papas');
+    if (left < PAPA_PORTIONS[opt.size]) opt.size = 'P';
+    opt.qty = Math.max(1, Math.min(opt.qty, Math.floor(left / PAPA_PORTIONS[opt.size])));
+    $('opt-size-row').innerHTML = Object.entries(PAPA_SIZES).map(([k, label]) => {
+      const out = left < PAPA_PORTIONS[k];
+      return `<button type="button" class="opt-btn opt-size-btn" data-size="${k}" aria-pressed="${k === opt.size}"${out ? ' disabled' : ''}>${k === 'P' ? '🍟' : '🍟🍟'} ${label}<small>${out ? 'agotado' : cop(p.prices[k])}</small></button>`;
+    }).join('');
     // Extras con su precio.
     optsDialog.querySelectorAll('[data-pextra]').forEach(b => {
       const out = papaExtraSoldOut(b.dataset.pextra);
@@ -1732,7 +1767,8 @@
       const type = opt.papa ? null : stockTypeOf(opt.item, opt.protein);
       let max = type ? Math.min(20, remainingStock(type)) : 20;
       if (opt.drink) max = Math.min(max, remainingStock('gaseosa'));
-      if (opt.qty >= max) showToast(opt.drink && opt.qty >= remainingStock('gaseosa') ? '😔 No queda más Coca-Cola' : '😔 No queda más de esa carne por hoy', 1800);
+      if (opt.papa) max = Math.min(max, Math.floor(remainingStock('papas') / PAPA_PORTIONS[opt.size]));
+      if (opt.qty >= max) showToast(opt.papa && opt.qty >= Math.floor(remainingStock('papas') / PAPA_PORTIONS[opt.size]) ? '😔 No quedan más papas de ese tamaño' : opt.drink && opt.qty >= remainingStock('gaseosa') ? '😔 No queda más Coca-Cola' : '😔 No queda más de esa carne por hoy', 1800);
       else opt.qty += 1;
     }
     else if (b.id === 'opts-close') { optsDialog.close(); return; }
