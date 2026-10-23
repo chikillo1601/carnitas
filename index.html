@@ -866,8 +866,8 @@
     SANDWICH_PRICE: 14900,
     // Piso 2: las Papas (precios y extras en PAPAS y PAPA_EXTRAS, más abajo).
     SHOW_PAPAS: true,            // false = la sección de papas no aparece
-    PAPAS_SOON: true,            // true = se ven con el letrero PRÓXIMAMENTE y todavía no se pueden pedir. Ponlo en false el día que abran
-    HIDDEN_PAPAS: ["boyacense"], // platos fuera del menú por ahora (para volver a mostrarlo: quítalo de la lista)
+    PAPAS_SOON: false,           // true = se ven con el letrero PRÓXIMAMENTE y todavía no se pueden pedir. Ponlo en false el día que abran
+    HIDDEN_PAPAS: ["clasica", "gringa", "boyacense"], // platos fuera del menú por ahora (para volver a mostrarlo: quítalo de la lista)
     SOLD_OUT_PAPAS: [],          // platos agotados, ej: ["gringa"] (ids: clasica, gringa, tocinetuda, boyacense)
     SOLD_OUT_PAPA_EXTRAS: [],    // extras agotados, ej: ["pina"] (ver PAPA_EXTRAS)
     PAPA_COMBO_PRICE: 3000,      // Coca-Cola con la Clásica personal (combo $21.900 = $18.900 + $3.000)
@@ -1013,13 +1013,14 @@
       prices: { P: 12900, C: 23900 }, combo: null,
       alt: 'La Tocinetuda: papas fritas con mozzarella gratinada, tocineta dorada y salsa Carnitas',
       ingredients: [
-        { e: '🍟', t: 'Papa francesa' }, { e: '🧀', t: 'Mozzarella gratinada' }, { e: '🥓', t: 'Tocineta dorada y picada' }, { e: '🫙', t: 'Salsa Carnitas' },
+        { e: '🍟', t: 'Papa francesa' }, { e: '🧀', t: 'Mozzarella gratinada' }, { e: '🧀', t: 'Queso cheddar' }, { e: '🥓', t: 'Tocineta dorada y picada' }, { e: '🫙', t: 'Salsa Carnitas' },
       ],
     },
   };
   // Extras de las papas, cada uno con su precio.
   const PAPA_EXTRAS = {
-    carnitas: { e: '🥩', label: 'CARNITAS EXTRA',        price: 5000 },
+    res:      { e: '🥩', label: 'CARNE DE RES EXTRA (150 G)',   price: 6000 },
+    cerdo:    { e: '🐖', label: 'CARNE DE CERDO EXTRA (150 G)', price: 6000 },
     paipa:    { e: '🧀', label: 'QUESO PAIPA EXTRA',     price: 3500 },
     tocineta: { e: '🥓', label: 'TOCINETA EXTRA',        price: 3000 },
     pina:     { e: '🍍', label: 'PIÑA ASADA',            price: 2500 },
