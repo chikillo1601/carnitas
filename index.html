@@ -822,6 +822,7 @@
     // Ese día todo aparece cerrado, con el aviso arriba, y el contador cuenta hasta la próxima apertura.
     // Cuando pase la fecha, se puede borrar la línea.
     CLOSED_DATES: {
+      "2026-10-31": "Estamos trabajando para mejorar Carnitas. Abrimos el lunes de 5:00 p. m. a 11:00 p. m.",
       "2026-10-26": "Por hoy ya cerramos. ¡Gracias por tu pedido! Mañana abrimos de 5:00 p. m. a 11:00 p. m.",
       "2026-10-16": "Página en mantenimiento. Estamos mejorando la página. Volvemos el lunes 19 de 5 a 11 pm.",
       "2026-10-17": "Página en mantenimiento. Estamos mejorando la página. Volvemos el lunes 19 de 5 a 11 pm.",
@@ -831,6 +832,10 @@
     // Anuncio GRANDE (ventana al entrar + franja roja arriba) solo ese día: "AAAA-MM-DD": { title, text }.
     // Para que además la tienda quede cerrada ese día, pon también la fecha en CLOSED_DATES.
     ANNOUNCEMENTS: {
+      "2026-10-31": {
+        title: "Trabajando para mejorar Carnitas",
+        text: "Abrimos el lunes de 5 a 11 pm.",
+      },
       "2026-10-16": {
         title: "Página en mantenimiento",
         text: "Estamos mejorando la página. Volvemos el lunes 19 de 5 a 11 pm.",
@@ -850,6 +855,7 @@
     // Cierre distinto SOLO para días puntuales: "AAAA-MM-DD": "HH:MM" (hora de Colombia).
     // Ese día la tienda cierra a esa hora; los demás días rige CLOSE_TIME. Se puede borrar después.
     CLOSE_OVERRIDES: {
+      "2026-10-30": "22:00",
       "2026-10-02": "21:45",
       "2026-10-21": "22:00",
     },
