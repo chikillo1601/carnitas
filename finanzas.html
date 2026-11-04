@@ -41,6 +41,10 @@
   table{ width:100%; border-collapse:collapse; } td{ padding:.3rem 0; border-bottom:1px solid var(--line); } td:last-child{ text-align:right; }
   .muted{ color:var(--muted); } .err{ color:#ff8a80; min-height:1.2em; }
   .hidden{ display:none !important; }
+  .stock-grid{ display:grid; grid-template-columns:1fr 1fr; gap:0 10px; align-items:end; }
+  .stock-grid label{ font-size:.85rem; color:var(--muted); }
+  .stock-grid button{ grid-column:1 / -1; }
+  .ok-msg{ color:var(--green); }
 </style>
 </head>
 <body>
@@ -60,6 +64,21 @@
 
   <!-- Panel -->
   <section id="panel" class="hidden">
+    <h2 style="margin-top:0">Stock de hoy</h2>
+    <div class="card">
+      <p class="muted" style="margin-top:0">Cuántas unidades puedes vender. La página las descuenta sola con cada pedido y muestra "agotado" cuando llegan a 0.</p>
+      <form id="stock-form" class="stock-grid">
+        <label>Sándwiches de cerdo<input id="st-cerdo" type="number" min="0" step="1" inputmode="numeric"></label>
+        <label>Sándwiches de res<input id="st-res" type="number" min="0" step="1" inputmode="numeric"></label>
+        <label>Coca-Cola<input id="st-coca" type="number" min="0" step="1" inputmode="numeric"></label>
+        <label>Papas (porciones)<input id="st-papas" type="number" min="0" step="1" inputmode="numeric"></label>
+        <button class="btn-main" type="submit" id="stock-save">Guardar stock</button>
+      </form>
+      <p class="muted" style="margin:.4rem 0 0;font-size:.85rem">Papas: el plato personal gasta 1 porción y el de compartir gasta 2.</p>
+      <p class="err" id="stock-msg"></p>
+    </div>
+
+    <h2>Ventas</h2>
     <div class="row" style="justify-content:space-between">
       <div class="row tabs"><button data-view="day" class="on">Día</button><button data-view="week">Semana</button></div>
       <div class="row">
@@ -258,9 +277,40 @@ function summaryText(){
   ].join('\n');
 }
 
+/* ---------- Stock ---------- */
+// Campos en Firebase (/stock): res, cerdo, "Coca-Cola" y PAPAS. "ribs" (costillas) no se toca aquí.
+const STOCK_FIELDS = { cerdo:'st-cerdo', res:'st-res', 'Coca-Cola':'st-coca', PAPAS:'st-papas' };
+function stockMsg(text, ok){ $('stock-msg').textContent = text; $('stock-msg').className = ok ? 'ok-msg' : 'err'; }
+async function loadStock(){
+  try {
+    const r = await fetch(CONFIG.DB_URL.replace(/\/$/, '') + '/stock.json', { cache:'no-store' });
+    const d = await r.json() || {};
+    Object.entries(STOCK_FIELDS).forEach(([f, id]) => { $(id).value = Number.isInteger(d[f]) ? d[f] : 0; });
+  } catch (e) { stockMsg('No se pudo leer el stock. Revisa la conexión.'); }
+}
+$('stock-form').addEventListener('submit', async e => {
+  e.preventDefault();
+  const body = {};
+  for (const [f, id] of Object.entries(STOCK_FIELDS)) {
+    const n = Number($(id).value);
+    if (!Number.isInteger(n) || n < 0) { stockMsg('Escribe números enteros de 0 en adelante.'); $(id).focus(); return; }
+    body[f] = n;
+  }
+  $('stock-save').disabled = true;
+  try {
+    const t = await token();
+    const r = await fetch(CONFIG.DB_URL.replace(/\/$/, '') + '/stock.json?auth=' + encodeURIComponent(t), {
+      method:'PATCH', body: JSON.stringify(body)
+    });
+    if (!r.ok) throw new Error();
+    stockMsg('Stock guardado. La página ya muestra estas cantidades.', true);
+  } catch (err) { stockMsg('No se guardó el stock. Intenta de nuevo.'); }
+  $('stock-save').disabled = false;
+});
+
 /* ---------- Eventos ---------- */
 function showLogin(){ $('panel').classList.add('hidden'); $('login').classList.remove('hidden'); }
-function showPanel(){ $('login').classList.add('hidden'); $('panel').classList.remove('hidden'); $('date').value = current; load(); }
+function showPanel(){ $('login').classList.add('hidden'); $('panel').classList.remove('hidden'); $('date').value = current; load(); loadStock(); }
 
 $('login-form').addEventListener('submit', async e => {
   e.preventDefault(); $('login-err').textContent = '';
