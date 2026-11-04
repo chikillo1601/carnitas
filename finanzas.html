@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Carnitas · Finanzas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --red:#DA291C; --yellow:#FFC72C; --black:#141210; --card:#1F1C19; --line:#34302B;
+    --text:#F5F1E8; --muted:#BDB6AA; --green:#3FB66B; --font:'Poppins',system-ui,sans-serif;
+  }
+  *{ box-sizing:border-box; }
+  body{ margin:0; background:var(--black); color:var(--text); font-family:var(--font); font-size:15px; line-height:1.45; }
+  main{ max-width:760px; margin:0 auto; padding:16px 16px 60px; }
+  h1{ font-size:1.35rem; margin:.2rem 0 1rem; } h1 span{ color:var(--yellow); }
+  h2{ font-size:1rem; margin:1.4rem 0 .6rem; color:var(--yellow); text-transform:uppercase; letter-spacing:.04em; }
+  .card{ background:var(--card); border:1px solid var(--line); border-radius:14px; padding:14px; margin-bottom:10px; }
+  input, button, select{ font-family:inherit; font-size:1rem; }
+  input{ width:100%; background:#000; color:var(--text); border:1px solid var(--line); border-radius:10px; padding:.7rem .8rem; margin:.25rem 0 .7rem; }
+  button{ border:0; border-radius:10px; padding:.65rem .9rem; font-weight:700; cursor:pointer; }
+  .btn-main{ background:var(--yellow); color:var(--black); width:100%; }
+  .btn-ghost{ background:transparent; color:var(--muted); border:1px solid var(--line); }
+  .row{ display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+  .tabs button{ background:transparent; color:var(--muted); border:1px solid var(--line); }
+  .tabs button.on{ background:var(--yellow); color:var(--black); border-color:var(--yellow); }
+  .kpis{ display:grid; grid-template-columns:repeat(2,1fr); gap:8px; }
+  @media(min-width:560px){ .kpis{ grid-template-columns:repeat(4,1fr); } }
+  .kpi{ background:var(--card); border:1px solid var(--line); border-radius:12px; padding:10px 12px; }
+  .kpi b{ display:block; font-size:1.25rem; } .kpi small{ color:var(--muted); }
+  .order{ border-left:4px solid var(--muted); }
+  .order.entregado{ border-left-color:var(--green); } .order.cancelado{ border-left-color:var(--red); opacity:.65; }
+  .order header{ display:flex; justify-content:space-between; gap:8px; font-weight:700; }
+  .order ul{ margin:.4rem 0; padding-left:1.1rem; color:var(--muted); }
+  .order .meta{ color:var(--muted); font-size:.85rem; }
+  .ok{ background:var(--green); color:#fff; } .no{ background:var(--red); color:#fff; } .undo{ background:#3a352f; color:var(--text); }
+  .pill{ font-size:.75rem; padding:.1rem .5rem; border-radius:99px; background:#3a352f; color:var(--text); font-weight:600; }
+  table{ width:100%; border-collapse:collapse; } td{ padding:.3rem 0; border-bottom:1px solid var(--line); } td:last-child{ text-align:right; }
+  .muted{ color:var(--muted); } .err{ color:#ff8a80; min-height:1.2em; }
+  .hidden{ display:none !important; }
+</style>
+</head>
+<body>
+<main>
+  <h1>CARNITAS · <span>Finanzas</span></h1>
+
+  <!-- Entrada -->
+  <section id="login" class="card hidden">
+    <p class="muted">Panel privado. Entra con tu correo y clave de Firebase.</p>
+    <form id="login-form">
+      <label>Correo<input id="email" type="email" autocomplete="username" required></label>
+      <label>Clave<input id="password" type="password" autocomplete="current-password" required></label>
+      <button class="btn-main" type="submit">ENTRAR</button>
+      <p class="err" id="login-err"></p>
+    </form>
+  </section>
+
+  <!-- Panel -->
+  <section id="panel" class="hidden">
+    <div class="row" style="justify-content:space-between">
+      <div class="row tabs"><button data-view="day" class="on">Día</button><button data-view="week">Semana</button></div>
+      <div class="row">
+        <button class="btn-ghost" id="prev">◀</button>
+        <input id="date" type="date" style="width:auto;margin:0">
+        <button class="btn-ghost" id="next">▶</button>
+      </div>
+    </div>
+    <p class="muted" id="range-label"></p>
+    <p class="err" id="load-err"></p>
+
+    <div class="kpis" id="kpis"></div>
+
+    <h2>Lo que se vendió (solo entregados)</h2>
+    <div class="card"><table id="products"></table></div>
+
+    <div class="row" style="margin:.6rem 0 0">
+      <button class="btn-main" id="copy" style="width:auto">📋 Copiar resumen para Gerencia</button>
+      <button class="btn-ghost" id="reload">↻ Actualizar</button>
+      <button class="btn-ghost" id="logout">Salir</button>
+    </div>
+
+    <h2 id="orders-title">Pedidos</h2>
+    <p class="muted">Marca cada pedido al cerrar: ✅ si se entregó y se pagó, ❌ si no se concretó. Solo los ✅ cuentan como venta.</p>
+    <div id="orders"></div>
+  </section>
+</main>
+
+<script>
+/* ===================== CONFIGURACIÓN =====================
+   FIREBASE_API_KEY: Firebase → Configuración del proyecto → General → "Clave de API web".
+   Es pública por diseño (no da acceso a nada sin tu correo y clave). */
+const CONFIG = {
+  DB_URL: "https://carnitas-7aafe-default-rtdb.firebaseio.com",
+  FIREBASE_API_KEY: "PEGAR_AQUI_LA_CLAVE_DE_API_WEB",
+};
+/* ========================================================= */
+
+const $ = id => document.getElementById(id);
+const cop = n => '$' + Math.round(n || 0).toLocaleString('es-CO');
+const TZ_OFFSET_H = 5; // Colombia, UTC-5, sin horario de verano
+const STORE_KEY = 'carnitas_finanzas_v1';
+
+/* ---------- Sesión ---------- */
+let session = null; // { idToken, refreshToken, exp }
+function saveSession(){ try { localStorage.setItem(STORE_KEY, JSON.stringify({ refreshToken: session && session.refreshToken })); } catch(e){} }
+function loadRefresh(){ try { return (JSON.parse(localStorage.getItem(STORE_KEY) || 'null') || {}).refreshToken || null; } catch(e){ return null; } }
+
+async function signIn(email, password){
+  const r = await fetch('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=' + CONFIG.FIREBASE_API_KEY, {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ email, password, returnSecureToken:true })
+  });
+  const d = await r.json();
+  if (!r.ok) throw new Error(d.error && d.error.message || 'No se pudo entrar');
+  session = { idToken:d.idToken, refreshToken:d.refreshToken, exp: Date.now() + (Number(d.expiresIn) - 60) * 1000 };
+  saveSession();
+}
+async function refresh(refreshToken){
+  const r = await fetch('https://securetoken.googleapis.com/v1/token?key=' + CONFIG.FIREBASE_API_KEY, {
+    method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'},
+    body: 'grant_type=refresh_token&refresh_token=' + encodeURIComponent(refreshToken)
+  });
+  const d = await r.json();
+  if (!r.ok) throw new Error('Sesión vencida');
+  session = { idToken:d.id_token, refreshToken:d.refresh_token, exp: Date.now() + (Number(d.expires_in) - 60) * 1000 };
+  saveSession();
+}
+async function token(){
+  if (session && Date.now() < session.exp) return session.idToken;
+  const rt = (session && session.refreshToken) || loadRefresh();
+  if (!rt) throw new Error('Sin sesión');
+  await refresh(rt);
+  return session.idToken;
+}
+
+/* ---------- Fechas (hora de Colombia) ---------- */
+function todayStr(){ const d = new Date(Date.now() - TZ_OFFSET_H * 3600e3); return d.toISOString().slice(0,10); }
+function dayStart(str){ const [y,m,d] = str.split('-').map(Number); return Date.UTC(y, m-1, d, TZ_OFFSET_H); }
+function addDays(str, n){ return new Date(dayStart(str) + n*864e5 - TZ_OFFSET_H*3600e3).toISOString().slice(0,10); }
+function weekStart(str){ const wd = new Date(dayStart(str) - TZ_OFFSET_H*3600e3).getUTCDay(); return addDays(str, -((wd + 6) % 7)); }
+function hourOf(ts){ return new Date(ts - TZ_OFFSET_H*3600e3).getUTCHours(); }
+function timeOf(ts){ const d = new Date(ts - TZ_OFFSET_H*3600e3); return String(d.getUTCHours()).padStart(2,'0') + ':' + String(d.getUTCMinutes()).padStart(2,'0'); }
+function niceDate(str){ return new Date(dayStart(str)).toLocaleDateString('es-CO', { weekday:'long', day:'numeric', month:'long', timeZone:'America/Bogota' }); }
+
+/* ---------- Datos ---------- */
+let view = 'day', current = todayStr(), orders = [];
+
+function range(){
+  if (view === 'day') return { from: current, to: current };
+  const s = weekStart(current); return { from: s, to: addDays(s, 6) };
+}
+async function load(){
+  $('load-err').textContent = '';
+  const { from, to } = range();
+  const a = dayStart(from), b = dayStart(to) + 864e5 - 1;
+  $('range-label').textContent = view === 'day' ? niceDate(from) : 'Semana del ' + niceDate(from) + ' al ' + niceDate(to);
+  try {
+    const t = await token();
+    const base = CONFIG.DB_URL.replace(/\/$/, '') + '/orders.json?auth=' + encodeURIComponent(t);
+    let r = await fetch(base + '&orderBy=%22ts%22&startAt=' + a + '&endAt=' + b);
+    if (r.status === 400) r = await fetch(base); // falta ".indexOn": "ts" en las reglas: se trae todo y se filtra aquí
+    if (r.status === 401 || r.status === 403) throw new Error('Tu usuario no tiene permiso para leer los pedidos. Revisa las reglas de Firebase.');
+    if (!r.ok) throw new Error('No se pudieron leer los pedidos (' + r.status + ')');
+    const d = await r.json() || {};
+    orders = Object.entries(d).map(([key, o]) => ({ key, ...o }))
+      .filter(o => o.ts >= a && o.ts <= b)
+      .sort((x, y) => y.ts - x.ts);
+    render();
+  } catch (e) {
+    if (e.message === 'Sin sesión' || e.message === 'Sesión vencida') return showLogin();
+    $('load-err').textContent = e.message;
+  }
+}
+async function setStatus(key, status){
+  const o = orders.find(x => x.key === key); if (!o) return;
+  const prev = o.status; o.status = status; render();
+  try {
+    const t = await token();
+    const r = await fetch(CONFIG.DB_URL.replace(/\/$/, '') + '/orders/' + key + '.json?auth=' + encodeURIComponent(t), {
+      method:'PATCH', body: JSON.stringify({ status, statusTs: Date.now() })
+    });
+    if (!r.ok) throw new Error();
+  } catch (e) { o.status = prev; render(); $('load-err').textContent = 'No se guardó el cambio. Revisa la conexión e intenta de nuevo.'; }
+}
+
+/* ---------- Cálculos ---------- */
+function summarize(){
+  const done = orders.filter(o => o.status === 'entregado');
+  const s = {
+    total: orders.length, done: done.length,
+    cancel: orders.filter(o => o.status === 'cancelado').length,
+    pending: orders.filter(o => !o.status || o.status === 'pendiente').length,
+    sales: done.reduce((n, o) => n + (o.total || 0), 0),
+    cash: 0, transfer: 0, products: {}, drinks: 0, hours: {}
+  };
+  done.forEach(o => {
+    if (o.pay === 'EFECTIVO') s.cash += o.total || 0; else s.transfer += o.total || 0;
+    s.hours[hourOf(o.ts)] = (s.hours[hourOf(o.ts)] || 0) + 1;
+    (o.lines || []).forEach(l => {
+      const name = l.product + (l.protein ? ' · ' + l.protein.toLowerCase() : '');
+      const p = s.products[name] || (s.products[name] = { qty:0, money:0 });
+      p.qty += l.qty || 0; p.money += (l.qty || 0) * (l.unit || 0);
+      if (l.drink) s.drinks += l.qty || 0;
+    });
+  });
+  s.avg = s.done ? s.sales / s.done : 0;
+  const closed = s.done + s.cancel;
+  s.conv = closed ? Math.round(s.done / closed * 100) : 0;
+  const peak = Object.entries(s.hours).sort((a, b) => b[1] - a[1])[0];
+  s.peak = peak ? peak[0] + ':00–' + (Number(peak[0]) + 1) + ':00' : '—';
+  s.top = Object.entries(s.products).sort((a, b) => b[1].qty - a[1].qty);
+  return s;
+}
+
+/* ---------- Pantalla ---------- */
+const esc = t => String(t == null ? '' : t).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function render(){
+  const s = summarize();
+  $('kpis').innerHTML = [
+    ['Ventas reales', cop(s.sales)], ['Pedidos entregados', s.done],
+    ['Ticket promedio', cop(s.avg)], ['Por confirmar', s.pending],
+    ['No se concretaron', s.cancel], ['% que sí compra', s.conv + '%'],
+    ['Efectivo / Transf.', cop(s.cash) + ' / ' + cop(s.transfer)], ['Hora pico', s.peak],
+  ].map(([k, v]) => `<div class="kpi"><small>${k}</small><b>${v}</b></div>`).join('');
+  $('products').innerHTML = s.top.length
+    ? s.top.map(([n, p]) => `<tr><td>${esc(n)}</td><td>${p.qty} · ${cop(p.money)}</td></tr>`).join('') + (s.drinks ? `<tr><td>Con Coca-Cola</td><td>${s.drinks}</td></tr>` : '')
+    : '<tr><td class="muted">Todavía no hay pedidos entregados en este periodo.</td><td></td></tr>';
+  $('orders-title').textContent = 'Pedidos (' + orders.length + ')';
+  $('orders').innerHTML = orders.length ? orders.map(o => {
+    const st = o.status || 'pendiente';
+    const btns = st === 'pendiente'
+      ? `<button class="ok" data-k="${o.key}" data-s="entregado">✅ Entregado</button><button class="no" data-k="${o.key}" data-s="cancelado">❌ No se concretó</button>`
+      : `<span class="pill">${st === 'entregado' ? '✅ Entregado' : '❌ No se concretó'}</span><button class="undo" data-k="${o.key}" data-s="pendiente">Deshacer</button>`;
+    return `<div class="card order ${st}">
+      <header><span>${o.code ? '#' + esc(o.code) + ' · ' : ''}${timeOf(o.ts)}${view === 'week' ? ' · ' + new Date(o.ts).toLocaleDateString('es-CO', { weekday:'short', timeZone:'America/Bogota' }) : ''}</span><span>${cop(o.total)}</span></header>
+      <div class="meta">${esc(o.name)} · ${esc(o.pay === 'EFECTIVO' ? 'Efectivo' : 'Transferencia')}</div>
+      <ul>${(o.lines || []).map(l => `<li>${l.qty}x ${esc(l.label || l.product)}</li>`).join('')}</ul>
+      ${o.notes ? `<div class="meta">📝 ${esc(o.notes)}</div>` : ''}
+      <div class="row" style="margin-top:.5rem">${btns}</div>
+    </div>`;
+  }).join('') : '<p class="muted">No hay pedidos en este periodo.</p>';
+}
+
+function summaryText(){
+  const s = summarize(), { from, to } = range();
+  return [
+    `RESUMEN CARNITAS · ${view === 'day' ? from : from + ' a ' + to}`,
+    `Ventas reales: ${cop(s.sales)} (${s.done} pedidos entregados)`,
+    `Ticket promedio: ${cop(s.avg)}`,
+    `No se concretaron: ${s.cancel} · Sin confirmar: ${s.pending} · % que sí compra: ${s.conv}%`,
+    `Efectivo: ${cop(s.cash)} · Transferencia: ${cop(s.transfer)}`,
+    `Hora pico: ${s.peak}`,
+    `Productos: ${s.top.map(([n, p]) => `${n} ${p.qty}`).join(', ') || '—'}`,
+    `Con Coca-Cola: ${s.drinks}`,
+  ].join('\n');
+}
+
+/* ---------- Eventos ---------- */
+function showLogin(){ $('panel').classList.add('hidden'); $('login').classList.remove('hidden'); }
+function showPanel(){ $('login').classList.add('hidden'); $('panel').classList.remove('hidden'); $('date').value = current; load(); }
+
+$('login-form').addEventListener('submit', async e => {
+  e.preventDefault(); $('login-err').textContent = '';
+  try { await signIn($('email').value.trim(), $('password').value); $('password').value = ''; showPanel(); }
+  catch (err) { $('login-err').textContent = 'No se pudo entrar: revisa el correo y la clave.'; }
+});
+$('orders').addEventListener('click', e => { const b = e.target.closest('button[data-k]'); if (b) setStatus(b.dataset.k, b.dataset.s); });
+document.querySelectorAll('.tabs button').forEach(b => b.addEventListener('click', () => {
+  document.querySelectorAll('.tabs button').forEach(x => x.classList.toggle('on', x === b));
+  view = b.dataset.view; load();
+}));
+$('date').addEventListener('change', () => { if ($('date').value) { current = $('date').value; load(); } });
+$('prev').addEventListener('click', () => { current = addDays(current, view === 'day' ? -1 : -7); $('date').value = current; load(); });
+$('next').addEventListener('click', () => { current = addDays(current, view === 'day' ? 1 : 7); $('date').value = current; load(); });
+$('reload').addEventListener('click', load);
+$('copy').addEventListener('click', async () => {
+  const t = summaryText();
+  try { await navigator.clipboard.writeText(t); $('copy').textContent = '✅ Copiado'; }
+  catch (e) { prompt('Copia este resumen:', t); }
+  setTimeout(() => { $('copy').textContent = '📋 Copiar resumen para Gerencia'; }, 2000);
+});
+$('logout').addEventListener('click', () => { session = null; try { localStorage.removeItem(STORE_KEY); } catch(e){} showLogin(); });
+
+(loadRefresh() ? showPanel : showLogin)();
+</script>
+</body>
+</html>
