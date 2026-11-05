@@ -1968,7 +1968,18 @@
     const delivery = `\n\n👤 Nombre:\n${deliveryName.trim()}\n\n📞 Celular:\n${formatPhone(deliveryPhone)}\n\n📍 Dirección de entrega:\n${deliveryAddress.trim()}\n\n💳 Forma de pago:\n${payText}`;
     const notes = orderNotes.trim() ? `\n\n📝 Notas:\n${orderNotes.trim()}` : '';
     const stockNote = unverifiedCounts ? `\n\n⚠️ Stock sin descontar (descuéntalo a mano): ${describeCounts(unverifiedCounts)}` : '';
-    return `Hola ${CARNITAS_CONFIG.BRAND_NAME} 👋🔥\nQuiero hacer este pedido:\n\n${lines}\n\nTOTAL:\n${cop(totalPrice)}${delivery}${notes}${stockNote}`;
+    const codeLine = orderCode ? `\n\n🧾 Pedido #${orderCode}` : '';
+    return `Hola ${CARNITAS_CONFIG.BRAND_NAME} 👋🔥\nQuiero hacer este pedido:\n\n${lines}\n\nTOTAL:\n${cop(totalPrice)}${delivery}${notes}${stockNote}${codeLine}`;
+  }
+
+  // Código corto del pedido (ej: K7Q2). Viaja en el mensaje de WhatsApp y en la copia del
+  // panel de finanzas, para saber qué pedido de WhatsApp es cuál.
+  let orderCode = '';
+  function newOrderCode(){
+    const abc = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // sin 0/O ni 1/I para que no se confundan
+    let c = '';
+    for (let i = 0; i < 4; i++) c += abc[Math.floor(Math.random() * abc.length)];
+    return c;
   }
 
   // Copia del pedido para el panel privado (finanzas.html). Si falla, no pasa nada:
@@ -1978,14 +1989,14 @@
     if (!base) return;
     try {
       const order = {
-        ts: Date.now(), status: 'pendiente', total,
+        ts: Date.now(), status: 'pendiente', total, code: orderCode,
         name: deliveryName, phone: deliveryPhone, address: deliveryAddress,
         pay: deliveryPayment, notes: orderNotes.trim(),
         lines: cartLines.map(l => ({
           product: isSandwich(l.item) ? SANDWICHES[l.item].name
             : parsePapa(l.item) ? 'Papas ' + PAPAS[parsePapa(l.item).id].name + ' (' + PAPA_SIZES[parsePapa(l.item).size] + ')'
             : 'Malteada ' + SHAKES[l.item.slice(6)].name,
-          qty: l.qty, drink: !!l.drink, addons: l.addons.length,
+          qty: l.qty, drink: !!l.drink, addons: l.addons.length, protein: l.protein || '',
           unit: lineUnitPrice(l.item, l.drink, l.addons),
           label: lineLabel(l.item, l.protein, l.drink, l.pickles, l.addons)
         }))
@@ -2067,6 +2078,7 @@
       return;
     }
 
+    orderCode = newOrderCode();
     saveOrderToDb(total);
     const url = buildWaLink(cartMessage(total, result.unverified ? (result.unverifiedCounts || counts) : null));
     if (waTab) { waTab.opener = null; waTab.location.href = url; }
