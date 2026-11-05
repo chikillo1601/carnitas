@@ -818,10 +818,18 @@
     // Esos días todo aparece cerrado y el contador cuenta hasta el siguiente día con servicio.
     CLOSED_WEEKDAYS: [0],
 
+    // CERRADO HASTA NUEVO AVISO: mientras tenga { title, text }, la tienda queda cerrada todos los días,
+    // con ventana grande + franja roja y sin contador. Para volver a abrir, cámbialo a null.
+    CLOSED_UNTIL_NOTICE: {
+      title: "Trabajando para mejorar Carnitas",
+      text: "Estamos cerrados por ahora. ¡Pronto volvemos, gracias por tu paciencia!",
+    },
+
     // Fechas puntuales en que NO se abre, con el aviso que verán los clientes: "AAAA-MM-DD": "mensaje".
     // Ese día todo aparece cerrado, con el aviso arriba, y el contador cuenta hasta la próxima apertura.
     // Cuando pase la fecha, se puede borrar la línea.
     CLOSED_DATES: {
+      "2026-11-05": "Estamos trabajando para mejorar Carnitas. Hoy no abrimos. ¡Gracias por tu paciencia!",
       "2026-11-04": "Estamos trabajando para mejorar Carnitas. Hoy no abrimos. ¡Gracias por tu paciencia!",
       "2026-11-03": "Estamos trabajando para mejorar Carnitas. Hoy no abrimos. ¡Gracias por tu paciencia!",
       "2026-11-02": "Estamos trabajando para mejorar Carnitas. Hoy no abrimos. ¡Gracias por tu paciencia!",
@@ -835,6 +843,10 @@
     // Anuncio GRANDE (ventana al entrar + franja roja arriba) solo ese día: "AAAA-MM-DD": { title, text }.
     // Para que además la tienda quede cerrada ese día, pon también la fecha en CLOSED_DATES.
     ANNOUNCEMENTS: {
+      "2026-11-05": {
+        title: "Trabajando para mejorar Carnitas",
+        text: "Hoy no abrimos. ¡Gracias por tu paciencia!",
+      },
       "2026-11-04": {
         title: "Trabajando para mejorar Carnitas",
         text: "Hoy no abrimos. ¡Gracias por tu paciencia!",
@@ -1450,7 +1462,8 @@
     || Object.hasOwn(CARNITAS_CONFIG.CLOSED_DATES || {}, dateKey(dayStartMs)); // también las fechas puntuales
 
   // Aviso especial de hoy (si hoy es una fecha de CLOSED_DATES), o '' si no hay.
-  const todayNotice = () => (CARNITAS_CONFIG.CLOSED_DATES || {})[dateKey(Date.now())] || '';
+  const untilNotice = () => CARNITAS_CONFIG.CLOSED_UNTIL_NOTICE || null; // cierre indefinido (o null)
+  const todayNotice = () => (untilNotice() && untilNotice().text) || (CARNITAS_CONFIG.CLOSED_DATES || {})[dateKey(Date.now())] || '';
 
   // Hora de cierre (en minutos) del día de "now": la de CLOSE_OVERRIDES si ese día tiene una, o CLOSE_TIME.
   function closeTimeFor(now = Date.now()){
@@ -1465,6 +1478,7 @@
 
   // Estado de la tienda en un momento dado: si está abierta y cuándo cambia (cierra o abre).
   function scheduleState(now = Date.now()){
+    if (untilNotice()) return { open: false, next: null, indefinite: true };
     if (Number.isFinite(openingTs) && now < openingTs) return { open: false, next: openingTs, official: true };
     const dayStart = Math.floor((now - BOGOTA_OFFSET) / DAY_MS) * DAY_MS + BOGOTA_OFFSET; // las 00:00 de hoy en Colombia
     const openAt = dayStart + openMinFor(dayStart) * 60e3;
@@ -1503,7 +1517,8 @@
     const st = scheduleState();
     const open = st.open;
     // La cuenta regresiva va hacia el cierre (si está abierto) o hacia la próxima apertura (si está cerrado).
-    const left = Math.max(0, Math.floor((st.next - Date.now()) / 1000));
+    $('countdown-digits').hidden = !!st.indefinite; // sin fecha de apertura no hay cuenta regresiva
+    const left = st.indefinite ? 0 : Math.max(0, Math.floor((st.next - Date.now()) / 1000));
     const days = Math.floor(left / 86400);
     $('countdown').classList.toggle('is-open', open);
     $('cd-days-box').hidden = days === 0;
@@ -1512,7 +1527,7 @@
     $('cd-h').textContent = pad2(Math.floor(left % 86400 / 3600));
     $('cd-m').textContent = pad2(Math.floor(left % 3600 / 60));
     $('cd-s').textContent = pad2(left % 60);
-    $('countdown-label').textContent = open
+    $('countdown-label').textContent = st.indefinite ? '🔒 CERRADO POR AHORA · PRONTO VOLVEMOS' : open
       ? '🔥 ¡ESTAMOS ABIERTOS! CERRAMOS EN'
       : '🔒 CERRADO · ' + (st.official ? 'APERTURA OFICIAL ' : 'ABRIMOS ') + dayLabel(st.next) + ' A LAS ' + timeLabel(st.next);
 
@@ -2075,7 +2090,7 @@
     $('hours-line').textContent = '🕓 Hoy · ' + hourOfDay(openTimeFor()) + ' a ' + hourOfDay(closeTimeFor());
   }
   // Anuncio grande del día (si hay uno en ANNOUNCEMENTS para hoy): ventana al entrar + franja roja arriba.
-  const announcement = (CARNITAS_CONFIG.ANNOUNCEMENTS || {})[dateKey(Date.now())];
+  const announcement = untilNotice() || (CARNITAS_CONFIG.ANNOUNCEMENTS || {})[dateKey(Date.now())];
   if (announcement) {
     $('mega-title').textContent = announcement.title;
     $('mega-text').textContent = announcement.text;
