@@ -36,6 +36,8 @@ export const TEXTOS = {
   pedido: '🧾 ¡Recibimos tu pedido *#{codigo}*! En un momento lo confirmamos por aquí. Gracias por pedir en {marca} 🔥',
   pedidoCerrado: '🧾 Vimos tu pedido *#{codigo}*, pero ahora estamos *cerrados temporalmente*. Te avisamos por aquí apenas volvamos. ¡Disculpa las molestias!',
   despedida: '¡Gracias a ti! 🦙 {eslogan}.',
+  // Cuando el bot no entiende: se manda una sola vez por conversación, mientras alguien del equipo responde.
+  recibido: '🙌 ¡Recibido! En un momento te responde alguien del equipo de {marca}.',
 };
 
 // Opciones del menú principal (lista de WhatsApp: máximo 10 opciones, título de máximo 24 caracteres).

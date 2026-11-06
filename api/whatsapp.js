@@ -6,10 +6,12 @@
 //   WA_TOKEN          token de acceso permanente de WhatsApp (usuario del sistema)
 //   WA_PHONE_ID       "Identificador del número de teléfono" (Meta → WhatsApp → Configuración de la API)
 //   WA_GRAPH_VERSION  opcional, ej. v23.0
+//   FIREBASE_SA       cuenta de servicio de Firebase, para guardar los chats en la bandeja del panel
 import crypto from 'node:crypto';
-import { responder, aPayload } from './_bot.js';
-
-const GRAPH = () => `https://graph.facebook.com/${process.env.WA_GRAPH_VERSION || 'v23.0'}`;
+import { responder, aPayload, intencion, respuestaEspera } from './_bot.js';
+import { enviar } from './_whatsapp.js';
+import { guardarEntrante, guardarSaliente, textoDeRespuesta } from './_chats.js';
+import { db, clave } from './_firebase.js';
 
 // Paso 1 de Meta: verificar el webhook.
 export async function GET(request) {
@@ -30,13 +32,17 @@ function firmaValida(cuerpo, firma) {
   return a.length === b.length && crypto.timingSafeEqual(a, b);
 }
 
-async function enviar(payload) {
-  const r = await fetch(`${GRAPH()}/${process.env.WA_PHONE_ID}/messages`, {
-    method: 'POST',
-    headers: { Authorization: `Bearer ${process.env.WA_TOKEN}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload),
-  });
-  if (!r.ok) console.error('WhatsApp respondió', r.status, (await r.text()).slice(0, 300));
+// ¿El cliente quiere hablar con una persona? (lo pidió, o el bot no supo qué responder)
+function pidePersona(m, respuestas) {
+  if (!respuestas.length) return true;
+  const elegido = m.interactive?.list_reply?.id || m.interactive?.button_reply?.id;
+  if (elegido) return elegido === 'persona';
+  return m.type === 'text' && intencion(m.text?.body) === 'persona';
+}
+
+// Guardar en la bandeja nunca debe frenar las respuestas.
+async function seguro(tarea, que) {
+  try { await tarea(); } catch (e) { console.error('Bandeja: no se pudo guardar', que, e.message); }
 }
 
 // Paso 2: Meta nos manda cada mensaje que escribe un cliente.
@@ -48,19 +54,29 @@ export async function POST(request) {
   let datos;
   try { datos = JSON.parse(cuerpo); } catch { return new Response('ok', { status: 200 }); }
 
-  const trabajos = [];
   for (const entrada of datos.entry || []) {
     for (const cambio of entrada.changes || []) {
       const valor = cambio.value || {};
       if (process.env.WA_PHONE_ID && valor.metadata?.phone_number_id && valor.metadata.phone_number_id !== process.env.WA_PHONE_ID) continue;
+      const nombres = Object.fromEntries((valor.contacts || []).map(c => [c.wa_id, c.profile?.name || '']));
       for (const mensaje of valor.messages || []) {
-        // Solo mensajes recientes (Meta reintenta envíos viejos): máximo 5 minutos.
+        let respuestas = responder(mensaje);
+        // Si el bot no entiende, avisa una sola vez que ya lo atiende una persona (si ya está esperando, no repite).
+        let yaEspera = false;
+        if (!respuestas.length) await seguro(async () => { yaEspera = (await db('GET', `chats/${clave(mensaje.from)}/persona`)) === true; }, 'estado');
+        const avisarEspera = !respuestas.length && !yaEspera;
+        // 1) Se guarda lo que escribió el cliente (aunque sea viejo: la bandeja debe tenerlo todo).
+        await seguro(() => guardarEntrante(mensaje, nombres[mensaje.from], pidePersona(mensaje, respuestas)), 'entrante');
+        if (avisarEspera) respuestas = [respuestaEspera()];
+        // 2) Solo se contestan mensajes recientes (Meta reintenta envíos viejos): máximo 5 minutos.
         if (Date.now() / 1000 - Number(mensaje.timestamp || 0) > 300) continue;
-        for (const r of responder(mensaje)) trabajos.push(() => enviar(aPayload(mensaje.from, r)));
+        // En orden, para que el aviso de "cerrado" llegue antes que el menú.
+        for (const r of respuestas) {
+          const { ok } = await enviar(aPayload(mensaje.from, r));
+          if (ok) await seguro(() => guardarSaliente(mensaje.from, textoDeRespuesta(r), 'bot'), 'respuesta del bot');
+        }
       }
     }
   }
-  // En orden, para que el aviso de "cerrado" llegue antes que el menú.
-  for (const t of trabajos) { try { await t(); } catch (e) { console.error(e); } }
   return new Response('ok', { status: 200 }); // Meta necesita un 200 siempre, o reintenta
 }

@@ -45,6 +45,28 @@
   .stock-grid label{ font-size:.85rem; color:var(--muted); }
   .stock-grid button{ grid-column:1 / -1; }
   .ok-msg{ color:var(--green); }
+  /* Chats de WhatsApp */
+  .chat-item{ display:flex; gap:10px; align-items:center; width:100%; text-align:left; background:transparent; color:var(--text); border:0; border-bottom:1px solid var(--line); border-radius:0; padding:.7rem .2rem; font-weight:400; }
+  .chat-item:last-child{ border-bottom:0; }
+  .chat-item .who{ flex:1; min-width:0; }
+  .chat-item .who b{ display:block; } .chat-item .who small{ display:block; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .chat-item .side{ text-align:right; font-size:.8rem; color:var(--muted); }
+  .badge{ display:inline-block; min-width:1.4rem; padding:.05rem .4rem; border-radius:99px; background:var(--green); color:#fff; font-weight:700; font-size:.75rem; text-align:center; }
+  .flag{ color:var(--yellow); font-size:.8rem; font-weight:600; }
+  .chat-view{ position:fixed; inset:0; background:var(--black); z-index:10; display:flex; flex-direction:column; }
+  .chat-head{ display:flex; gap:10px; align-items:center; padding:10px 16px; border-bottom:1px solid var(--line); }
+  .chat-head small{ display:block; }
+  .chat-msgs{ flex:1; overflow-y:auto; padding:12px 16px; display:flex; flex-direction:column; gap:6px; }
+  .msg{ max-width:82%; padding:.5rem .7rem; border-radius:12px; white-space:pre-wrap; word-wrap:break-word; }
+  .msg small{ display:block; color:var(--muted); font-size:.72rem; margin-top:.2rem; }
+  .msg.in{ align-self:flex-start; background:var(--card); border:1px solid var(--line); }
+  .msg.out{ align-self:flex-end; background:#2c3a26; }
+  .msg.out.bot{ background:#2a2620; border:1px dashed var(--line); }
+  .msg img, .msg audio, .msg video{ display:block; max-width:100%; margin-top:.3rem; border-radius:8px; }
+  .chat-form{ display:flex; gap:8px; padding:10px 16px 4px; border-top:1px solid var(--line); }
+  .chat-form textarea{ flex:1; background:#000; color:var(--text); border:1px solid var(--line); border-radius:10px; padding:.6rem; font-family:inherit; font-size:1rem; resize:none; }
+  .chat-view .err, .chat-view .window{ padding:0 16px 10px; margin:0; font-size:.85rem; }
+  .window{ color:var(--muted); }
 </style>
 </head>
 <body>
@@ -64,7 +86,14 @@
 
   <!-- Panel -->
   <section id="panel" class="hidden">
-    <h2 style="margin-top:0">Stock de hoy</h2>
+    <h2 style="margin-top:0">💬 Chats de WhatsApp <span id="chats-badge" class="badge hidden"></span></h2>
+    <div class="card">
+      <p class="muted" style="margin-top:0;font-size:.85rem">El bot contesta lo básico. Los que dicen <span class="flag">🙋 Atender</span> son para ti: el cliente pidió una persona o el bot no entendió.</p>
+      <div id="chats-list"><p class="muted">Cargando…</p></div>
+      <p class="err" id="chats-err"></p>
+    </div>
+
+    <h2>Stock de hoy</h2>
     <div class="card">
       <p class="muted" style="margin-top:0">Cuántas unidades puedes vender. La página las descuenta sola con cada pedido y muestra "agotado" cuando llegan a 0.</p>
       <form id="stock-form" class="stock-grid">
@@ -106,6 +135,21 @@
     <div id="orders"></div>
   </section>
 </main>
+
+<!-- Conversación abierta -->
+<div id="chat-view" class="chat-view hidden">
+  <header class="chat-head">
+    <button class="btn-ghost" id="chat-back" aria-label="Volver">◀</button>
+    <div><b id="chat-name"></b><small class="muted" id="chat-num"></small></div>
+  </header>
+  <div id="chat-msgs" class="chat-msgs"></div>
+  <form id="chat-form" class="chat-form">
+    <textarea id="chat-text" rows="2" maxlength="4096" placeholder="Escribe tu respuesta…"></textarea>
+    <button class="btn-main" style="width:auto" id="chat-send" type="submit">Enviar</button>
+  </form>
+  <p class="window" id="chat-window"></p>
+  <p class="err" id="chat-err"></p>
+</div>
 
 <script>
 /* ===================== CONFIGURACIÓN =====================
@@ -308,9 +352,123 @@ $('stock-form').addEventListener('submit', async e => {
   $('stock-save').disabled = false;
 });
 
+/* ---------- Chats de WhatsApp ---------- */
+// El bot guarda cada conversación en Firebase (/chats y /msgs). Aquí se leen y se responden.
+const VENTANA = 24 * 3600e3;
+let chats = [], openChat = null, chatTimer = null;
+const dbGet = async path => {
+  const t = await token();
+  const r = await fetch(CONFIG.DB_URL.replace(/\/$/, '') + '/' + path + (path.includes('?') ? '&' : '?') + 'auth=' + encodeURIComponent(t), { cache:'no-store' });
+  if (r.status === 401 || r.status === 403) throw new Error('Sin permiso para leer los chats. Revisa las reglas de Firebase (chats y msgs).');
+  if (!r.ok) throw new Error('No se pudieron leer los chats (' + r.status + ')');
+  return r.json();
+};
+function whenOf(ts){
+  if (!ts) return '';
+  const same = new Date(ts - TZ_OFFSET_H*3600e3).toISOString().slice(0,10) === todayStr();
+  return same ? timeOf(ts) : new Date(ts).toLocaleDateString('es-CO', { day:'numeric', month:'short', timeZone:'America/Bogota' });
+}
+const prettyNum = n => String(n).replace(/^57(\d{3})(\d{3})(\d{4})$/, '$1 $2 $3');
+
+async function loadChats(){
+  try {
+    const d = await dbGet('chats.json') || {};
+    chats = Object.entries(d).map(([num, c]) => ({ num, ...c })).sort((a, b) => (b.ultimoTs || 0) - (a.ultimoTs || 0));
+    $('chats-err').textContent = '';
+    renderChats();
+    if (openChat) loadMessages(true);
+  } catch (e) {
+    if (e.message === 'Sin sesión' || e.message === 'Sesión vencida') return showLogin();
+    $('chats-err').textContent = e.message;
+  }
+}
+function renderChats(){
+  const pending = chats.filter(c => c.persona || c.sinLeer > 0).length;
+  $('chats-badge').textContent = pending; $('chats-badge').classList.toggle('hidden', !pending);
+  $('chats-list').innerHTML = chats.length ? chats.slice(0, 40).map(c => `
+    <button class="chat-item" data-num="${esc(c.num)}">
+      <span class="who"><b>${esc(c.nombre || prettyNum(c.num))}</b>${c.persona ? '<span class="flag">🙋 Atender</span>' : ''}<small>${esc(c.ultimo || '')}</small></span>
+      <span class="side">${whenOf(c.ultimoTs)}<br>${c.sinLeer > 0 ? `<span class="badge">${c.sinLeer}</span>` : ''}</span>
+    </button>`).join('') : '<p class="muted">Todavía no hay chats. Aquí aparecen cuando un cliente escriba al 322 701 4207.</p>';
+}
+
+async function loadMessages(keepScroll){
+  const num = openChat; if (!num) return;
+  try {
+    const d = await dbGet('msgs/' + encodeURIComponent(num) + '.json?orderBy=%22$key%22&limitToLast=80') || {};
+    if (openChat !== num) return;
+    const box = $('chat-msgs');
+    const atBottom = box.scrollHeight - box.scrollTop - box.clientHeight < 60;
+    const list = Object.values(d).sort((a, b) => a.ts - b.ts);
+    const sig = num + ':' + list.length + ':' + (list.length ? list[list.length - 1].ts : 0);
+    // Si no hay mensajes nuevos no se redibuja (así no se cierran las fotos o audios abiertos).
+    if (!(keepScroll && sig === box.dataset.sig)) { box.dataset.sig = sig; box.innerHTML = list.map(m => `<div class="msg ${m.dir} ${m.por === 'bot' ? 'bot' : ''}">${esc(m.texto)}${m.medio ? `<div data-medio="${esc(m.medio.id)}" data-tipo="${esc(m.medio.tipo)}"><button class="btn-ghost" type="button" style="margin-top:.3rem">Ver ${m.medio.tipo === 'audio' ? 'audio' : m.medio.tipo === 'document' ? 'documento' : 'archivo'}</button></div>` : ''}<small>${m.por === 'bot' ? '🤖 Bot · ' : m.por === 'equipo' ? 'Equipo · ' : ''}${whenOf(m.ts)}</small></div>`).join('') || '<p class="muted">Sin mensajes.</p>';
+      if (!keepScroll || atBottom) box.scrollTop = box.scrollHeight; }
+    const c = chats.find(x => x.num === num) || {};
+    const left = c.ultimoCliente ? VENTANA - (Date.now() - c.ultimoCliente) : -1;
+    const canReply = left > 0;
+    $('chat-text').disabled = $('chat-send').disabled = !canReply;
+    $('chat-window').textContent = canReply
+      ? 'Puedes responder gratis por ' + Math.max(1, Math.floor(left / 3600e3)) + ' h más.'
+      : 'Pasaron más de 24 h desde su último mensaje: WhatsApp no deja responder gratis. Cuando el cliente vuelva a escribir, podrás contestar.';
+  } catch (e) { $('chat-err').textContent = e.message; }
+}
+async function openConversation(num){
+  openChat = num;
+  const c = chats.find(x => x.num === num) || {};
+  $('chat-name').textContent = c.nombre || prettyNum(num);
+  $('chat-num').textContent = '+' + num;
+  $('chat-msgs').innerHTML = '<p class="muted">Cargando…</p>'; $('chat-err').textContent = '';
+  $('chat-view').classList.remove('hidden');
+  await loadMessages(false);
+  if (c.sinLeer > 0) {
+    try {
+      const t = await token();
+      await fetch(CONFIG.DB_URL.replace(/\/$/, '') + '/chats/' + encodeURIComponent(num) + '.json?auth=' + encodeURIComponent(t), { method:'PATCH', body: JSON.stringify({ sinLeer: 0 }) });
+      c.sinLeer = 0; renderChats();
+    } catch (e) {}
+  }
+}
+function closeConversation(){ openChat = null; $('chat-view').classList.add('hidden'); loadChats(); }
+
+$('chats-list').addEventListener('click', e => { const b = e.target.closest('[data-num]'); if (b) openConversation(b.dataset.num); });
+$('chat-back').addEventListener('click', closeConversation);
+$('chat-msgs').addEventListener('click', async e => {
+  const holder = e.target.closest('[data-medio]'); if (!holder || !e.target.closest('button')) return;
+  holder.innerHTML = '<small>Cargando…</small>';
+  try {
+    const r = await fetch('/api/medio?id=' + encodeURIComponent(holder.dataset.medio), { headers: { Authorization: 'Bearer ' + await token() } });
+    if (!r.ok) throw new Error(await r.text());
+    const url = URL.createObjectURL(await r.blob()), tipo = holder.dataset.tipo;
+    holder.innerHTML = tipo === 'image' ? `<img src="${url}" alt="Foto del cliente">`
+      : tipo === 'audio' ? `<audio controls src="${url}"></audio>`
+      : tipo === 'video' ? `<video controls src="${url}"></video>`
+      : `<a href="${url}" target="_blank" rel="noopener" style="color:var(--yellow)">Abrir documento</a>`;
+  } catch (err) { holder.innerHTML = `<small>${esc(err.message || 'No se pudo abrir el archivo.')}</small>`; }
+});
+$('chat-form').addEventListener('submit', async e => {
+  e.preventDefault();
+  const texto = $('chat-text').value.trim(); if (!texto || !openChat) return;
+  $('chat-send').disabled = true; $('chat-err').textContent = '';
+  try {
+    const r = await fetch('/api/responder', {
+      method:'POST', headers:{ 'Content-Type':'application/json', Authorization: 'Bearer ' + await token() },
+      body: JSON.stringify({ para: openChat, texto })
+    });
+    const d = await r.json().catch(() => ({}));
+    if (!r.ok) throw new Error(d.error || 'No se envió. Intenta de nuevo.');
+    $('chat-text').value = '';
+    await loadChats();
+  } catch (err) { $('chat-err').textContent = err.message; }
+  $('chat-send').disabled = false;
+});
+$('chat-text').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey && window.matchMedia('(min-width:700px)').matches) { e.preventDefault(); $('chat-form').requestSubmit(); } });
+function startChats(){ stopChats(); loadChats(); chatTimer = setInterval(() => { if (!document.hidden) loadChats(); }, 10000); }
+function stopChats(){ if (chatTimer) clearInterval(chatTimer); chatTimer = null; }
+
 /* ---------- Eventos ---------- */
-function showLogin(){ $('panel').classList.add('hidden'); $('login').classList.remove('hidden'); }
-function showPanel(){ $('login').classList.add('hidden'); $('panel').classList.remove('hidden'); $('date').value = current; load(); loadStock(); }
+function showLogin(){ stopChats(); $('chat-view').classList.add('hidden'); $('panel').classList.add('hidden'); $('login').classList.remove('hidden'); }
+function showPanel(){ $('login').classList.add('hidden'); $('panel').classList.remove('hidden'); $('date').value = current; load(); loadStock(); startChats(); }
 
 $('login-form').addEventListener('submit', async e => {
   e.preventDefault(); $('login-err').textContent = '';

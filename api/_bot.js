@@ -68,6 +68,11 @@ export function responder(mensaje) {
   return salida;
 }
 
+// Aviso de "ya te atendemos" cuando el bot no entiende (lo decide el webhook, una vez por conversación).
+export function respuestaEspera() {
+  return { tipo: 'texto', texto: llenar(TEXTOS.recibido) };
+}
+
 // Convierte una respuesta al formato que pide la API de WhatsApp.
 export function aPayload(para, r) {
   if (r.tipo === 'lista') {
