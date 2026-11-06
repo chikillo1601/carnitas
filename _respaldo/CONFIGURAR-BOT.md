@@ -39,7 +39,7 @@ Nunca se ponen en el código ni se pegan en un chat.
 | `WA_APP_SECRET` | Meta → tu app → Configuración de la app → Información básica → Clave secreta de la app |
 | `WA_TOKEN` | Token permanente de un usuario del sistema con permisos `whatsapp_business_messaging` y `whatsapp_business_management` |
 | `WA_PHONE_ID` | Meta → WhatsApp → Configuración de la API → Identificador del número de teléfono |
-| `FIREBASE_SA` | Firebase → Configuración del proyecto → Cuentas de servicio → Generar nueva clave privada. Se pega **todo** el contenido del archivo .json |
+| `FIREBASE_SECRET` | Firebase → Configuración del proyecto → Cuentas de servicio → Secretos de la base de datos → Mostrar. (Alternativa más moderna: `FIREBASE_SA` con el .json completo de "Generar nueva clave privada") |
 | `WA_GRAPH_VERSION` | Opcional (por defecto v23.0) |
 | `PANEL_UIDS` | Opcional. Usuarios de Firebase que pueden responder chats, separados por coma (por defecto, el del fundador). Para un kiosco: se crea su usuario y se agrega aquí y en las reglas |
 

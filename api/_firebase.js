@@ -41,8 +41,12 @@ async function tokenDeServicio() {
 
 // db('GET' | 'PUT' | 'PATCH', 'chats/573001234567', cuerpo?)
 export async function db(metodo, ruta, cuerpo) {
-  const t = await tokenDeServicio();
-  const r = await fetch(`${DB()}/${ruta}.json?access_token=${encodeURIComponent(t)}`, {
+  // Opción simple: FIREBASE_SECRET (Firebase → Cuentas de servicio → Secretos de la base de datos).
+  // Opción recomendada: FIREBASE_SA (cuenta de servicio). Si están las dos, se usa FIREBASE_SA.
+  const acceso = process.env.FIREBASE_SA || !process.env.FIREBASE_SECRET
+    ? 'access_token=' + encodeURIComponent(await tokenDeServicio())
+    : 'auth=' + encodeURIComponent(process.env.FIREBASE_SECRET);
+  const r = await fetch(`${DB()}/${ruta}.json?${acceso}`, {
     method: metodo,
     headers: { 'Content-Type': 'application/json' },
     body: cuerpo === undefined ? undefined : JSON.stringify(cuerpo),
