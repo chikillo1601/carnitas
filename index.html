@@ -1,182 +1,239 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Carnitas · Asados en Sogamoso</title>
-<meta name="description" content="Sándwiches, tacos y picadas de bondiola asada lento, con nuestra Salsa Llama. Pide a domicilio en Sogamoso por WhatsApp.">
-<meta name="theme-color" content="#17120f">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Carnitas · Sándwiches, tacos y picadas en Sogamoso</title>
+<meta name="description" content="Carnitas: sándwiches, tacos y picadas de bondiola asada lento con Salsa Llama. Pide a domicilio en Sogamoso por WhatsApp. Barriga llena, corazón contento.">
+<meta name="theme-color" content="#0C0B0A">
 <meta property="og:title" content="Carnitas · Barriga llena, corazón contento">
-<meta property="og:description" content="Sándwiches, tacos y picadas de bondiola asada lento. Pide en Sogamoso por WhatsApp.">
-<meta property="og:image" content="https://carnitas.online/img/nuevo/hero.webp">
+<meta property="og:description" content="Sándwiches, tacos y picadas de bondiola. Combos desde $18.900. Pide en Sogamoso por WhatsApp.">
+<meta property="og:image" content="https://carnitas.online/img/oso-hero.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bowlby+One&family=Caveat+Brush&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-/* Carnitas: puesto de asado callejero. Fondo carbón arriba (la brasa), papel crema en el menú (la comanda). */
-:root{
-  --coal:#17120f; --coal-2:#231b16; --cream:#fbf6ec; --paper:#fffdf8; --ink:#1d1a17; --muted:#6f655d; --line:#e8dfd2;
-  --red:#d62a1e; --red-d:#a91f15; --mustard:#ffc72c; --green:#2f8f55; --smoke:#bdb3a8;
-  --display:'Bowlby One', 'Arial Black', Impact, sans-serif;
-  --hand:'Caveat Brush', 'Comic Sans MS', cursive;
-  --body:'Barlow', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --r:18px;
-}
-*{ box-sizing:border-box }
-html{ scroll-behavior:smooth; -webkit-text-size-adjust:100% }
-body{ margin:0; background:var(--cream); color:var(--ink); font-family:var(--body); font-size:16px; line-height:1.45 }
-img{ max-width:100%; height:auto; display:block }
-button{ font:inherit; cursor:pointer }
-:focus-visible{ outline:3px solid var(--mustard); outline-offset:2px }
-.wrap{ max-width:1080px; margin:0 auto; padding-left:max(16px, env(safe-area-inset-left)); padding-right:max(16px, env(safe-area-inset-right)) }
-.hidden{ display:none !important }
-.price{ font-family:var(--display); letter-spacing:.01em; font-variant-numeric:tabular-nums }
+  /* Carnitas: noche urbana, el oso de la marca, amarillo de obra y rojo brasa. */
+  :root{
+    --red:#DA291C; --red-dark:#B11E14; --yellow:#FFC72C; --yellow-dark:#F2AE00; --cream:#FFF6DC;
+    --black:#141210; --black-2:#1F1B18; --black-3:#0C0B0A; --muted:#BDB6AA;
+    --ink:#141210; --ink-soft:#5E584D; --line:rgba(20,18,16,.14); --white:#fff; --green:#1F8A4C;
+    --shadow:0 10px 28px -12px rgba(0,0,0,.6);
+    --font:'Poppins',system-ui,-apple-system,'Segoe UI',sans-serif;
+    --stripes:repeating-linear-gradient(-45deg, var(--yellow) 0 22px, var(--black) 22px 44px);
+  }
+  *,*::before,*::after{ box-sizing:border-box }
+  html{ scroll-behavior:smooth; scroll-padding-top:72px }
+  body{ margin:0; background:var(--black); color:var(--white); font-family:var(--font); font-size:16px; line-height:1.5; -webkit-font-smoothing:antialiased; overflow-x:hidden }
+  img{ max-width:100%; height:auto; display:block }
+  h1,h2,h3,h4,p{ margin:0 }
+  button{ font-family:inherit; cursor:pointer }
+  .hidden{ display:none !important }
+  a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, label:focus-within{ outline:3px solid var(--yellow); outline-offset:3px }
+  .sheet :focus-visible{ outline-color:var(--ink) }
+  @media (prefers-reduced-motion: reduce){ html{ scroll-behavior:auto } *,*::before,*::after{ animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important } }
+  .container{ width:100%; max-width:1120px; margin:0 auto; padding-left:max(1.25rem, env(safe-area-inset-left)); padding-right:max(1.25rem, env(safe-area-inset-right)) }
+  .num{ font-variant-numeric:tabular-nums }
 
-/* ---------- Barra superior ---------- */
-.top{ position:sticky; top:0; z-index:30; background:var(--coal); color:#fff; border-bottom:3px solid var(--red) }
-.top .wrap{ display:flex; align-items:center; gap:12px; padding-block:10px }
-.brand{ display:flex; align-items:center; gap:10px; color:#fff; text-decoration:none; margin-right:auto }
-.brand img{ width:38px; height:38px; object-fit:contain; background:var(--cream); border-radius:50%; padding:3px }
-.brand b{ font-family:var(--display); font-size:1.25rem; letter-spacing:.04em }
-.status{ font-size:.78rem; font-weight:700; padding:.3rem .65rem; border-radius:99px; background:#3a2e27; color:var(--smoke); white-space:nowrap }
-.status.open{ background:#14361f; color:#7ee2a2 }
-.status.closed{ background:#3d1512; color:#ffb4ab }
-.cart-btn{ position:relative; background:var(--mustard); color:var(--ink); border:0; border-radius:99px; padding:.5rem .9rem; font-weight:700; display:flex; align-items:center; gap:6px }
-.cart-btn .n{ background:var(--red); color:#fff; border-radius:99px; min-width:1.4rem; padding:0 .35rem; font-size:.8rem; text-align:center }
-.preview-bar{ background:#2b5cd6; color:#fff; text-align:center; font-size:.85rem; font-weight:600; padding:.35rem 1rem }
-.notice-bar{ background:var(--red); color:#fff; text-align:center; font-weight:700; padding:.5rem 1rem; font-size:.92rem }
+  /* Botones */
+  .btn{ display:inline-flex; align-items:center; justify-content:center; gap:.5rem; min-height:56px; padding:0 1.6rem; border:none; border-radius:999px; text-decoration:none; font-weight:800; font-size:1rem; letter-spacing:.01em; transition:transform .15s ease, background .15s ease }
+  .btn:active{ transform:scale(.98) }
+  .btn-primary{ background:var(--red); color:var(--white); box-shadow:0 8px 18px -8px rgba(218,41,28,.7) }
+  .btn-primary:hover{ background:var(--red-dark) }
+  .btn-yellow{ background:var(--yellow); color:var(--ink); box-shadow:0 8px 18px -8px rgba(242,174,0,.8) }
+  .btn-yellow:hover{ background:var(--yellow-dark) }
+  .btn-light{ background:#efe6d6; color:var(--ink) }
+  .btn:disabled{ opacity:.55; cursor:not-allowed; box-shadow:none }
 
-/* ---------- Portada ---------- */
-.hero{ background:var(--coal); color:#fff; overflow:hidden; position:relative }
-.hero::after{ content:""; position:absolute; inset:auto 0 0 0; height:40px; background:var(--cream); clip-path:polygon(0 100%, 0 40%, 6% 70%, 13% 30%, 21% 65%, 30% 35%, 38% 70%, 47% 30%, 55% 65%, 64% 35%, 72% 70%, 80% 30%, 88% 65%, 95% 35%, 100% 60%, 100% 100%) }
-.hero .wrap{ display:grid; grid-template-columns:1fr; gap:10px; padding-block:34px 70px; align-items:center }
-@media (min-width:860px){ .hero .wrap{ grid-template-columns:1.05fr 1fr; padding-block:60px 90px } }
-.hero .kicker{ font-family:var(--hand); color:var(--mustard); font-size:1.7rem; margin:0 }
-.hero h1{ font-family:var(--display); font-size:clamp(2.4rem, 9vw, 4.4rem); line-height:.95; margin:.2rem 0 .8rem; text-wrap:balance }
-.hero h1 em{ font-style:normal; color:var(--red); -webkit-text-stroke:0 }
-.hero p.lead{ color:#e9e1d8; font-size:1.12rem; max-width:34ch; margin:0 0 1.2rem }
-.chips{ display:flex; flex-wrap:wrap; gap:8px; margin:0 0 1.4rem; padding:0; list-style:none }
-.chips li{ background:#2e241e; border:1px solid #4a3b31; color:#fff; border-radius:99px; padding:.35rem .8rem; font-size:.9rem; font-weight:600 }
-.cta-row{ display:flex; flex-wrap:wrap; gap:10px }
-.btn{ border:0; border-radius:14px; padding:.95rem 1.4rem; font-weight:700; font-size:1.05rem; text-decoration:none; display:inline-flex; align-items:center; justify-content:center; gap:8px }
-.btn-red{ background:var(--red); color:#fff; box-shadow:0 5px 0 var(--red-d) }
-.btn-red:active{ transform:translateY(3px); box-shadow:0 2px 0 var(--red-d) }
-.btn-ghost{ background:transparent; color:#fff; border:2px solid #5a4a3f }
-.hero-art{ position:relative }
-.hero-art img{ width:100%; filter:drop-shadow(0 18px 30px rgba(0,0,0,.45)) }
-.stamp{ position:absolute; right:4%; top:0; width:118px; height:118px; border-radius:50%; background:var(--mustard); color:var(--ink); display:grid; place-items:center; text-align:center; font-family:var(--display); line-height:1; transform:rotate(10deg); box-shadow:0 6px 0 #c99a12; font-size:.85rem; padding:10px }
-.stamp b{ display:block; font-size:1.6rem }
+  /* Avisos */
+  .preview-bar{ background:#2b5cd6; color:#fff; text-align:center; font-size:.82rem; font-weight:700; padding:.35rem 1rem }
+  .notice-bar{ background:var(--red); color:#fff; text-align:center; font-weight:800; padding:.55rem 1rem; font-size:.9rem }
 
-/* ---------- Secciones ---------- */
-section{ padding-block:40px }
-.sec-head{ display:flex; align-items:end; justify-content:space-between; gap:10px; margin-bottom:18px; flex-wrap:wrap }
-.sec-head h2{ font-family:var(--display); font-size:clamp(1.8rem, 6vw, 2.6rem); margin:0; line-height:1 }
-.sec-head h2 .hand{ font-family:var(--hand); color:var(--red); font-weight:400; display:block; font-size:.62em; transform:rotate(-2deg); margin-bottom:.2rem }
-.sec-head p{ margin:0; color:var(--muted); max-width:42ch }
+  /* Barra superior */
+  .topbar{ position:sticky; top:0; z-index:60; background:var(--black-3); border-bottom:3px solid var(--red); box-shadow:0 4px 16px rgba(0,0,0,.4) }
+  .topbar .container{ display:flex; align-items:center; gap:.6rem; height:62px }
+  .logo{ display:inline-flex; align-items:center; font-weight:900; font-size:1.35rem; letter-spacing:-.01em; text-decoration:none; color:var(--white); margin-right:auto }
+  .logo span{ color:var(--yellow) }
+  .logo img{ width:40px; height:40px; margin-right:.55rem; border-radius:50%; object-fit:cover; border:2px solid var(--yellow); background:#000 }
+  .topnav{ display:none; gap:.15rem }
+  @media (min-width:820px){ .topnav{ display:flex } }
+  .topnav a{ text-decoration:none; font-weight:700; font-size:.85rem; padding:.45rem .7rem; border-radius:999px; color:var(--white) }
+  .topnav a:hover{ background:rgba(255,199,44,.16); color:var(--yellow) }
+  .cart-btn{ position:relative; display:flex; align-items:center; gap:.4rem; background:var(--yellow); color:var(--ink); border:0; border-radius:999px; padding:.55rem .95rem; font-weight:800 }
+  .cart-btn .n{ background:var(--red); color:#fff; border-radius:999px; min-width:1.45rem; padding:0 .35rem; font-size:.78rem; text-align:center; line-height:1.45rem }
+  .cart-btn.bump{ animation:bump .4s ease }
+  @keyframes bump{ 50%{ transform:scale(1.15) } }
 
-/* Combos */
-.combos{ display:grid; grid-template-columns:1fr; gap:16px }
-@media (min-width:760px){ .combos{ grid-template-columns:repeat(3, 1fr) } }
-.combo{ background:var(--paper); border:2.5px solid var(--ink); border-radius:var(--r); padding:16px; display:flex; flex-direction:column; gap:10px; position:relative; box-shadow:6px 6px 0 var(--ink) }
-.combo.best{ background:#fff4cf }
-.combo .ribbon{ position:absolute; top:-14px; left:14px; background:var(--red); color:#fff; font-weight:700; font-size:.8rem; padding:.25rem .7rem; border-radius:8px; transform:rotate(-2deg) }
-.combo img{ height:150px; width:100%; object-fit:contain }
-.combo h3{ font-family:var(--display); margin:0; font-size:1.35rem }
-.combo p{ margin:0; color:var(--muted) }
-.combo .row{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:auto }
-.combo .old{ text-decoration:line-through; color:var(--muted); font-size:.9rem; display:block }
-.combo .save{ color:var(--green); font-weight:700; font-size:.88rem }
-.combo .price{ font-size:1.6rem }
+  /* Portada */
+  .hero{ position:relative; overflow:hidden; background:radial-gradient(70% 60% at 88% 0%, rgba(218,41,28,.6), transparent 65%), var(--black); padding:0 0 2.2rem }
+  .hero-inner{ display:grid; align-items:center }
+  .hero-photo{ order:-1; position:relative; margin:0 -1.25rem; overflow:hidden }
+  .hero-photo img{ width:100%; aspect-ratio:1/1; object-fit:cover; object-position:50% 22%; -webkit-mask-image:linear-gradient(to bottom, #000 62%, transparent 100%); mask-image:linear-gradient(to bottom, #000 62%, transparent 100%); animation:bear-zoom 16s ease-in-out infinite alternate; transform-origin:60% 40% }
+  @keyframes bear-zoom{ from{ transform:scale(1) } to{ transform:scale(1.07) } }
+  .bear-bubble{ position:absolute; top:.9rem; left:1.1rem; z-index:3; max-width:58%; background:var(--yellow); color:var(--ink); font-weight:800; font-size:.92rem; line-height:1.25; padding:.6rem .9rem; border-radius:18px 18px 18px 4px; box-shadow:0 10px 22px -10px rgba(0,0,0,.7); animation:bubble-bob 3.2s ease-in-out infinite }
+  @keyframes bubble-bob{ 0%,100%{ transform:translateY(0) } 50%{ transform:translateY(-5px) } }
+  .hero-text{ position:relative; z-index:2; margin-top:-5rem }
+  .eyebrow{ display:inline-block; background:var(--yellow); color:var(--ink); font-weight:800; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; padding:.3rem .85rem; border-radius:999px }
+  .hero h1{ font-weight:900; font-size:clamp(2.2rem, 8.8vw, 4.1rem); line-height:1.02; letter-spacing:-.02em; margin-top:.8rem; text-wrap:balance; text-shadow:0 4px 26px rgba(0,0,0,.85) }
+  .hero h1 em{ font-style:normal; color:var(--yellow) }
+  .hero-copy{ margin-top:.75rem; font-size:1.02rem; font-weight:500; max-width:36ch; color:rgba(255,255,255,.93) }
+  .status-card{ display:flex; align-items:center; gap:.8rem; margin-top:1.2rem; max-width:420px; padding:.8rem 1rem; border-radius:18px; background:var(--white); color:var(--ink); font-weight:800; font-size:.95rem; line-height:1.3; border-left:6px solid var(--yellow); box-shadow:var(--shadow) }
+  .status-card::before{ content:''; flex:none; width:46px; height:46px; border-radius:50%; background:url(img/oso-cara.jpg) center/cover; border:2px solid var(--yellow) }
+  .status-card small{ display:block; font-weight:600; color:var(--ink-soft); font-size:.8rem }
+  .status-card.open{ background:var(--red); color:#fff; border-left-color:var(--yellow) }
+  .status-card.open small{ color:#ffe3dc }
+  .hero-cta{ margin-top:1.1rem; width:100%; max-width:380px; min-height:64px; font-size:1.18rem; animation:cta-pulse 2.4s ease-in-out infinite }
+  @keyframes cta-pulse{ 0%,100%{ box-shadow:0 8px 18px -8px rgba(218,41,28,.7), 0 0 0 0 rgba(218,41,28,.55) } 50%{ box-shadow:0 8px 18px -8px rgba(218,41,28,.7), 0 0 0 12px rgba(218,41,28,0) } }
+  .trust{ display:flex; flex-wrap:wrap; gap:.45rem; margin-top:1rem; padding:0; list-style:none }
+  .trust li{ font-size:.82rem; font-weight:700; color:var(--yellow); background:rgba(255,199,44,.1); border:1.5px solid rgba(255,199,44,.45); border-radius:999px; padding:.3rem .75rem }
+  .price-sticker{ display:none; position:absolute; right:4%; bottom:8%; z-index:3; width:118px; height:118px; border-radius:50%; background:var(--yellow); color:var(--ink); flex-direction:column; align-items:center; justify-content:center; text-align:center; font-weight:900; line-height:1; transform:rotate(8deg); box-shadow:0 10px 22px -8px rgba(0,0,0,.6) }
+  .price-sticker small{ font-size:.66rem; font-weight:800; letter-spacing:.06em; color:var(--red) }
+  .price-sticker b{ font-size:1.4rem; margin-top:.2rem }
+  @media (min-width:860px){
+    .hero{ padding:3rem 0 4rem }
+    .hero-inner{ grid-template-columns:1.05fr 1fr; gap:2.5rem }
+    .hero-photo{ order:0; margin:0; border-radius:28px; border:3px solid var(--yellow); box-shadow:0 30px 60px -25px rgba(0,0,0,.9) }
+    .hero-photo img{ -webkit-mask-image:none; mask-image:none }
+    .hero-text{ margin-top:0 }
+    .price-sticker{ display:flex }
+  }
 
-/* Pestañas del menú */
-.tabs{ display:flex; gap:8px; overflow-x:auto; padding-bottom:6px; margin-bottom:16px; scrollbar-width:none }
-.tabs button{ flex:0 0 auto; background:transparent; border:2px solid var(--ink); border-radius:99px; padding:.5rem 1rem; font-weight:700; color:var(--ink) }
-.tabs button[aria-selected="true"]{ background:var(--ink); color:var(--mustard) }
-.grid{ display:grid; grid-template-columns:1fr; gap:16px }
-@media (min-width:640px){ .grid{ grid-template-columns:repeat(2, 1fr) } }
-@media (min-width:960px){ .grid{ grid-template-columns:repeat(3, 1fr) } }
-.card{ background:var(--paper); border:1.5px solid var(--line); border-radius:var(--r); overflow:hidden; display:flex; flex-direction:column }
-.card .pic{ background:radial-gradient(circle at 50% 60%, #fff3d6 0, #f6ead4 60%, #efe2c9 100%); padding:18px; height:190px; display:grid; place-items:center; position:relative }
-.card .pic img{ max-height:150px; object-fit:contain }
-.card .tag{ position:absolute; top:12px; left:12px; background:var(--ink); color:var(--mustard); font-weight:700; font-size:.75rem; padding:.2rem .6rem; border-radius:99px }
-.card .tag.hot{ background:var(--red); color:#fff }
-.card .body{ padding:14px 16px 16px; display:flex; flex-direction:column; gap:8px; flex:1 }
-.card h3{ font-family:var(--display); margin:0; font-size:1.3rem }
-.card p{ margin:0; color:var(--muted); font-size:.95rem }
-.card .row{ display:flex; align-items:center; justify-content:space-between; margin-top:auto; padding-top:6px }
-.card .price{ font-size:1.35rem }
-.add{ background:var(--red); color:#fff; border:0; border-radius:12px; padding:.6rem 1rem; font-weight:700; box-shadow:0 4px 0 var(--red-d) }
-.add:disabled{ background:#cfc6bb; box-shadow:none; color:#fff; cursor:not-allowed }
-.soon{ background:var(--mustard); color:var(--ink); font-weight:700; border-radius:12px; padding:.5rem .9rem; font-size:.9rem }
+  /* Franjas de obra */
+  .hazard{ height:22px; background:var(--stripes) }
 
-/* Por qué */
-.why{ background:var(--coal); color:#fff; border-radius:28px; padding:28px 20px; display:grid; gap:18px; grid-template-columns:1fr }
-@media (min-width:760px){ .why{ grid-template-columns:repeat(4, 1fr); padding:34px } }
-.why div b{ font-family:var(--display); font-size:1.6rem; color:var(--mustard); display:block; line-height:1 }
-.why div span{ color:#e2d9cf; font-size:.95rem }
-.steps{ display:grid; grid-template-columns:1fr; gap:14px; counter-reset:paso }
-@media (min-width:760px){ .steps{ grid-template-columns:repeat(3, 1fr) } }
-.steps li{ list-style:none; background:var(--paper); border:1.5px dashed var(--ink); border-radius:var(--r); padding:16px 16px 16px 64px; position:relative; counter-increment:paso }
-.steps li::before{ content:counter(paso); position:absolute; left:14px; top:14px; width:36px; height:36px; border-radius:50%; background:var(--red); color:#fff; font-family:var(--display); display:grid; place-items:center }
-.steps b{ display:block; font-size:1.05rem }
-.steps{ padding:0; margin:0 }
+  /* Encabezados de sección */
+  .sec{ padding:2.6rem 0 }
+  .sec-title{ text-align:center; margin-bottom:1.4rem }
+  .sec-title .tag{ display:inline-block; font-weight:900; letter-spacing:.14em; font-size:.85rem; color:var(--yellow); border:3px solid var(--red); background:var(--black); border-radius:12px; padding:.3rem 1rem; box-shadow:0 0 0 3px var(--black), 0 0 22px rgba(218,41,28,.55) }
+  .sec-title h2{ font-weight:900; font-size:clamp(2rem, 7vw, 3.2rem); line-height:1.02; letter-spacing:-.02em; margin-top:.7rem; text-wrap:balance }
+  .sec-title h2 em{ font-style:normal; color:var(--red) }
+  .sec-title p{ margin:.6rem auto 0; max-width:46ch; font-weight:600 }
 
-footer{ background:var(--coal); color:#d8cec4; padding-block:34px 110px; margin-top:20px }
-footer .wrap{ display:grid; gap:18px; grid-template-columns:1fr }
-@media (min-width:760px){ footer .wrap{ grid-template-columns:2fr 1fr 1fr } }
-footer h4{ color:#fff; margin:0 0 .4rem; font-family:var(--display); font-weight:400 }
-footer a{ color:var(--mustard) }
-footer .slogan{ font-family:var(--hand); font-size:1.6rem; color:#fff }
+  /* Combos (fondo amarillo, como el Piso 2) */
+  .combos-sec{ background:radial-gradient(80% 60% at 50% 0%, #ffd75a, var(--yellow) 60%, #ffb800); color:var(--ink) }
+  .combos-sec .sec-title p{ color:#3c352b }
+  .combos{ display:grid; grid-template-columns:1fr; gap:1.2rem }
+  @media (min-width:780px){ .combos{ grid-template-columns:repeat(3, 1fr) } }
+  .combo{ position:relative; background:var(--white); border:3px solid var(--ink); border-radius:24px; overflow:hidden; display:flex; flex-direction:column; box-shadow:8px 8px 0 var(--ink) }
+  .combo .ribbon{ position:absolute; top:12px; left:12px; z-index:2; background:var(--red); color:#fff; font-weight:800; font-size:.78rem; padding:.28rem .75rem; border-radius:999px; box-shadow:0 6px 14px -6px rgba(0,0,0,.6) }
+  .combo .photo{ position:relative; height:190px; background:#000; overflow:hidden }
+  .combo .photo img{ width:100%; height:100%; object-fit:cover; object-position:30% 50% }
+  .combo .photo img + img{ position:absolute; right:0; top:0; width:50%; border-left:3px solid var(--ink) }
+  .combo .plus{ position:absolute; right:10px; bottom:10px; display:flex; gap:.35rem }
+  .combo .plus span{ background:var(--yellow); color:var(--ink); border:2px solid var(--ink); border-radius:999px; font-weight:800; font-size:.8rem; padding:.2rem .6rem }
+  .combo .body{ padding:1rem 1.1rem 1.15rem; display:flex; flex-direction:column; gap:.4rem; flex:1 }
+  .combo h3{ font-weight:900; font-size:1.35rem; line-height:1.1 }
+  .combo p{ color:var(--ink-soft); font-size:.93rem; font-weight:500 }
+  .combo .row{ display:flex; align-items:end; justify-content:space-between; gap:.6rem; margin-top:auto; padding-top:.5rem }
+  .combo .old{ text-decoration:line-through; color:#8d8578; font-weight:700; font-size:.9rem }
+  .combo .price{ font-weight:900; font-size:1.7rem; line-height:1 }
+  .combo .save{ display:inline-block; margin-top:.3rem; background:#e7f6ec; color:var(--green); font-weight:800; font-size:.78rem; border-radius:999px; padding:.15rem .55rem }
+  .combo .btn{ min-height:48px; padding:0 1.1rem; font-size:.95rem }
 
-/* Barra fija de carrito (celular) */
-.float-cart{ position:fixed; left:0; right:0; bottom:0; z-index:25; padding:10px max(16px, env(safe-area-inset-left)) calc(10px + env(safe-area-inset-bottom)); background:linear-gradient(to top, rgba(23,18,15,.96), rgba(23,18,15,.85)); display:flex; justify-content:center }
-.float-cart button{ width:100%; max-width:560px; background:var(--red); color:#fff; border:0; border-radius:14px; padding:.95rem 1.1rem; font-weight:700; font-size:1.05rem; display:flex; justify-content:space-between; align-items:center; box-shadow:0 4px 0 var(--red-d) }
+  /* Menú */
+  .tabs{ display:flex; gap:.6rem; overflow-x:auto; padding:.2rem .1rem .6rem; margin:0 0 1.2rem; scrollbar-width:none; justify-content:flex-start }
+  @media (min-width:700px){ .tabs{ justify-content:center } }
+  .tabs::-webkit-scrollbar{ display:none }
+  .tabs button{ flex:0 0 auto; text-align:left; background:var(--black-2); color:#fff; border:2px solid rgba(255,255,255,.1); border-radius:18px; padding:.6rem 1.05rem; font-weight:800; font-size:.98rem }
+  .tabs button small{ display:block; font-size:.65rem; letter-spacing:.1em; color:var(--yellow); font-weight:800 }
+  .tabs button[aria-selected="true"]{ background:var(--yellow); color:var(--ink); border-color:var(--yellow); box-shadow:0 10px 24px -10px rgba(255,199,44,.8) }
+  .tabs button[aria-selected="true"] small{ color:var(--red) }
+  .grid{ display:grid; grid-template-columns:1fr; gap:1.1rem }
+  @media (min-width:640px){ .grid{ grid-template-columns:repeat(2, 1fr) } }
+  @media (min-width:980px){ .grid{ grid-template-columns:repeat(3, 1fr) } }
+  .card{ background:var(--black-2); border:2px solid rgba(255,255,255,.08); border-radius:24px; overflow:hidden; display:flex; flex-direction:column; transition:transform .2s ease, border-color .2s ease }
+  .card:hover{ transform:translateY(-3px); border-color:rgba(255,199,44,.5) }
+  .card .photo{ position:relative; aspect-ratio:4/3; background:#000; overflow:hidden }
+  .card .photo img{ width:100%; height:100%; object-fit:cover; object-position:32% 45% }
+  .card .photo .emoji{ width:100%; height:100%; display:grid; place-items:center; font-size:4.6rem; background:radial-gradient(circle at 50% 45%, #3a2118, #140d0a 70%) }
+  .card .label{ position:absolute; top:12px; left:12px; background:var(--yellow); color:var(--ink); font-weight:800; font-size:.72rem; letter-spacing:.05em; text-transform:uppercase; padding:.25rem .65rem; border-radius:999px }
+  .card .label.hot{ background:var(--red); color:#fff }
+  .card .body{ padding:1rem 1.1rem 1.15rem; display:flex; flex-direction:column; gap:.6rem; flex:1 }
+  .card .kicker{ color:var(--yellow); font-weight:800; font-size:.72rem; letter-spacing:.08em; text-transform:uppercase }
+  .card h3{ font-weight:900; font-size:1.3rem; line-height:1.15; margin-top:-.25rem }
+  .ings{ list-style:none; padding:0; margin:0; display:grid; grid-template-columns:1fr 1fr; gap:.15rem .7rem; font-size:.8rem; color:var(--muted); font-weight:500 }
+  .card .row{ display:flex; align-items:center; justify-content:space-between; gap:.6rem; margin-top:auto; padding-top:.3rem }
+  .card .price{ font-weight:900; font-size:1.4rem; color:var(--yellow) }
+  .add{ border:0; border-radius:999px; background:var(--red); color:#fff; font-weight:800; padding:.65rem 1.15rem; font-size:.95rem; box-shadow:0 8px 18px -8px rgba(218,41,28,.7) }
+  .add:hover{ background:var(--red-dark) }
+  .add:disabled{ background:#4a4440; color:#bdb6aa; box-shadow:none; cursor:not-allowed }
+  .soon{ background:var(--yellow); color:var(--ink); font-weight:800; border-radius:999px; padding:.5rem 1rem; font-size:.88rem }
 
-/* ---------- Ventanas ---------- */
-.overlay{ position:fixed; inset:0; z-index:40; background:rgba(15,10,8,.6); display:flex; align-items:flex-end; justify-content:center }
-@media (min-width:760px){ .overlay{ align-items:center } }
-.sheet{ background:var(--cream); width:100%; max-width:560px; max-height:92vh; overflow:auto; border-radius:22px 22px 0 0; padding:18px 18px calc(18px + env(safe-area-inset-bottom)); position:relative; animation:up .22s ease-out }
-@media (min-width:760px){ .sheet{ border-radius:22px } }
-@keyframes up{ from{ transform:translateY(30px); opacity:.4 } to{ transform:none; opacity:1 } }
-@media (prefers-reduced-motion: reduce){ .sheet{ animation:none } html{ scroll-behavior:auto } }
-.sheet h3{ font-family:var(--display); font-size:1.5rem; margin:0 40px 4px 0 }
-.x{ position:absolute; right:12px; top:12px; width:38px; height:38px; border-radius:50%; border:0; background:#ebe1d3; font-size:1.2rem; font-weight:700 }
-.opt-group{ margin-top:14px }
-.opt-group > b{ display:block; margin-bottom:6px }
-.opt{ display:flex; align-items:center; gap:10px; background:var(--paper); border:1.5px solid var(--line); border-radius:12px; padding:.7rem .8rem; margin-bottom:6px; cursor:pointer }
-.opt input{ width:20px; height:20px; accent-color:var(--red) }
-.opt span{ flex:1 }
-.opt small{ color:var(--muted); font-weight:600 }
-.opt.upsell{ border:2px solid var(--red); background:#fff1ec }
-.opt.upsell strong{ color:var(--red) }
-.qty{ display:inline-flex; align-items:center; border:2px solid var(--ink); border-radius:12px; overflow:hidden }
-.qty button{ width:40px; height:40px; border:0; background:var(--paper); font-size:1.2rem; font-weight:700 }
-.qty span{ min-width:34px; text-align:center; font-weight:700 }
-.sheet-foot{ display:flex; gap:10px; align-items:center; margin-top:16px }
-.sheet-foot .btn{ flex:1 }
-.line{ display:flex; gap:10px; padding:12px 0; border-bottom:1px solid var(--line); align-items:flex-start }
-.line .info{ flex:1; min-width:0 }
-.line .info b{ display:block }
-.line .info small{ color:var(--muted); display:block }
-.line .right{ text-align:right; display:flex; flex-direction:column; align-items:flex-end; gap:6px }
-.line .qty button{ width:32px; height:32px }
-.bar{ background:#ece2d3; border-radius:99px; height:10px; overflow:hidden; margin:6px 0 4px }
-.bar i{ display:block; height:100%; background:var(--green); border-radius:99px; transition:width .3s }
-.ship{ font-size:.9rem; font-weight:600; margin-top:12px }
-.suggest{ display:flex; gap:8px; overflow-x:auto; padding:6px 0 2px }
-.suggest button{ flex:0 0 auto; border:1.5px dashed var(--red); background:#fff; color:var(--red); border-radius:12px; padding:.5rem .7rem; font-weight:700; font-size:.88rem }
-.total{ display:flex; justify-content:space-between; align-items:baseline; margin-top:14px }
-.total .price{ font-size:1.7rem }
-.form label{ display:block; font-weight:600; margin-top:10px; font-size:.92rem }
-.form input, .form textarea, .form select{ width:100%; font:inherit; padding:.75rem .8rem; border:1.5px solid #d6cbbd; border-radius:12px; background:#fff; margin-top:4px }
-.form .err{ color:var(--red); font-size:.85rem; min-height:1em }
-.pay{ display:grid; grid-template-columns:repeat(2, 1fr); gap:8px; margin-top:6px }
-.pay label{ margin:0; display:flex; align-items:center; gap:8px; background:#fff; border:1.5px solid #d6cbbd; border-radius:12px; padding:.65rem .7rem; font-weight:600 }
-.pay input{ width:auto; margin:0; accent-color:var(--red) }
-.note{ background:#fff4cf; border-radius:12px; padding:.7rem .8rem; font-size:.9rem; margin-top:10px }
-.toast{ position:fixed; left:50%; bottom:96px; transform:translateX(-50%); background:var(--ink); color:#fff; padding:.7rem 1.1rem; border-radius:12px; z-index:60; font-weight:600; box-shadow:0 8px 20px rgba(0,0,0,.3) }
-.empty{ text-align:center; color:var(--muted); padding:30px 0 }
-.empty img{ width:120px; margin:0 auto 10px }
+  /* Domicilio y beneficios */
+  .delivery{ display:flex; align-items:center; gap:1rem; margin:0 auto; max-width:640px; background:var(--black-2); border:2px solid rgba(255,255,255,.09); border-radius:22px; overflow:hidden }
+  .delivery img{ width:42%; max-width:220px; align-self:stretch; object-fit:cover }
+  .delivery div{ padding:1rem 1rem 1rem 0 }
+  .delivery b{ display:block; font-weight:900; font-size:1.15rem; line-height:1.15; color:var(--yellow) }
+  .delivery span{ font-size:.9rem; color:#e9e2d7 }
+  .why{ display:grid; grid-template-columns:repeat(2, 1fr); gap:.8rem; margin-top:1.4rem }
+  @media (min-width:820px){ .why{ grid-template-columns:repeat(4, 1fr) } }
+  .why div{ background:var(--black-2); border:2px solid rgba(255,199,44,.25); border-radius:18px; padding:1rem }
+  .why b{ display:block; font-weight:900; font-size:1.2rem; color:var(--yellow); line-height:1.1 }
+  .why span{ font-size:.85rem; color:#ddd5ca }
+
+  /* Pie */
+  footer{ background:var(--black-3); padding:2.4rem 0 7rem; text-align:center; border-top:3px solid var(--red) }
+  .footer-photo{ width:100%; max-width:440px; aspect-ratio:3/2; margin:0 auto 1.2rem; border-radius:22px; object-fit:cover; border:3px solid var(--yellow) }
+  footer .logo{ justify-content:center; margin:0 }
+  footer .slogan{ margin-top:.6rem; font-weight:800 }
+  footer .info{ margin-top:.8rem; color:var(--muted); font-size:.9rem }
+  footer a{ color:var(--yellow) }
+
+  /* Barra fija del carrito */
+  .float-cart{ position:fixed; left:0; right:0; bottom:0; z-index:55; padding:.7rem max(1rem, env(safe-area-inset-left)) calc(.7rem + env(safe-area-inset-bottom)); background:linear-gradient(to top, rgba(12,11,10,.98), rgba(12,11,10,.82)); display:flex; justify-content:center }
+  .float-cart button{ width:100%; max-width:560px; background:var(--red); color:#fff; border:0; border-radius:999px; min-height:58px; padding:0 1.3rem; font-weight:800; font-size:1.05rem; display:flex; justify-content:space-between; align-items:center; box-shadow:0 8px 18px -8px rgba(218,41,28,.8) }
+
+  /* Ventanas */
+  .overlay{ position:fixed; inset:0; z-index:80; background:rgba(8,6,5,.72); display:flex; align-items:flex-end; justify-content:center }
+  @media (min-width:760px){ .overlay{ align-items:center } }
+  .sheet{ background:var(--cream); color:var(--ink); width:100%; max-width:560px; max-height:92vh; overflow:auto; border-radius:26px 26px 0 0; padding:1.2rem 1.2rem calc(1.2rem + env(safe-area-inset-bottom)); position:relative; animation:up .22s ease-out }
+  @media (min-width:760px){ .sheet{ border-radius:26px } }
+  @keyframes up{ from{ transform:translateY(30px); opacity:.4 } to{ transform:none; opacity:1 } }
+  .sheet h3{ font-weight:900; font-size:1.45rem; margin:0 44px .2rem 0; line-height:1.15 }
+  .sheet .sub{ color:var(--ink-soft); font-size:.92rem }
+  .sheet-photo{ margin:-1.2rem -1.2rem 1rem; height:180px; overflow:hidden; border-radius:26px 26px 0 0; background:#000 }
+  .sheet-photo img{ width:100%; height:100%; object-fit:cover; object-position:32% 45% }
+  .x{ position:absolute; right:12px; top:12px; z-index:2; width:40px; height:40px; border-radius:50%; border:0; background:rgba(255,255,255,.92); font-size:1.1rem; font-weight:800; color:var(--ink); box-shadow:0 4px 12px rgba(0,0,0,.25) }
+  .opt-group{ margin-top:1rem }
+  .opt-group > b{ display:block; margin-bottom:.4rem; font-weight:800 }
+  .opt{ display:flex; align-items:center; gap:.7rem; background:#fff; border:2px solid var(--line); border-radius:16px; padding:.75rem .85rem; margin-bottom:.45rem; cursor:pointer; font-weight:600 }
+  .opt input{ width:20px; height:20px; accent-color:var(--red); flex:none }
+  .opt span{ flex:1 }
+  .opt small{ color:var(--ink-soft); font-weight:700; white-space:nowrap }
+  .opt.upsell{ border:2.5px dashed var(--red); background:#fff3ef }
+  .opt.upsell strong{ color:var(--red); font-weight:900 }
+  .qty{ display:inline-flex; align-items:center; background:#fff; border:2px solid var(--ink); border-radius:999px; overflow:hidden }
+  .qty button{ width:42px; height:42px; border:0; background:transparent; font-size:1.25rem; font-weight:800 }
+  .qty span{ min-width:30px; text-align:center; font-weight:800 }
+  .sheet-foot{ display:flex; gap:.6rem; align-items:center; margin-top:1.1rem; position:sticky; bottom:-1.2rem; background:var(--cream); padding:.6rem 0 .2rem }
+  .sheet-foot .btn{ flex:1; min-height:54px }
+  .line{ display:flex; gap:.7rem; padding:.85rem 0; border-bottom:1px solid var(--line); align-items:flex-start }
+  .line .info{ flex:1; min-width:0 }
+  .line .info b{ display:block; font-weight:800 }
+  .line .info small{ color:var(--ink-soft); display:block; font-size:.82rem }
+  .line .right{ display:flex; flex-direction:column; align-items:flex-end; gap:.35rem; font-weight:800 }
+  .line .qty button{ width:34px; height:34px }
+  .ship{ margin-top:.9rem; font-weight:800; font-size:.92rem }
+  .bar{ background:#eadfcb; border-radius:99px; height:10px; overflow:hidden; margin:.35rem 0 .2rem }
+  .bar i{ display:block; height:100%; background:linear-gradient(90deg, var(--yellow), var(--green)); border-radius:99px; transition:width .35s }
+  .suggest{ display:flex; gap:.5rem; overflow-x:auto; padding:.6rem 0 .2rem; scrollbar-width:none }
+  .suggest button{ flex:0 0 auto; border:2px dashed var(--red); background:#fff; color:var(--red); border-radius:999px; padding:.5rem .85rem; font-weight:800; font-size:.85rem }
+  .total{ display:flex; justify-content:space-between; align-items:baseline; margin-top:.8rem; font-weight:800 }
+  .total b{ font-weight:900; font-size:1.7rem }
+  .form label{ display:block; font-weight:700; margin-top:.75rem; font-size:.9rem }
+  .form input, .form textarea{ width:100%; font:inherit; padding:.8rem .9rem; border:2px solid #dccfb9; border-radius:14px; background:#fff; margin-top:.25rem; color:var(--ink) }
+  .form input:focus, .form textarea:focus{ border-color:var(--ink); outline:none }
+  .pay{ display:grid; grid-template-columns:repeat(2, 1fr); gap:.5rem; margin-top:.3rem }
+  .pay label{ margin:0; display:flex; align-items:center; gap:.5rem; background:#fff; border:2px solid #dccfb9; border-radius:14px; padding:.7rem .8rem }
+  .pay input{ width:auto; margin:0; accent-color:var(--red) }
+  .note{ background:#fff0c2; border-radius:14px; padding:.7rem .85rem; font-size:.88rem; margin-top:.6rem; font-weight:600 }
+  .err{ color:var(--red); font-size:.86rem; font-weight:700; min-height:1.2em; margin-top:.4rem }
+  .empty{ text-align:center; color:var(--ink-soft); padding:1.4rem 0; font-weight:600 }
+  .empty img{ width:92px; height:92px; border-radius:50%; object-fit:cover; margin:0 auto .7rem; border:3px solid var(--yellow) }
+  /* Las fotos traen rótulos al lado derecho: se acercan un poco para dejarlos fuera del recuadro. */
+  .card .photo img, .combo .photo img, .sheet-photo img{ transform:scale(1.35); transform-origin:18% 50% }
+  .card .photo img[src*="papas"]{ transform:none }
+  .toast{ position:fixed; left:50%; bottom:96px; transform:translateX(-50%); background:var(--yellow); color:var(--ink); padding:.7rem 1.1rem; border-radius:999px; z-index:90; font-weight:800; box-shadow:0 10px 24px rgba(0,0,0,.45); white-space:nowrap }
 </style>
 </head>
 <body>
@@ -184,109 +241,97 @@ footer .slogan{ font-family:var(--hand); font-size:1.6rem; color:#fff }
 <div id="preview-bar" class="preview-bar hidden">Vista previa · los pedidos de prueba no se guardan ni descuentan stock</div>
 <div id="notice-bar" class="notice-bar hidden"></div>
 
-<header class="top">
-  <div class="wrap">
-    <a class="brand" href="#inicio" aria-label="Carnitas, inicio"><img src="img/nuevo/llama-sola.webp" alt=""><b>CARNITAS</b></a>
-    <span id="status" class="status">…</span>
-    <button class="cart-btn" id="open-cart" aria-label="Ver mi pedido">🛒 <span class="n" id="cart-n">0</span></button>
+<header class="topbar">
+  <div class="container">
+    <a class="logo" href="#inicio" aria-label="Carnitas, inicio"><img src="img/oso-cara.jpg" alt="">CARNITAS<span>.</span></a>
+    <nav class="topnav" aria-label="Secciones"><a href="#combos">🔥 Combos</a><a href="#menu">🥖 Menú</a><a href="#domicilio">🛵 Domicilio</a></nav>
+    <button class="cart-btn" id="open-cart" aria-label="Ver mi pedido">🛒 <span class="n num" id="cart-n">0</span></button>
   </div>
 </header>
 
 <main id="inicio">
-  <div class="hero">
-    <div class="wrap">
-      <div>
-        <p class="kicker">Asados en Sogamoso, Boyacá</p>
-        <h1>Bondiola asada lento. <em>Antojo</em> resuelto.</h1>
-        <p class="lead">Sándwiches, tacos y picadas con 150 g de carne de verdad y nuestra Salsa Llama, hecha en casa.</p>
-        <ul class="chips">
-          <li>🔥 150 g de bondiola</li><li>🦙 Salsa Llama de la casa</li><li>🛵 Domicilio en Sogamoso</li>
-        </ul>
-        <div class="cta-row">
-          <a class="btn btn-red" href="#combos">Ver combos</a>
-          <a class="btn btn-ghost" href="#menu">Ver menú</a>
-        </div>
+  <section class="hero">
+    <div class="container hero-inner">
+      <div class="hero-text">
+        <span class="eyebrow">Sándwiches · Tacos · Picadas</span>
+        <h1>Barriga llena, <em>corazón contento.</em></h1>
+        <p class="hero-copy">Bondiola asada lento, 150 g en cada sándwich y nuestra Salsa Llama de la casa. Pide en 1 minuto y te lo llevamos en Sogamoso.</p>
+        <div class="status-card" id="status-card"><div><span id="status-title">…</span><small id="status-sub"></small></div></div>
+        <a class="btn btn-primary hero-cta" href="#combos">🔥 VER COMBOS Y PEDIR</a>
+        <ul class="trust"><li>🔥 150 g de bondiola</li><li>🦙 Salsa Llama</li><li>🛵 Domicilio gratis desde $50.000</li></ul>
       </div>
-      <div class="hero-art">
-        <img src="img/nuevo/hero.webp" alt="Dibujo de la llama de Carnitas con su Salsa Llama junto a un sándwich de bondiola en pan brioche" width="1546" height="683">
-        <div class="stamp"><span>Sándwich<b id="stamp-price">$16.900</b></span></div>
+      <div class="hero-photo">
+        <img src="img/oso-hero.jpg" alt="El oso de Carnitas entregando una caja de Carnitas" width="655" height="663">
+        <div class="bear-bubble">¿Hambre? Yo te lo llevo 🛵</div>
+        <div class="price-sticker"><small>COMBOS DESDE</small><b class="num" id="sticker-price">$18.900</b></div>
       </div>
     </div>
-  </div>
+  </section>
 
-  <section id="combos">
-    <div class="wrap">
-      <div class="sec-head">
-        <h2><span class="hand">pa' que te rinda</span>Combos</h2>
-        <p>Más comida por menos. Arma tu combo y paga menos que pidiendo todo por separado.</p>
+  <div class="hazard" aria-hidden="true"></div>
+  <section class="sec combos-sec" id="combos">
+    <div class="container">
+      <div class="sec-title">
+        <span class="tag">🔥 COMBOS</span>
+        <h2>Pide más, <em>paga menos</em></h2>
+        <p>El sándwich que te gusta con papas y Coca-Cola, por menos que pidiendo todo por separado.</p>
       </div>
       <div class="combos" id="combos-list"></div>
     </div>
   </section>
+  <div class="hazard" aria-hidden="true"></div>
 
-  <section id="menu" style="padding-top:10px">
-    <div class="wrap">
-      <div class="sec-head">
-        <h2><span class="hand">todo con bondiola</span>Menú</h2>
-        <p>Una sola carne, asada lento y dorada al momento. Lo que cambia es el armado.</p>
+  <section class="sec" id="menu">
+    <div class="container">
+      <div class="sec-title">
+        <span class="tag">EL MENÚ</span>
+        <h2>Elige tu <em>antojo</em></h2>
+        <p style="color:var(--muted)">Todo con nuestra bondiola asada lento. Toca <b style="color:var(--yellow)">Agregar</b> y personalízalo.</p>
       </div>
       <div class="tabs" role="tablist" id="tabs"></div>
       <div class="grid" id="menu-grid"></div>
     </div>
   </section>
 
-  <section>
-    <div class="wrap">
-      <div class="why">
-        <div><b>150 g</b><span>de bondiola en cada sándwich. Sin miedo.</span></div>
-        <div><b>Asada lento</b><span>jugosa por dentro, dorada en plancha al momento.</span></div>
-        <div><b>Salsa Llama</b><span>nuestra salsa ahumada con un toque de naranja.</span></div>
-        <div><b>Pan brioche</b><span>tostado con mantequilla para que llegue rico.</span></div>
+  <section class="sec" id="domicilio" style="padding-top:.5rem">
+    <div class="container">
+      <div class="delivery">
+        <img src="img/oso-moto.jpg" alt="El oso de Carnitas en moto llevando un pedido">
+        <div><b>🛵 ¡Te lo llevamos!</b><span>Domicilio en Sogamoso. <strong style="color:var(--yellow)">Gratis desde $50.000</strong>; si no, lo confirmamos por WhatsApp según tu barrio.</span></div>
       </div>
-    </div>
-  </section>
-
-  <section style="padding-top:0">
-    <div class="wrap">
-      <div class="sec-head"><h2><span class="hand">facilito</span>Así pides</h2></div>
-      <ol class="steps">
-        <li><b>Arma tu pedido</b>Elige combos o lo que se te antoje.</li>
-        <li><b>Envíalo por WhatsApp</b>Te llega listo para mandar, con tu número de pedido.</li>
-        <li><b>Recíbelo en casa</b>Te confirmamos el domicilio y en camino va.</li>
-      </ol>
+      <div class="why">
+        <div><b>150 g</b><span>de bondiola en cada sándwich.</span></div>
+        <div><b>Asada lento</b><span>y dorada en plancha al momento.</span></div>
+        <div><b>Salsa Llama</b><span>ahumada, hecha en casa.</span></div>
+        <div><b>Pan brioche</b><span>tostado con mantequilla.</span></div>
+      </div>
     </div>
   </section>
 </main>
 
 <footer>
-  <div class="wrap">
-    <div>
-      <p class="slogan">Barriga llena, corazón contento</p>
-      <p>Carnitas · Sogamoso, Boyacá</p>
-    </div>
-    <div>
-      <h4>Horario</h4>
-      <p id="hours-text">Lunes a sábado · 5:00 p. m. a 11:00 p. m.</p>
-    </div>
-    <div>
-      <h4>Contacto</h4>
-      <p>WhatsApp: <span id="wa-text"></span><br><a href="https://www.instagram.com/carnitas.co" target="_blank" rel="noopener">Instagram @carnitas.co</a><br><a href="privacidad.html">Política de privacidad</a></p>
-    </div>
+  <div class="container">
+    <img class="footer-photo" src="img/oso-foodtruck.jpg" alt="El food truck de Carnitas de noche" loading="lazy">
+    <a class="logo" href="#inicio"><img src="img/oso-cara.jpg" alt="">CARNITAS<span>.</span></a>
+    <p class="slogan">"Barriga llena, corazón contento"</p>
+    <p class="info">Sogamoso, Boyacá · <span id="hours-text">Lunes a sábado, 5:00 p. m. a 11:00 p. m.</span><br>
+      WhatsApp <span id="wa-text" class="num"></span> · <a href="https://www.instagram.com/carnitas.co" target="_blank" rel="noopener">@carnitas.co</a> · <a href="privacidad.html">Privacidad</a></p>
   </div>
 </footer>
 
-<div class="float-cart hidden" id="float-cart"><button id="float-open"><span id="float-n">Ver mi pedido</span><span class="price" id="float-total">$0</span></button></div>
+<div class="float-cart hidden" id="float-cart"><button id="float-open"><span id="float-n">Ver mi pedido</span><span class="num" id="float-total">$0</span></button></div>
 
 <!-- Elegir producto -->
 <div class="overlay hidden" id="ov-item" role="dialog" aria-modal="true" aria-labelledby="item-title">
   <div class="sheet">
     <button class="x" data-close aria-label="Cerrar">✕</button>
+    <div class="sheet-photo hidden" id="item-photo"></div>
     <h3 id="item-title"></h3>
-    <p id="item-desc" style="margin:0;color:var(--muted)"></p>
+    <p class="sub" id="item-desc"></p>
     <div id="item-opts"></div>
     <div class="sheet-foot">
-      <div class="qty"><button id="q-minus" aria-label="Menos">−</button><span id="q-n">1</span><button id="q-plus" aria-label="Más">+</button></div>
-      <button class="btn btn-red" id="item-add">Agregar · <span class="price" id="item-price">$0</span></button>
+      <div class="qty"><button id="q-minus" aria-label="Menos">−</button><span id="q-n" class="num">1</span><button id="q-plus" aria-label="Más">+</button></div>
+      <button class="btn btn-primary" id="item-add">Agregar · <span class="num" id="item-price">$0</span></button>
     </div>
   </div>
 </div>
@@ -296,19 +341,19 @@ footer .slogan{ font-family:var(--hand); font-size:1.6rem; color:#fff }
   <div class="sheet">
     <button class="x" data-close aria-label="Cerrar">✕</button>
     <div id="step-cart">
-      <h3 id="cart-title">Tu pedido</h3>
+      <h3 id="cart-title">Tu pedido 🛒</h3>
       <div id="cart-lines"></div>
       <div id="cart-extra">
         <div class="ship" id="ship-text"></div>
         <div class="bar"><i id="ship-bar" style="width:0"></i></div>
         <div class="suggest" id="suggest"></div>
-        <div class="total"><span>Total productos</span><span class="price" id="cart-total">$0</span></div>
-        <p style="margin:4px 0 0;color:var(--muted);font-size:.85rem">El domicilio se confirma por WhatsApp según tu barrio.</p>
-        <div class="sheet-foot"><button class="btn btn-red" id="go-form">Continuar</button></div>
+        <div class="total"><span>Total productos</span><b class="num" id="cart-total">$0</b></div>
+        <p class="sub" style="font-size:.82rem">El domicilio se confirma por WhatsApp según tu barrio.</p>
+        <div class="sheet-foot"><button class="btn btn-primary" id="go-form">CONTINUAR</button></div>
       </div>
     </div>
     <form id="step-form" class="form hidden" novalidate>
-      <h3>¿A dónde lo llevamos?</h3>
+      <h3>¿A dónde te lo llevamos?</h3>
       <label for="f-name">Tu nombre</label><input id="f-name" autocomplete="name" maxlength="60" required>
       <label for="f-phone">Celular</label><input id="f-phone" type="tel" inputmode="numeric" autocomplete="tel" maxlength="15" placeholder="300 123 4567" required>
       <label for="f-address">Dirección y barrio</label><input id="f-address" autocomplete="street-address" maxlength="150" placeholder="Calle 10 # 12-34, barrio El Recreo" required>
@@ -321,27 +366,26 @@ footer .slogan{ font-family:var(--hand); font-size:1.6rem; color:#fff }
       <label for="f-notes">Notas (opcional)</label><textarea id="f-notes" rows="2" maxlength="300" placeholder="Ej: sin cebolla, timbre dañado…"></textarea>
       <p class="err" id="form-err"></p>
       <div class="sheet-foot">
-        <button type="button" class="btn" style="background:#ebe1d3" id="back-cart">Atrás</button>
-        <button type="submit" class="btn btn-red" id="send">Enviar por WhatsApp</button>
+        <button type="button" class="btn btn-light" id="back-cart">Atrás</button>
+        <button type="submit" class="btn btn-primary" id="send">ENVIAR POR WHATSAPP</button>
       </div>
     </form>
-    <div id="step-done" class="hidden" style="text-align:center;padding:10px 0">
-      <img src="img/nuevo/llama.webp" alt="" style="width:160px;margin:0 auto">
-      <h3 style="margin:10px 0 4px">¡Pedido <span id="done-code"></span> listo!</h3>
-      <p>Se abrió WhatsApp con tu pedido. <b>Solo falta tocar enviar.</b> Si no se abrió, toca aquí:</p>
-      <a class="btn btn-red" id="done-wa" href="#" target="_blank" rel="noopener">Abrir WhatsApp</a>
+    <div id="step-done" class="hidden" style="text-align:center;padding:.6rem 0">
+      <img src="img/oso-cara.jpg" alt="" style="width:110px;height:110px;border-radius:50%;object-fit:cover;margin:0 auto;border:3px solid var(--yellow)">
+      <h3 style="margin:.8rem 0 .3rem">¡Pedido <span id="done-code"></span> listo!</h3>
+      <p>Se abrió WhatsApp con tu pedido. <b>Solo falta tocar enviar.</b> Si no se abrió:</p>
+      <a class="btn btn-primary" id="done-wa" href="#" target="_blank" rel="noopener" style="margin-top:.8rem;width:100%">ABRIR WHATSAPP</a>
     </div>
   </div>
 </div>
 
 <!-- Aviso de cierre -->
 <div class="overlay hidden" id="ov-closed" role="dialog" aria-modal="true" aria-labelledby="closed-title">
-  <div class="sheet" style="text-align:center">
-    <button class="x" data-close aria-label="Cerrar">✕</button>
-    <img src="img/nuevo/llama-sola.webp" alt="" style="width:120px;margin:0 auto 8px">
-    <h3 id="closed-title" style="margin-right:0"></h3>
-    <p id="closed-text"></p>
-    <button class="btn btn-red" data-close style="width:100%">Ver el menú</button>
+  <div class="sheet" style="text-align:center;background:var(--yellow);border-top:22px solid transparent;border-image:var(--stripes) 22">
+    <img src="img/oso-cara.jpg" alt="" style="width:96px;height:96px;border-radius:50%;object-fit:cover;margin:0 auto .6rem;border:3px solid var(--ink)">
+    <h3 id="closed-title" style="margin:0 0 .4rem;color:var(--red);font-size:1.8rem;text-transform:uppercase"></h3>
+    <p id="closed-text" style="font-weight:700"></p>
+    <button class="btn btn-primary" data-close style="width:100%;margin-top:1rem">VER EL MENÚ 👀</button>
   </div>
 </div>
 
@@ -387,20 +431,23 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&
 
 /* ---------- Menú ---------- */
 const SANDWICHES = {
-  texas:  { name:'Texas BBQ',    img:'img/nuevo/sandwich-texas.webp',  tag:'Recomendado de la casa', desc:'Bondiola glaseada con La Ahumada, queso fundido, cebolla caramelizada y pepinillos.' },
-  cheese: { name:'Cheese Spicy', img:'img/nuevo/sandwich-cheese.webp', tag:'Picante', hot:true,      desc:'Bondiola, mucho queso, jalapeño encurtido, Llama Picante y cebolla caramelizada.' },
-  azteca: { name:'Azteca',       img:'img/nuevo/sandwich-azteca.webp', tag:'Fresco',                 desc:'Bondiola, queso, Llama Azteca y pico de gallo aparte para que el pan llegue crujiente.' },
+  texas:  { name:'Texas BBQ',    kicker:'Ahumado estilo texano', img:'img/texas.webp',        label:'El de la casa',
+            ings:['🥖 Pan brioche tostado', '🐖 150 g de bondiola', '🍯 La Ahumada (BBQ propia)', '🧀 Queso fundido', '🧅 Cebolla caramelizada', '🥒 Pepinillos'] },
+  cheese: { name:'Cheese Spicy', kicker:'Queso y picante',       img:'img/cheese-spicy.jpg',  label:'Picante', hot:true,
+            ings:['🥖 Pan brioche tostado', '🐖 150 g de bondiola', '🧀 Doble queso', '🌶️ Jalapeño encurtido', '🔥 Llama Picante', '🧅 Cebolla caramelizada'] },
+  azteca: { name:'Azteca',       kicker:'Toque mexicano',        img:'img/azteca.webp',
+            ings:['🥖 Pan brioche tostado', '🐖 150 g de bondiola', '🧀 Queso fundido', '🥑 Llama Azteca', '🍅 Pico de gallo aparte'] },
 };
-const ADDONS = { queso:'Queso extra', jalapenos:'Jalapeños', pepinillos:'Pepinillos', picante:'Salsa extra picante' };
+const ADDONS = { queso:'🧀 Queso extra', jalapenos:'🌶️ Jalapeños', pepinillos:'🥒 Pepinillos', picante:'🔥 Salsa extra picante' };
 const COMBOS = {
-  llama:   { name:'Combo Llama',   img:'img/nuevo/combo-llama.webp',   ribbon:'El más completo', best:true, desc:'Sándwich a tu elección + papas corrugadas + Coca-Cola.', regular:P.sandwich + P.papas + P.coca, flavors:1, stock:{ cerdo:1, papas:1, coca:1 } },
-  taquero: { name:'Combo Taquero', img:'img/nuevo/combo-taquero.webp', ribbon:'Nuevo', desc:'Orden de 3 tacos (2 al pastor + 1 picante) + Coca-Cola.', regular:P.tacos + P.coca, flavors:0, stock:{ cerdo:1, coca:1 } },
-  parche:  { name:'Combo Parche',  img:'img/nuevo/combo-parche.webp',  ribbon:'Para 2', desc:'2 sándwiches a elección + papas para 2 + 2 Coca-Cola.', regular:2 * (P.sandwich + P.papas + P.coca), flavors:2, stock:{ cerdo:2, papas:2, coca:2 } },
+  llama:   { name:'Combo Llama',   img:'img/texas.webp', ribbon:'⭐ El más completo', desc:'Tu sándwich favorito + papas corrugadas + Coca-Cola.', plus:['🍟 Papas', '🥤 Coca-Cola'], regular:P.sandwich + P.papas + P.coca, flavors:1, stock:{ cerdo:1, papas:1, coca:1 } },
+  taquero: { name:'Combo Taquero', emoji:'🌮🌮🌮', ribbon:'Nuevo', desc:'Orden de 3 tacos (2 al pastor + 1 picante) + Coca-Cola.', plus:['🥤 Coca-Cola'], regular:P.tacos + P.coca, flavors:0, stock:{ cerdo:1, coca:1 } },
+  parche:  { name:'Combo Parche',  img:'img/cheese-spicy.jpg', img2:'img/azteca.webp', ribbon:'👥 Para 2', desc:'2 sándwiches a elección + papas para 2 + 2 Coca-Cola.', plus:['🍟 x2', '🥤 x2'], regular:2 * (P.sandwich + P.papas + P.coca), flavors:2, stock:{ cerdo:2, papas:2, coca:2 } },
 };
-const TABS = [['sandwiches','🥖 Sándwiches'], ['tacos','🌮 Tacos'], ['picadas','🍟 Picadas'], ['extras','🥤 Extras']];
+const TABS = [['sandwiches','Sándwiches','PISO 1'], ['tacos','Tacos','NUEVO'], ['picadas','Picadas','LA ESTRELLA'], ['extras','Papas y bebidas','EXTRAS']];
 
 /* ---------- Estado ---------- */
-let cart = [];            // { id, kind, ref, flavors:[], addons:[], combo:false, qty }
+let cart = [];            // { id, kind, ref, flavors:[], addons:[], combo:false, coca:false, qty }
 let stock = { cerdo:null, papas:null, coca:null }; // null = sin límite
 let tab = 'sandwiches';
 const STORE = 'carnitas_cart_v2';
@@ -415,14 +462,14 @@ function bogotaNow(){
 const toMin = t => { const [h, m] = t.split(':').map(Number); return h * 60 + m; };
 function storeState(){
   const forceOpen = !LIVE && new URLSearchParams(location.search).has('abierto');
-  if (forceOpen) return { open:true, label:'Abierto (prueba)' };
-  if (CONFIG.CLOSED_UNTIL_NOTICE) return { open:false, label:'Cerrado temporalmente', notice:CONFIG.CLOSED_UNTIL_NOTICE };
+  if (forceOpen) return { open:true, label:'Abierto (prueba)', sub:'Haz tu pedido de prueba' };
+  if (CONFIG.CLOSED_UNTIL_NOTICE) return { open:false, label:CONFIG.CLOSED_UNTIL_NOTICE.title, sub:'Mira el menú mientras tanto · volvemos muy pronto', notice:CONFIG.CLOSED_UNTIL_NOTICE };
   const n = bogotaNow();
-  if (CONFIG.CLOSED_DATES[n.date]) return { open:false, label:'Hoy no abrimos', notice:{ title:'Hoy no abrimos', text:CONFIG.CLOSED_DATES[n.date] } };
-  if (CONFIG.CLOSED_WEEKDAYS.includes(n.day)) return { open:false, label:'Hoy descansamos · mañana 5 p. m.' };
-  if (n.min < toMin(CONFIG.OPEN_TIME)) return { open:false, label:'Abrimos hoy a las 5 p. m.' };
-  if (n.min >= toMin(CONFIG.CLOSE_TIME)) return { open:false, label:'Ya cerramos · mañana 5 p. m.' };
-  return { open:true, label:'Abierto ahora' };
+  if (CONFIG.CLOSED_DATES[n.date]) return { open:false, label:'Hoy no abrimos', sub:CONFIG.CLOSED_DATES[n.date], notice:{ title:'Hoy no abrimos', text:CONFIG.CLOSED_DATES[n.date] } };
+  if (CONFIG.CLOSED_WEEKDAYS.includes(n.day)) return { open:false, label:'Hoy descansamos', sub:'Mañana abrimos a las 5:00 p. m.' };
+  if (n.min < toMin(CONFIG.OPEN_TIME)) return { open:false, label:'Abrimos hoy a las 5:00 p. m.', sub:'Ve armando tu pedido' };
+  if (n.min >= toMin(CONFIG.CLOSE_TIME)) return { open:false, label:'Por hoy ya cerramos', sub:'Mañana abrimos a las 5:00 p. m.' };
+  return { open:true, label:'¡Abierto ahora! Pide ya 🔥', sub:'Hasta las 11:00 p. m.' };
 }
 
 /* ---------- Stock (Firebase /stock: cerdo, PAPAS, "Coca-Cola") ---------- */
@@ -436,14 +483,6 @@ async function loadStock(){
     renderAll();
   } catch (e) {}
 }
-function needOf(lines){
-  const need = { cerdo:0, papas:0, coca:0 };
-  for (const l of lines) {
-    const s = lineStock(l);
-    for (const k in need) need[k] += (s[k] || 0) * l.qty;
-  }
-  return need;
-}
 function lineStock(l){
   if (l.kind === 'combo') return COMBOS[l.ref].stock;
   if (l.kind === 'sandwich') return { cerdo:1, papas:l.combo ? 1 : 0, coca:l.combo ? 1 : 0 };
@@ -452,7 +491,12 @@ function lineStock(l){
   if (l.ref === 'coca') return { coca:1 };
   return {};
 }
-// ¿Cabe una unidad más de esto en el pedido actual?
+function needOf(lines){
+  const need = { cerdo:0, papas:0, coca:0 };
+  for (const l of lines) { const s = lineStock(l); for (const k in need) need[k] += (s[k] || 0) * l.qty; }
+  return need;
+}
+// ¿Cabe esto (qty veces) en el pedido actual?
 function fits(extraStock, qty = 1){
   const need = needOf(cart);
   return Object.keys(need).every(k => stock[k] === null || need[k] + (extraStock[k] || 0) * qty <= stock[k]);
@@ -482,9 +526,10 @@ function lineTitle(l){
   if (l.kind === 'tacos') return l.coca ? 'Combo Taquero' : 'Orden de tacos';
   return l.ref === 'papas' ? 'Papas corrugadas' : 'Coca-Cola';
 }
+const plainAddon = a => ADDONS[a].replace(/^\S+\s/, '');
 function lineDetail(l){
   const parts = [];
-  if (l.kind === 'sandwich') { if (l.combo) parts.push(SANDWICHES[l.ref].name + ' + papas + Coca-Cola'); if (l.addons.length) parts.push('+ ' + l.addons.map(a => ADDONS[a]).join(', ')); }
+  if (l.kind === 'sandwich') { if (l.combo) parts.push(SANDWICHES[l.ref].name + ' + papas + Coca-Cola'); if (l.addons.length) parts.push('+ ' + l.addons.map(plainAddon).join(', ')); }
   if (l.kind === 'combo' && l.flavors.length) parts.push(l.flavors.map(f => SANDWICHES[f].name).join(' + ') + (l.ref === 'parche' ? ' + papas para 2 + 2 Coca-Cola' : ' + papas + Coca-Cola'));
   if (l.kind === 'tacos') parts.push('2 al pastor + 1 picante' + (l.coca ? ' + Coca-Cola' : ''));
   return parts.join(' · ');
@@ -498,68 +543,69 @@ function addLine(l){
   const k = lineKey(l), same = cart.find(x => lineKey(x) === k);
   if (same) same.qty += l.qty; else cart.push({ ...l, id: Math.random().toString(36).slice(2, 9) });
   save(); renderAll();
+  const b = $('open-cart'); b.classList.remove('bump'); void b.offsetWidth; b.classList.add('bump');
 }
 
 /* ---------- Pintar ---------- */
 function renderCombos(){
-  const st = storeState();
   $('combos-list').innerHTML = Object.entries(COMBOS).map(([id, c]) => {
-    const price = CONFIG.COMBOS[id], saveAmt = c.regular - price, ok = fits(c.stock);
-    return `<article class="combo ${c.best ? 'best' : ''}">
+    const price = CONFIG.COMBOS[id], ok = fits(c.stock);
+    const photo = c.img ? `<img src="${c.img}" alt="" loading="lazy">${c.img2 ? `<img src="${c.img2}" alt="" loading="lazy">` : ''}` : `<div style="height:100%;display:grid;place-items:center;font-size:4rem;background:radial-gradient(circle,#4a1d14,#120b08 70%)">${c.emoji}</div>`;
+    return `<article class="combo">
       <span class="ribbon">${c.ribbon}</span>
-      <img src="${c.img}" alt="" loading="lazy">
-      <h3>${c.name}</h3><p>${c.desc}</p>
-      <div class="row"><div><span class="old">${cop(c.regular)}</span><span class="price">${cop(price)}</span><div class="save">Ahorras ${cop(saveAmt)}</div></div>
-      <button class="add" data-combo="${id}" ${ok ? '' : 'disabled'}>${ok ? (st.open ? 'Lo quiero' : 'Elegir') : 'Agotado'}</button></div>
-    </article>`;
+      <div class="photo">${photo}<div class="plus">${c.plus.map(x => `<span>+ ${x}</span>`).join('')}</div></div>
+      <div class="body"><h3>${c.name}</h3><p>${c.desc}</p>
+        <div class="row"><div><div class="old num">${cop(c.regular)}</div><div class="price num">${cop(price)}</div><span class="save">Ahorras ${cop(c.regular - price)}</span></div>
+        <button class="btn btn-primary" data-combo="${id}" ${ok ? '' : 'disabled'}>${ok ? 'LO QUIERO' : 'AGOTADO'}</button></div>
+      </div></article>`;
   }).join('');
 }
-function card({ img, tag, hot, name, desc, price, action, soon, disabled, label }){
+function card({ img, emoji, label, hot, kicker, name, ings, desc, price, action, soon, ok = true }){
   return `<article class="card">
-    <div class="pic">${tag ? `<span class="tag ${hot ? 'hot' : ''}">${tag}</span>` : ''}<img src="${img}" alt="" loading="lazy"></div>
-    <div class="body"><h3>${name}</h3><p>${desc}</p>
-      <div class="row">${soon ? '<span class="soon">Muy pronto</span>' : `<span class="price">${cop(price)}</span><button class="add" ${action} ${disabled ? 'disabled' : ''}>${label || 'Agregar'}</button>`}</div>
+    <div class="photo">${img ? `<img src="${img}" alt="${esc(name)}" loading="lazy">` : `<div class="emoji">${emoji}</div>`}${label ? `<span class="label ${hot ? 'hot' : ''}">${label}</span>` : ''}</div>
+    <div class="body">${kicker ? `<span class="kicker">${kicker}</span>` : ''}<h3>${name}</h3>
+      ${ings ? `<ul class="ings">${ings.map(i => `<li>${i}</li>`).join('')}</ul>` : `<p style="color:var(--muted);font-size:.9rem">${desc}</p>`}
+      <div class="row">${soon ? '<span class="soon">🔜 Muy pronto</span>' : `<span class="price num">${cop(price)}</span><button class="add" ${action} ${ok ? '' : 'disabled'}>${ok ? 'Agregar' : 'Agotado'}</button>`}</div>
     </div></article>`;
 }
 function renderMenu(){
-  $('tabs').innerHTML = TABS.map(([id, t]) => `<button role="tab" aria-selected="${id === tab}" data-tab="${id}">${t}</button>`).join('');
+  $('tabs').innerHTML = TABS.map(([id, t, s]) => `<button role="tab" aria-selected="${id === tab}" data-tab="${id}"><small>${s}</small>${t}</button>`).join('');
   let html = '';
-  if (tab === 'sandwiches') html = Object.entries(SANDWICHES).map(([id, s]) => card({ ...s, price:P.sandwich, action:`data-sandwich="${id}"`, disabled:!fits({ cerdo:1 }), label: fits({ cerdo:1 }) ? 'Agregar' : 'Agotado' })).join('');
-  if (tab === 'tacos') html = card({ img:'img/nuevo/tacos.webp', tag:'Nuevo', name:'Orden de tacos', desc:'3 tacos de bondiola en tortilla de maíz: 2 al pastor (glaseado de piña, piña asada, cebolla y cilantro) y 1 picante (Llama Picante y jalapeño). Limón aparte.', price:P.tacos, action:'data-tacos="1"', disabled:!fits({ cerdo:1 }), label: fits({ cerdo:1 }) ? 'Agregar' : 'Agotado' });
-  if (tab === 'picadas') html = card({ img:'img/nuevo/picada.webp', tag:'La estrella', hot:true, name:'La Pigcada', desc:'La picada de la casa: papa corrugada, bondiola dorada, chorizo, queso fundido, Salsa Llama, pico de gallo y limón. Para 2 o para 4.', soon:CONFIG.PICADA_SOON || !CONFIG.PICADA_PRICE, price:CONFIG.PICADA_PRICE });
-  if (tab === 'extras') html = card({ img:'img/nuevo/papas.webp', name:'Papas corrugadas', desc:'150 g de papa corrugada, crocante y caliente.', price:P.papas, action:'data-extra="papas"', disabled:!fits({ papas:1 }), label: fits({ papas:1 }) ? 'Agregar' : 'Agotado' })
-                          + card({ img:'img/nuevo/gaseosa.webp', name:'Coca-Cola', desc:'Bien fría, para acompañar.', price:P.coca, action:'data-extra="coca"', disabled:!fits({ coca:1 }), label: fits({ coca:1 }) ? 'Agregar' : 'Agotado' });
+  if (tab === 'sandwiches') html = Object.entries(SANDWICHES).map(([id, s]) => card({ ...s, price:P.sandwich, action:`data-sandwich="${id}"`, ok:fits({ cerdo:1 }) })).join('');
+  if (tab === 'tacos') html = card({ emoji:'🌮🌮🌮', label:'Nuevo', hot:true, kicker:'3 tacos de bondiola', name:'Orden de tacos', ings:['🌮 2 al pastor', '🍍 Glaseado y piña asada', '🌶️ 1 picante', '🔥 Llama Picante y jalapeño', '🧅 Cebolla y cilantro', '🍋 Limón aparte'], price:P.tacos, action:'data-tacos="1"', ok:fits({ cerdo:1 }) });
+  if (tab === 'picadas') html = card({ img:'img/papas-gringa.webp', label:'La estrella', hot:true, kicker:'Para 2 o para 4', name:'La Pigcada', ings:['🍟 Papa corrugada', '🐖 Bondiola dorada', '🌭 Chorizo', '🧀 Queso fundido', '🦙 Salsa Llama', '🍅 Pico de gallo y limón'], soon:CONFIG.PICADA_SOON || !CONFIG.PICADA_PRICE, price:CONFIG.PICADA_PRICE });
+  if (tab === 'extras') html = card({ emoji:'🍟', kicker:'Para acompañar', name:'Papas corrugadas', desc:'150 g de papa corrugada, crocante y caliente.', price:P.papas, action:'data-extra="papas"', ok:fits({ papas:1 }) })
+                          + card({ emoji:'🥤', kicker:'Bien fría', name:'Coca-Cola', desc:'La compañera perfecta de tu sándwich.', price:P.coca, action:'data-extra="coca"', ok:fits({ coca:1 }) });
   $('menu-grid').innerHTML = html;
 }
 function renderHeader(){
   const st = storeState();
-  $('status').textContent = st.label;
-  $('status').className = 'status ' + (st.open ? 'open' : 'closed');
+  $('status-title').textContent = st.label; $('status-sub').textContent = st.sub || '';
+  $('status-card').classList.toggle('open', st.open);
   const n = count();
   $('cart-n').textContent = n;
   $('float-cart').classList.toggle('hidden', n === 0);
-  $('float-n').textContent = `Ver mi pedido (${n})`;
+  $('float-n').textContent = `🛒 Ver mi pedido (${n})`;
   $('float-total').textContent = cop(total());
-  if (st.notice) { $('notice-bar').textContent = st.notice.title + ' · ' + st.notice.text; $('notice-bar').classList.remove('hidden'); }
+  if (st.notice) { $('notice-bar').textContent = st.notice.title.toUpperCase() + ' · ' + st.notice.text; $('notice-bar').classList.remove('hidden'); }
   else $('notice-bar').classList.add('hidden');
 }
 function renderCart(){
   const lines = $('cart-lines');
   if (!cart.length) {
-    lines.innerHTML = `<div class="empty"><img src="img/nuevo/llama-sola.webp" alt="">Tu pedido está vacío.<br>Empieza por un combo 😋</div>`;
+    lines.innerHTML = `<div class="empty"><img src="img/oso-cara.jpg" alt="">Tu pedido está vacío.<br>Empieza por un combo 😋</div>`;
     $('cart-extra').classList.add('hidden'); return;
   }
   $('cart-extra').classList.remove('hidden');
   lines.innerHTML = cart.map(l => `<div class="line">
       <div class="info"><b>${esc(lineTitle(l))}</b><small>${esc(lineDetail(l))}</small></div>
-      <div class="right"><span class="price">${cop(unitPrice(l) * l.qty)}</span>
-        <div class="qty"><button data-dec="${l.id}" aria-label="Quitar uno">−</button><span>${l.qty}</span><button data-inc="${l.id}" aria-label="Agregar uno">+</button></div></div>
+      <div class="right"><span class="num">${cop(unitPrice(l) * l.qty)}</span>
+        <div class="qty"><button data-dec="${l.id}" aria-label="Quitar uno">−</button><span class="num">${l.qty}</span><button data-inc="${l.id}" aria-label="Agregar uno">+</button></div></div>
     </div>`).join('');
   const t = total(), free = CONFIG.FREE_DELIVERY_FROM;
-  $('ship-text').textContent = t >= free ? '🎉 ¡Tu domicilio es GRATIS!' : `Te faltan ${cop(free - t)} para domicilio gratis`;
+  $('ship-text').textContent = t >= free ? '🎉 ¡Tu domicilio es GRATIS!' : `🛵 Te faltan ${cop(free - t)} para domicilio gratis`;
   $('ship-bar').style.width = Math.min(100, t / free * 100) + '%';
   $('cart-total').textContent = cop(t);
-  // Sugerencias para subir el pedido
   const sug = [];
   const plain = cart.find(l => l.kind === 'sandwich' && !l.combo);
   if (plain && fits({ papas:1, coca:1 })) sug.push(`<button data-upgrade="${plain.id}">⭐ Haz combo tu ${esc(SANDWICHES[plain.ref].name)} +${cop(CONFIG.COMBOS.llama - P.sandwich)}</button>`);
@@ -567,7 +613,7 @@ function renderCart(){
   if (tacoPlain && fits({ coca:1 })) sug.push(`<button data-upgrade-taco="${tacoPlain.id}">🥤 Tacos + Coca-Cola +${cop(CONFIG.COMBOS.taquero - P.tacos)}</button>`);
   const hasPapas = cart.some(l => l.ref === 'papas' || l.combo || (l.kind === 'combo' && COMBOS[l.ref].stock.papas));
   if (!hasPapas && fits({ papas:1 })) sug.push(`<button data-quick="papas">🍟 Papas +${cop(P.papas)}</button>`);
-  if (!cart.some(l => l.kind === 'tacos' || l.ref === 'taquero') && fits({ cerdo:1 })) sug.push(`<button data-quick="tacos">🌮 Orden de tacos +${cop(P.tacos)}</button>`);
+  if (!cart.some(l => l.kind === 'tacos') && fits({ cerdo:1 })) sug.push(`<button data-quick="tacos">🌮 Orden de tacos +${cop(P.tacos)}</button>`);
   $('suggest').innerHTML = sug.join('');
 }
 function renderAll(){ renderHeader(); renderCombos(); renderMenu(); if (!$('ov-cart').classList.contains('hidden')) renderCart(); }
@@ -580,21 +626,23 @@ function openItem(spec){
   renderItem(); show('ov-item');
 }
 function renderItem(){
-  const d = draft; let title = '', desc = '', opts = '';
-  const flavorPicker = (i) => `<div class="opt-group"><b>${d.flavorsNeeded > 1 ? `Sándwich ${i + 1}` : 'Elige tu sándwich'}</b>` +
-    Object.entries(SANDWICHES).map(([id, s]) => `<label class="opt"><input type="radio" name="fl${i}" value="${id}" ${d.flavors[i] === id ? 'checked' : ''} data-flavor="${i}"><span>${s.name}</span></label>`).join('') + '</div>';
+  const d = draft; let title = '', desc = '', opts = '', img = '';
+  const flavorPicker = i => `<div class="opt-group"><b>${d.flavorsNeeded > 1 ? `Sándwich ${i + 1}` : 'Elige tu sándwich'}</b>` +
+    Object.entries(SANDWICHES).map(([id, s]) => `<label class="opt"><input type="radio" name="fl${i}" value="${id}" ${d.flavors[i] === id ? 'checked' : ''} data-flavor="${i}"><span>${s.name}</span><small>${s.kicker}</small></label>`).join('') + '</div>';
   if (d.kind === 'sandwich') {
-    const s = SANDWICHES[d.ref]; title = s.name; desc = s.desc;
-    opts += `<div class="opt-group"><label class="opt upsell"><input type="checkbox" id="o-combo" ${d.combo ? 'checked' : ''} ${fits({ papas:1, coca:1 }, d.qty) ? '' : 'disabled'}><span><strong>Hazlo Combo Llama</strong><br>+ papas corrugadas + Coca-Cola por solo ${cop(CONFIG.COMBOS.llama - P.sandwich)} más</span><small>Ahorras ${cop(COMBOS.llama.regular - CONFIG.COMBOS.llama)}</small></label></div>`;
+    const s = SANDWICHES[d.ref]; title = s.name; desc = s.ings.map(x => x.replace(/^\S+\s/, '')).join(' · '); img = s.img;
+    opts += `<div class="opt-group"><label class="opt upsell"><input type="checkbox" id="o-combo" ${d.combo ? 'checked' : ''} ${fits({ papas:1, coca:1 }, d.qty) ? '' : 'disabled'}><span><strong>⭐ Hazlo Combo Llama</strong><br>+ papas corrugadas + Coca-Cola por solo ${cop(CONFIG.COMBOS.llama - P.sandwich)} más</span><small>Ahorras ${cop(COMBOS.llama.regular - CONFIG.COMBOS.llama)}</small></label></div>`;
     opts += `<div class="opt-group"><b>Adicionales</b>` + Object.entries(ADDONS).map(([id, a]) => `<label class="opt"><input type="checkbox" data-addon="${id}" ${d.addons.includes(id) ? 'checked' : ''}><span>${a}</span><small>+${cop(P.addon)}</small></label>`).join('') + '</div>';
   } else if (d.kind === 'tacos') {
-    title = 'Orden de tacos'; desc = '3 tacos de bondiola: 2 al pastor y 1 picante. Limón aparte.';
-    opts += `<div class="opt-group"><label class="opt upsell"><input type="checkbox" id="o-coca" ${d.coca ? 'checked' : ''} ${fits({ coca:1 }, d.qty) ? '' : 'disabled'}><span><strong>Hazlo Combo Taquero</strong><br>+ Coca-Cola por solo ${cop(CONFIG.COMBOS.taquero - P.tacos)} más</span></label></div>`;
+    title = d.coca ? 'Combo Taquero' : 'Orden de tacos'; desc = '3 tacos de bondiola: 2 al pastor y 1 picante. Limón aparte.';
+    opts += `<div class="opt-group"><label class="opt upsell"><input type="checkbox" id="o-coca" ${d.coca ? 'checked' : ''} ${fits({ coca:1 }, d.qty) ? '' : 'disabled'}><span><strong>⭐ Hazlo Combo Taquero</strong><br>+ Coca-Cola por solo ${cop(CONFIG.COMBOS.taquero - P.tacos)} más</span></label></div>`;
   } else if (d.kind === 'combo') {
-    const c = COMBOS[d.ref]; title = c.name; desc = c.desc;
+    const c = COMBOS[d.ref]; title = c.name; desc = c.desc; img = c.img || '';
     d.flavorsNeeded = c.flavors;
     for (let i = 0; i < c.flavors; i++) opts += flavorPicker(i);
   }
+  $('item-photo').innerHTML = img ? `<img src="${img}" alt="">` : '';
+  $('item-photo').classList.toggle('hidden', !img);
   $('item-title').textContent = title; $('item-desc').textContent = desc; $('item-opts').innerHTML = opts;
   updateItemPrice();
 }
@@ -608,14 +656,14 @@ function updateItemPrice(){
 $('item-opts').addEventListener('change', e => {
   const t = e.target;
   if (t.id === 'o-combo') draft.combo = t.checked;
-  if (t.id === 'o-coca') draft.coca = t.checked;
+  if (t.id === 'o-coca') { draft.coca = t.checked; $('item-title').textContent = t.checked ? 'Combo Taquero' : 'Orden de tacos'; }
   if (t.dataset.addon) draft.addons = t.checked ? [...draft.addons, t.dataset.addon] : draft.addons.filter(a => a !== t.dataset.addon);
   if (t.dataset.flavor !== undefined) draft.flavors[+t.dataset.flavor] = t.value;
   updateItemPrice();
 });
 $('q-minus').onclick = () => { draft.qty = Math.max(1, draft.qty - 1); $('q-n').textContent = draft.qty; updateItemPrice(); };
 $('q-plus').onclick = () => { if (fits(lineStock(draftLine()), draft.qty + 1)) { draft.qty++; $('q-n').textContent = draft.qty; updateItemPrice(); } else toast('No tenemos más por hoy'); };
-$('item-add').onclick = () => { addLine(draftLine()); hide('ov-item'); toast('Agregado a tu pedido ✓'); };
+$('item-add').onclick = () => { addLine(draftLine()); hide('ov-item'); toast('¡Agregado a tu pedido! ✓'); };
 
 /* ---------- Clics generales ---------- */
 document.addEventListener('click', e => {
@@ -625,7 +673,7 @@ document.addEventListener('click', e => {
   if (t.dataset.sandwich) return openItem({ kind:'sandwich', ref:t.dataset.sandwich });
   if (t.dataset.tacos) return openItem({ kind:'tacos', ref:'tacos' });
   if (t.dataset.combo) { if (t.dataset.combo === 'taquero') return openItem({ kind:'tacos', ref:'tacos', coca:true }); return openItem({ kind:'combo', ref:t.dataset.combo }); }
-  if (t.dataset.extra) { addLine({ kind:'extra', ref:t.dataset.extra, qty:1 }); toast('Agregado a tu pedido ✓'); return; }
+  if (t.dataset.extra) { addLine({ kind:'extra', ref:t.dataset.extra, qty:1 }); toast('¡Agregado a tu pedido! ✓'); return; }
   if (t.dataset.inc || t.dataset.dec) {
     const l = cart.find(x => x.id === (t.dataset.inc || t.dataset.dec)); if (!l) return;
     if (t.dataset.inc) { if (!fits(lineStock(l))) return toast('No tenemos más por hoy'); l.qty++; } else l.qty--;
@@ -640,7 +688,7 @@ $('open-cart').onclick = $('float-open').onclick = () => { stepTo('cart'); rende
 document.querySelectorAll('.overlay').forEach(o => o.addEventListener('click', e => { if (e.target === o) hide(o.id); }));
 document.addEventListener('keydown', e => { if (e.key === 'Escape') document.querySelectorAll('.overlay:not(.hidden)').forEach(o => hide(o.id)); });
 
-function show(id){ $(id).classList.remove('hidden'); document.body.style.overflow = 'hidden'; const f = $(id).querySelector('button, input'); if (f) setTimeout(() => f.focus({ preventScroll:true }), 50); }
+function show(id){ $(id).classList.remove('hidden'); document.body.style.overflow = 'hidden'; const f = $(id).querySelector('.x, button, input'); if (f) setTimeout(() => f.focus({ preventScroll:true }), 50); }
 function hide(id){ $(id).classList.add('hidden'); if (!document.querySelector('.overlay:not(.hidden)')) document.body.style.overflow = ''; }
 let toastT; function toast(msg){ const t = $('toast'); t.textContent = msg; t.classList.remove('hidden'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.add('hidden'), 1800); }
 
@@ -648,7 +696,7 @@ let toastT; function toast(msg){ const t = $('toast'); t.textContent = msg; t.cl
 function stepTo(s){ ['cart', 'form', 'done'].forEach(x => $('step-' + x).classList.toggle('hidden', x !== s)); }
 $('go-form').onclick = () => {
   const st = storeState();
-  if (!st.open) { toast(st.label + ': todavía no recibimos pedidos'); return; }
+  if (!st.open) { toast(st.label + ' · aún no recibimos pedidos'); return; }
   try { const d = JSON.parse(localStorage.getItem('carnitas_cliente') || '{}'); ['name', 'phone', 'address'].forEach(k => { if (d[k] && !$('f-' + k).value) $('f-' + k).value = d[k]; }); } catch (e) {}
   stepTo('form'); $('f-name').focus();
 };
@@ -663,9 +711,9 @@ function waLink(msg){ return `https://wa.me/${CONFIG.WHATSAPP_NUMBER}?text=${enc
 
 $('step-form').addEventListener('submit', async e => {
   e.preventDefault();
-  const name = $('f-name').value.trim(), phoneRaw = $('f-phone').value.replace(/\D/g, ''), address = $('f-address').value.trim(), notes = $('f-notes').value.trim();
+  const name = $('f-name').value.trim(), address = $('f-address').value.trim(), notes = $('f-notes').value.trim();
+  const phone = $('f-phone').value.replace(/\D/g, '').replace(/^57(?=3\d{9}$)/, '');
   const pay = document.querySelector('input[name="pay"]:checked').value;
-  const phone = phoneRaw.replace(/^57/, '');
   if (!name || !address) return $('form-err').textContent = 'Escribe tu nombre y la dirección con el barrio.';
   if (!/^3\d{9}$/.test(phone)) return $('form-err').textContent = 'Escribe un celular de 10 dígitos (empieza por 3).';
   if (!cart.length) return stepTo('cart');
@@ -675,8 +723,8 @@ $('step-form').addEventListener('submit', async e => {
   const code = newCode(), t = total();
   if (LIVE) {
     const ok = await reserveStock(needOf(cart));
-    if (!ok) { $('send').disabled = false; $('send').textContent = 'Enviar por WhatsApp'; renderAll(); stepTo('cart'); renderCart(); return toast('Se acabó algo de tu pedido. Revísalo, por favor.'); }
-    const lines = cart.map(l => ({ product:lineTitle(l), qty:l.qty, unit:unitPrice(l), drink:!!(l.combo || l.coca || l.ref === 'coca' || (l.kind === 'combo' && COMBOS[l.ref].stock.coca)), addons:(l.addons || []).map(a => ADDONS[a]), protein:'', label:[lineTitle(l), lineDetail(l)].filter(Boolean).join(' · ') }));
+    if (!ok) { $('send').disabled = false; $('send').textContent = 'ENVIAR POR WHATSAPP'; renderAll(); stepTo('cart'); renderCart(); return toast('Se acabó algo de tu pedido. Revísalo, por favor.'); }
+    const lines = cart.map(l => ({ product:lineTitle(l), qty:l.qty, unit:unitPrice(l), drink:!!(l.combo || l.coca || l.ref === 'coca' || (l.kind === 'combo' && COMBOS[l.ref].stock.coca)), addons:(l.addons || []).map(plainAddon), protein:'', label:[lineTitle(l), lineDetail(l)].filter(Boolean).join(' · ') }));
     const order = { ts:Date.now(), status:'pendiente', total:t, code, name:name.slice(0, 80), phone, address:address.slice(0, 200), pay, notes:notes.slice(0, 400), lines };
     fetch(CONFIG.DB_URL + '/orders.json', { method:'POST', body:JSON.stringify(order) }).catch(() => {});
   }
@@ -690,7 +738,7 @@ $('step-form').addEventListener('submit', async e => {
   const link = waLink(msg);
   $('done-code').textContent = '#' + code; $('done-wa').href = link;
   cart = []; save(); renderAll(); stepTo('done');
-  $('send').disabled = false; $('send').textContent = 'Enviar por WhatsApp';
+  $('send').disabled = false; $('send').textContent = 'ENVIAR POR WHATSAPP';
   window.location.href = link;
 });
 
@@ -698,7 +746,7 @@ $('step-form').addEventListener('submit', async e => {
 (function init(){
   if (!LIVE) $('preview-bar').classList.remove('hidden');
   $('wa-text').textContent = '+57 ' + CONFIG.WHATSAPP_NUMBER.slice(2).replace(/(\d{3})(\d{3})(\d{4})/, '$1 $2 $3');
-  $('stamp-price').textContent = cop(P.sandwich);
+  $('sticker-price').textContent = cop(Math.min(...Object.values(CONFIG.COMBOS)));
   renderAll(); loadStock();
   const st = storeState();
   if (st.notice) {
