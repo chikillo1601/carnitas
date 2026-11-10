@@ -7,7 +7,7 @@
 <meta name="description" content="Carnitas: sándwiches, tacos y picadas de bondiola asada lento con Salsa Llama. Pide a domicilio en Sogamoso por WhatsApp. Barriga llena, corazón contento.">
 <meta name="theme-color" content="#0C0B0A">
 <meta property="og:title" content="Carnitas · Barriga llena, corazón contento">
-<meta property="og:description" content="Sándwiches, tacos y picadas de bondiola. Combos desde $18.900. Pide en Sogamoso por WhatsApp.">
+<meta property="og:description" content="Sándwiches, tacos y picadas de bondiola asada lento. Pide en Sogamoso por WhatsApp.">
 <meta property="og:image" content="https://carnitas.online/img/oso-hero.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -110,25 +110,6 @@
   .sec-title p{ margin:.6rem auto 0; max-width:46ch; font-weight:600 }
 
   /* Combos (fondo amarillo, como el Piso 2) */
-  .combos-sec{ background:radial-gradient(80% 60% at 50% 0%, #ffd75a, var(--yellow) 60%, #ffb800); color:var(--ink) }
-  .combos-sec .sec-title p{ color:#3c352b }
-  .combos{ display:grid; grid-template-columns:1fr; gap:1.2rem }
-  @media (min-width:780px){ .combos{ grid-template-columns:repeat(3, 1fr) } }
-  .combo{ position:relative; background:var(--white); border:3px solid var(--ink); border-radius:24px; overflow:hidden; display:flex; flex-direction:column; box-shadow:8px 8px 0 var(--ink) }
-  .combo .ribbon{ position:absolute; top:12px; left:12px; z-index:2; background:var(--red); color:#fff; font-weight:800; font-size:.78rem; padding:.28rem .75rem; border-radius:999px; box-shadow:0 6px 14px -6px rgba(0,0,0,.6) }
-  .combo .photo{ position:relative; height:190px; background:#000; overflow:hidden }
-  .combo .photo img{ width:100%; height:100%; object-fit:cover; object-position:30% 50% }
-  .combo .photo img + img{ position:absolute; right:0; top:0; width:50%; border-left:3px solid var(--ink) }
-  .combo .plus{ position:absolute; right:10px; bottom:10px; display:flex; gap:.35rem }
-  .combo .plus span{ background:var(--yellow); color:var(--ink); border:2px solid var(--ink); border-radius:999px; font-weight:800; font-size:.8rem; padding:.2rem .6rem }
-  .combo .body{ padding:1rem 1.1rem 1.15rem; display:flex; flex-direction:column; gap:.4rem; flex:1 }
-  .combo h3{ font-weight:900; font-size:1.35rem; line-height:1.1 }
-  .combo p{ color:var(--ink-soft); font-size:.93rem; font-weight:500 }
-  .combo .row{ display:flex; align-items:end; justify-content:space-between; gap:.6rem; margin-top:auto; padding-top:.5rem }
-  .combo .old{ text-decoration:line-through; color:#8d8578; font-weight:700; font-size:.9rem }
-  .combo .price{ font-weight:900; font-size:1.7rem; line-height:1 }
-  .combo .save{ display:inline-block; margin-top:.3rem; background:#e7f6ec; color:var(--green); font-weight:800; font-size:.78rem; border-radius:999px; padding:.15rem .55rem }
-  .combo .btn{ min-height:48px; padding:0 1.1rem; font-size:.95rem }
 
   /* Menú */
   .tabs{ display:flex; gap:.6rem; overflow-x:auto; padding:.2rem .1rem .6rem; margin:0 0 1.2rem; scrollbar-width:none; justify-content:flex-start }
@@ -231,7 +212,7 @@
   .empty{ text-align:center; color:var(--ink-soft); padding:1.4rem 0; font-weight:600 }
   .empty img{ width:92px; height:92px; border-radius:50%; object-fit:cover; margin:0 auto .7rem; border:3px solid var(--yellow) }
   /* Las fotos traen rótulos al lado derecho: se acercan un poco para dejarlos fuera del recuadro. */
-  .card .photo img, .combo .photo img, .sheet-photo img{ transform:scale(1.35); transform-origin:18% 50% }
+  .card .photo img, .sheet-photo img{ transform:scale(1.35); transform-origin:18% 50% }
   .card .photo img[src*="papas"]{ transform:none }
   .toast{ position:fixed; left:50%; bottom:96px; transform:translateX(-50%); background:var(--yellow); color:var(--ink); padding:.7rem 1.1rem; border-radius:999px; z-index:90; font-weight:800; box-shadow:0 10px 24px rgba(0,0,0,.45); white-space:nowrap }
 </style>
@@ -244,7 +225,7 @@
 <header class="topbar">
   <div class="container">
     <a class="logo" href="#inicio" aria-label="Carnitas, inicio"><img src="img/oso-cara.jpg" alt="">CARNITAS<span>.</span></a>
-    <nav class="topnav" aria-label="Secciones"><a href="#combos">🔥 Combos</a><a href="#menu">🥖 Menú</a><a href="#domicilio">🛵 Domicilio</a></nav>
+    <nav class="topnav" aria-label="Secciones"><a href="#menu">🥖 Menú</a><a href="#domicilio">🛵 Domicilio</a></nav>
     <button class="cart-btn" id="open-cart" aria-label="Ver mi pedido">🛒 <span class="n num" id="cart-n">0</span></button>
   </div>
 </header>
@@ -257,28 +238,17 @@
         <h1>Barriga llena, <em>corazón contento.</em></h1>
         <p class="hero-copy">Bondiola asada lento, 150 g en cada sándwich y nuestra Salsa Llama de la casa. Pide en 1 minuto y te lo llevamos en Sogamoso.</p>
         <div class="status-card" id="status-card"><div><span id="status-title">…</span><small id="status-sub"></small></div></div>
-        <a class="btn btn-primary hero-cta" href="#combos">🔥 VER COMBOS Y PEDIR</a>
+        <a class="btn btn-primary hero-cta" href="#menu">🔥 VER EL MENÚ Y PEDIR</a>
         <ul class="trust"><li>🔥 150 g de bondiola</li><li>🦙 Salsa Llama</li><li>🛵 Domicilio gratis desde $50.000</li></ul>
       </div>
       <div class="hero-photo">
         <img src="img/oso-hero.jpg" alt="El oso de Carnitas entregando una caja de Carnitas" width="655" height="663">
         <div class="bear-bubble">¿Hambre? Yo te lo llevo 🛵</div>
-        <div class="price-sticker"><small>COMBOS DESDE</small><b class="num" id="sticker-price">$18.900</b></div>
+        <div class="price-sticker"><small>SÁNDWICH</small><b class="num" id="sticker-price">$16.900</b></div>
       </div>
     </div>
   </section>
 
-  <div class="hazard" aria-hidden="true"></div>
-  <section class="sec combos-sec" id="combos">
-    <div class="container">
-      <div class="sec-title">
-        <span class="tag">🔥 COMBOS</span>
-        <h2>Pide más, <em>paga menos</em></h2>
-        <p>El sándwich que te gusta con papas y Coca-Cola, por menos que pidiendo todo por separado.</p>
-      </div>
-      <div class="combos" id="combos-list"></div>
-    </div>
-  </section>
   <div class="hazard" aria-hidden="true"></div>
 
   <section class="sec" id="menu">
@@ -412,7 +382,6 @@ const CONFIG = {
 
   // Precios (COP).
   PRICES: { sandwich: 16900, tacos: 15900, papas: 6900, coca: 4000, addon: 3000 },
-  COMBOS: { llama: 24900, taquero: 18900, parche: 49900 },
   FREE_DELIVERY_FROM: 50000,   // domicilio gratis desde este total
   PICADA_SOON: true,           // La Pigcada se ve como "Muy pronto" hasta tener precio
   PICADA_PRICE: 0,
@@ -439,11 +408,7 @@ const SANDWICHES = {
             ings:['🥖 Pan brioche tostado', '🐖 150 g de bondiola', '🧀 Queso fundido', '🥑 Llama Azteca', '🍅 Pico de gallo aparte'] },
 };
 const ADDONS = { queso:'🧀 Queso extra', jalapenos:'🌶️ Jalapeños', pepinillos:'🥒 Pepinillos', picante:'🔥 Salsa extra picante' };
-const COMBOS = {
-  llama:   { name:'Combo Llama',   img:'img/texas.webp', ribbon:'⭐ El más completo', desc:'Tu sándwich favorito + papas corrugadas + Coca-Cola.', plus:['🍟 Papas', '🥤 Coca-Cola'], regular:P.sandwich + P.papas + P.coca, flavors:1, stock:{ cerdo:1, papas:1, coca:1 } },
-  taquero: { name:'Combo Taquero', emoji:'🌮🌮🌮', ribbon:'Nuevo', desc:'Orden de 3 tacos (2 al pastor + 1 picante) + Coca-Cola.', plus:['🥤 Coca-Cola'], regular:P.tacos + P.coca, flavors:0, stock:{ cerdo:1, coca:1 } },
-  parche:  { name:'Combo Parche',  img:'img/cheese-spicy.jpg', img2:'img/azteca.webp', ribbon:'👥 Para 2', desc:'2 sándwiches a elección + papas para 2 + 2 Coca-Cola.', plus:['🍟 x2', '🥤 x2'], regular:2 * (P.sandwich + P.papas + P.coca), flavors:2, stock:{ cerdo:2, papas:2, coca:2 } },
-};
+const COMBOS = {}; // sin combos por decisión del fundador (9 nov)
 const TABS = [['sandwiches','Sándwiches','PISO 1'], ['tacos','Tacos','NUEVO'], ['picadas','Picadas','LA ESTRELLA'], ['extras','Papas y bebidas','EXTRAS']];
 
 /* ---------- Estado ---------- */
@@ -451,7 +416,7 @@ let cart = [];            // { id, kind, ref, flavors:[], addons:[], combo:false
 let stock = { cerdo:null, papas:null, coca:null }; // null = sin límite
 let tab = 'sandwiches';
 const STORE = 'carnitas_cart_v2';
-try { cart = JSON.parse(localStorage.getItem(STORE) || '[]').filter(l => l && l.kind && l.qty > 0); } catch (e) { cart = []; }
+try { cart = JSON.parse(localStorage.getItem(STORE) || '[]').filter(l => l && l.kind && l.kind !== 'combo' && l.qty > 0).map(l => ({ ...l, combo:false, coca:false })); } catch (e) { cart = []; }
 const save = () => { try { localStorage.setItem(STORE, JSON.stringify(cart)); } catch (e) {} };
 
 /* ---------- Horario ---------- */
@@ -484,9 +449,7 @@ async function loadStock(){
   } catch (e) {}
 }
 function lineStock(l){
-  if (l.kind === 'combo') return COMBOS[l.ref].stock;
-  if (l.kind === 'sandwich') return { cerdo:1, papas:l.combo ? 1 : 0, coca:l.combo ? 1 : 0 };
-  if (l.kind === 'tacos') return { cerdo:1, coca:l.coca ? 1 : 0 };
+  if (l.kind === 'sandwich' || l.kind === 'tacos') return { cerdo:1 };
   if (l.ref === 'papas') return { papas:1 };
   if (l.ref === 'coca') return { coca:1 };
   return {};
@@ -515,23 +478,20 @@ async function reserveStock(need){
 
 /* ---------- Precios y etiquetas ---------- */
 function unitPrice(l){
-  if (l.kind === 'combo') return CONFIG.COMBOS[l.ref];
-  if (l.kind === 'sandwich') return (l.combo ? CONFIG.COMBOS.llama : P.sandwich) + l.addons.length * P.addon;
-  if (l.kind === 'tacos') return l.coca ? CONFIG.COMBOS.taquero : P.tacos;
+  if (l.kind === 'sandwich') return P.sandwich + l.addons.length * P.addon;
+  if (l.kind === 'tacos') return P.tacos;
   return P[l.ref];
 }
 function lineTitle(l){
-  if (l.kind === 'combo') return COMBOS[l.ref].name;
-  if (l.kind === 'sandwich') return l.combo ? 'Combo Llama' : SANDWICHES[l.ref].name;
-  if (l.kind === 'tacos') return l.coca ? 'Combo Taquero' : 'Orden de tacos';
+  if (l.kind === 'sandwich') return SANDWICHES[l.ref].name;
+  if (l.kind === 'tacos') return 'Orden de tacos';
   return l.ref === 'papas' ? 'Papas corrugadas' : 'Coca-Cola';
 }
 const plainAddon = a => ADDONS[a].replace(/^\S+\s/, '');
 function lineDetail(l){
   const parts = [];
-  if (l.kind === 'sandwich') { if (l.combo) parts.push(SANDWICHES[l.ref].name + ' + papas + Coca-Cola'); if (l.addons.length) parts.push('+ ' + l.addons.map(plainAddon).join(', ')); }
-  if (l.kind === 'combo' && l.flavors.length) parts.push(l.flavors.map(f => SANDWICHES[f].name).join(' + ') + (l.ref === 'parche' ? ' + papas para 2 + 2 Coca-Cola' : ' + papas + Coca-Cola'));
-  if (l.kind === 'tacos') parts.push('2 al pastor + 1 picante' + (l.coca ? ' + Coca-Cola' : ''));
+  if (l.kind === 'sandwich') { if (l.addons.length) parts.push('+ ' + l.addons.map(plainAddon).join(', ')); }
+  if (l.kind === 'tacos') parts.push('2 al pastor + 1 picante');
   return parts.join(' · ');
 }
 const lineKey = l => [l.kind, l.ref, (l.flavors || []).join('+'), (l.addons || []).join('+'), l.combo ? 'c' : '', l.coca ? 'k' : ''].join('|');
@@ -547,19 +507,6 @@ function addLine(l){
 }
 
 /* ---------- Pintar ---------- */
-function renderCombos(){
-  $('combos-list').innerHTML = Object.entries(COMBOS).map(([id, c]) => {
-    const price = CONFIG.COMBOS[id], ok = fits(c.stock);
-    const photo = c.img ? `<img src="${c.img}" alt="" loading="lazy">${c.img2 ? `<img src="${c.img2}" alt="" loading="lazy">` : ''}` : `<div style="height:100%;display:grid;place-items:center;font-size:4rem;background:radial-gradient(circle,#4a1d14,#120b08 70%)">${c.emoji}</div>`;
-    return `<article class="combo">
-      <span class="ribbon">${c.ribbon}</span>
-      <div class="photo">${photo}<div class="plus">${c.plus.map(x => `<span>+ ${x}</span>`).join('')}</div></div>
-      <div class="body"><h3>${c.name}</h3><p>${c.desc}</p>
-        <div class="row"><div><div class="old num">${cop(c.regular)}</div><div class="price num">${cop(price)}</div><span class="save">Ahorras ${cop(c.regular - price)}</span></div>
-        <button class="btn btn-primary" data-combo="${id}" ${ok ? '' : 'disabled'}>${ok ? 'LO QUIERO' : 'AGOTADO'}</button></div>
-      </div></article>`;
-  }).join('');
-}
 function card({ img, emoji, label, hot, kicker, name, ings, desc, price, action, soon, ok = true }){
   return `<article class="card">
     <div class="photo">${img ? `<img src="${img}" alt="${esc(name)}" loading="lazy">` : `<div class="emoji">${emoji}</div>`}${label ? `<span class="label ${hot ? 'hot' : ''}">${label}</span>` : ''}</div>
@@ -593,7 +540,7 @@ function renderHeader(){
 function renderCart(){
   const lines = $('cart-lines');
   if (!cart.length) {
-    lines.innerHTML = `<div class="empty"><img src="img/oso-cara.jpg" alt="">Tu pedido está vacío.<br>Empieza por un combo 😋</div>`;
+    lines.innerHTML = `<div class="empty"><img src="img/oso-cara.jpg" alt="">Tu pedido está vacío.<br>Empieza por un sándwich 😋</div>`;
     $('cart-extra').classList.add('hidden'); return;
   }
   $('cart-extra').classList.remove('hidden');
@@ -607,16 +554,13 @@ function renderCart(){
   $('ship-bar').style.width = Math.min(100, t / free * 100) + '%';
   $('cart-total').textContent = cop(t);
   const sug = [];
-  const plain = cart.find(l => l.kind === 'sandwich' && !l.combo);
-  if (plain && fits({ papas:1, coca:1 })) sug.push(`<button data-upgrade="${plain.id}">⭐ Haz combo tu ${esc(SANDWICHES[plain.ref].name)} +${cop(CONFIG.COMBOS.llama - P.sandwich)}</button>`);
-  const tacoPlain = cart.find(l => l.kind === 'tacos' && !l.coca);
-  if (tacoPlain && fits({ coca:1 })) sug.push(`<button data-upgrade-taco="${tacoPlain.id}">🥤 Tacos + Coca-Cola +${cop(CONFIG.COMBOS.taquero - P.tacos)}</button>`);
-  const hasPapas = cart.some(l => l.ref === 'papas' || l.combo || (l.kind === 'combo' && COMBOS[l.ref].stock.papas));
+  const hasPapas = cart.some(l => l.ref === 'papas');
   if (!hasPapas && fits({ papas:1 })) sug.push(`<button data-quick="papas">🍟 Papas +${cop(P.papas)}</button>`);
+  if (!cart.some(l => l.ref === 'coca') && fits({ coca:1 })) sug.push(`<button data-quick="coca">🥤 Coca-Cola +${cop(P.coca)}</button>`);
   if (!cart.some(l => l.kind === 'tacos') && fits({ cerdo:1 })) sug.push(`<button data-quick="tacos">🌮 Orden de tacos +${cop(P.tacos)}</button>`);
   $('suggest').innerHTML = sug.join('');
 }
-function renderAll(){ renderHeader(); renderCombos(); renderMenu(); if (!$('ov-cart').classList.contains('hidden')) renderCart(); }
+function renderAll(){ renderHeader(); renderMenu(); if (!$('ov-cart').classList.contains('hidden')) renderCart(); }
 
 /* ---------- Ventana de producto ---------- */
 let draft = null;
@@ -631,15 +575,9 @@ function renderItem(){
     Object.entries(SANDWICHES).map(([id, s]) => `<label class="opt"><input type="radio" name="fl${i}" value="${id}" ${d.flavors[i] === id ? 'checked' : ''} data-flavor="${i}"><span>${s.name}</span><small>${s.kicker}</small></label>`).join('') + '</div>';
   if (d.kind === 'sandwich') {
     const s = SANDWICHES[d.ref]; title = s.name; desc = s.ings.map(x => x.replace(/^\S+\s/, '')).join(' · '); img = s.img;
-    opts += `<div class="opt-group"><label class="opt upsell"><input type="checkbox" id="o-combo" ${d.combo ? 'checked' : ''} ${fits({ papas:1, coca:1 }, d.qty) ? '' : 'disabled'}><span><strong>⭐ Hazlo Combo Llama</strong><br>+ papas corrugadas + Coca-Cola por solo ${cop(CONFIG.COMBOS.llama - P.sandwich)} más</span><small>Ahorras ${cop(COMBOS.llama.regular - CONFIG.COMBOS.llama)}</small></label></div>`;
     opts += `<div class="opt-group"><b>Adicionales</b>` + Object.entries(ADDONS).map(([id, a]) => `<label class="opt"><input type="checkbox" data-addon="${id}" ${d.addons.includes(id) ? 'checked' : ''}><span>${a}</span><small>+${cop(P.addon)}</small></label>`).join('') + '</div>';
   } else if (d.kind === 'tacos') {
-    title = d.coca ? 'Combo Taquero' : 'Orden de tacos'; desc = '3 tacos de bondiola: 2 al pastor y 1 picante. Limón aparte.';
-    opts += `<div class="opt-group"><label class="opt upsell"><input type="checkbox" id="o-coca" ${d.coca ? 'checked' : ''} ${fits({ coca:1 }, d.qty) ? '' : 'disabled'}><span><strong>⭐ Hazlo Combo Taquero</strong><br>+ Coca-Cola por solo ${cop(CONFIG.COMBOS.taquero - P.tacos)} más</span></label></div>`;
-  } else if (d.kind === 'combo') {
-    const c = COMBOS[d.ref]; title = c.name; desc = c.desc; img = c.img || '';
-    d.flavorsNeeded = c.flavors;
-    for (let i = 0; i < c.flavors; i++) opts += flavorPicker(i);
+    title = 'Orden de tacos'; desc = '3 tacos de bondiola: 2 al pastor (glaseado de piña, piña asada, cebolla y cilantro) y 1 picante (Llama Picante y jalapeño). Limón aparte.';
   }
   $('item-photo').innerHTML = img ? `<img src="${img}" alt="">` : '';
   $('item-photo').classList.toggle('hidden', !img);
@@ -655,8 +593,6 @@ function updateItemPrice(){
 }
 $('item-opts').addEventListener('change', e => {
   const t = e.target;
-  if (t.id === 'o-combo') draft.combo = t.checked;
-  if (t.id === 'o-coca') { draft.coca = t.checked; $('item-title').textContent = t.checked ? 'Combo Taquero' : 'Orden de tacos'; }
   if (t.dataset.addon) draft.addons = t.checked ? [...draft.addons, t.dataset.addon] : draft.addons.filter(a => a !== t.dataset.addon);
   if (t.dataset.flavor !== undefined) draft.flavors[+t.dataset.flavor] = t.value;
   updateItemPrice();
@@ -672,16 +608,13 @@ document.addEventListener('click', e => {
   if (t.dataset.tab) { tab = t.dataset.tab; renderMenu(); return; }
   if (t.dataset.sandwich) return openItem({ kind:'sandwich', ref:t.dataset.sandwich });
   if (t.dataset.tacos) return openItem({ kind:'tacos', ref:'tacos' });
-  if (t.dataset.combo) { if (t.dataset.combo === 'taquero') return openItem({ kind:'tacos', ref:'tacos', coca:true }); return openItem({ kind:'combo', ref:t.dataset.combo }); }
   if (t.dataset.extra) { addLine({ kind:'extra', ref:t.dataset.extra, qty:1 }); toast('¡Agregado a tu pedido! ✓'); return; }
   if (t.dataset.inc || t.dataset.dec) {
     const l = cart.find(x => x.id === (t.dataset.inc || t.dataset.dec)); if (!l) return;
     if (t.dataset.inc) { if (!fits(lineStock(l))) return toast('No tenemos más por hoy'); l.qty++; } else l.qty--;
     cart = cart.filter(x => x.qty > 0); save(); renderAll(); renderCart(); return;
   }
-  if (t.dataset.upgrade) { const l = cart.find(x => x.id === t.dataset.upgrade); if (l) { const one = { ...l, qty:1, combo:true }; l.qty--; cart = cart.filter(x => x.qty > 0); addLine(one); renderCart(); toast('¡Ahora es Combo Llama! ⭐'); } return; }
-  if (t.dataset.upgradeTaco) { const l = cart.find(x => x.id === t.dataset.upgradeTaco); if (l) { const one = { ...l, qty:1, coca:true }; l.qty--; cart = cart.filter(x => x.qty > 0); addLine(one); renderCart(); } return; }
-  if (t.dataset.quick === 'papas') { addLine({ kind:'extra', ref:'papas', qty:1 }); renderCart(); return; }
+  if (t.dataset.quick === 'papas' || t.dataset.quick === 'coca') { addLine({ kind:'extra', ref:t.dataset.quick, qty:1 }); renderCart(); return; }
   if (t.dataset.quick === 'tacos') { addLine({ kind:'tacos', ref:'tacos', qty:1 }); renderCart(); return; }
 });
 $('open-cart').onclick = $('float-open').onclick = () => { stepTo('cart'); renderCart(); show('ov-cart'); };
@@ -724,7 +657,7 @@ $('step-form').addEventListener('submit', async e => {
   if (LIVE) {
     const ok = await reserveStock(needOf(cart));
     if (!ok) { $('send').disabled = false; $('send').textContent = 'ENVIAR POR WHATSAPP'; renderAll(); stepTo('cart'); renderCart(); return toast('Se acabó algo de tu pedido. Revísalo, por favor.'); }
-    const lines = cart.map(l => ({ product:lineTitle(l), qty:l.qty, unit:unitPrice(l), drink:!!(l.combo || l.coca || l.ref === 'coca' || (l.kind === 'combo' && COMBOS[l.ref].stock.coca)), addons:(l.addons || []).map(plainAddon), protein:'', label:[lineTitle(l), lineDetail(l)].filter(Boolean).join(' · ') }));
+    const lines = cart.map(l => ({ product:lineTitle(l), qty:l.qty, unit:unitPrice(l), drink:l.ref === 'coca', addons:(l.addons || []).map(plainAddon), protein:'', label:[lineTitle(l), lineDetail(l)].filter(Boolean).join(' · ') }));
     const order = { ts:Date.now(), status:'pendiente', total:t, code, name:name.slice(0, 80), phone, address:address.slice(0, 200), pay, notes:notes.slice(0, 400), lines };
     fetch(CONFIG.DB_URL + '/orders.json', { method:'POST', body:JSON.stringify(order) }).catch(() => {});
   }
@@ -746,7 +679,7 @@ $('step-form').addEventListener('submit', async e => {
 (function init(){
   if (!LIVE) $('preview-bar').classList.remove('hidden');
   $('wa-text').textContent = '+57 ' + CONFIG.WHATSAPP_NUMBER.slice(2).replace(/(\d{3})(\d{3})(\d{4})/, '$1 $2 $3');
-  $('sticker-price').textContent = cop(Math.min(...Object.values(CONFIG.COMBOS)));
+  $('sticker-price').textContent = cop(P.sandwich);
   renderAll(); loadStock();
   const st = storeState();
   if (st.notice) {
