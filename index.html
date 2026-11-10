@@ -485,6 +485,97 @@
     .papas-list{ grid-template-columns:repeat(auto-fit,minmax(0,360px)); justify-content:center; }
     .directory{ max-width:560px; }
   }
+
+  /* =====================================================================
+     CAPA 3D Y MOVIMIENTO (solo decoración: no toca pedidos, stock ni WhatsApp)
+     ===================================================================== */
+
+  /* ---------- Hero: ingredientes flotando en profundidad ---------- */
+  .hero-inner{ position:relative; z-index:2; }
+  .hero-fx{ position:absolute; inset:0; overflow:hidden; pointer-events:none; z-index:1; }
+  .hero-fx::before{
+    content:''; position:absolute; width:560px; height:560px; left:var(--gx,72%); top:var(--gy,28%);
+    transform:translate(-50%,-50%); background:radial-gradient(circle, rgba(255,199,44,.26), transparent 62%);
+    transition:left .35s ease-out, top .35s ease-out;
+  }
+  .fx{ position:absolute; left:var(--x); top:var(--y); font-size:var(--s,2.4rem); line-height:1; opacity:var(--o,.5); will-change:transform; filter:blur(var(--b,0px)) drop-shadow(0 12px 14px rgba(0,0,0,.55)); }
+  .fx > i{ display:block; font-style:normal; animation:fx-float var(--t,7s) ease-in-out infinite; animation-delay:var(--dl,0s); }
+  @keyframes fx-float{
+    0%,100%{ transform:translateY(0) rotate(var(--r0,-10deg)) rotateY(0deg); }
+    50%{ transform:translateY(-20px) rotate(var(--r1,12deg)) rotateY(180deg); }
+  }
+
+  /* Entrada del hero y título con volumen */
+  .hero h1, .hero .eyebrow, .hero-copy, .hero .countdown, .hero .steps{ animation:rise .9s cubic-bezier(.2,.8,.2,1) backwards; }
+  .hero .eyebrow{ animation-delay:.05s; }
+  .hero h1{ animation-name:rise-3d; animation-delay:.12s; transform-origin:left bottom; }
+  .hero-copy{ animation-delay:.3s; }
+  .hero .countdown{ animation-delay:.42s; }
+  .hero .steps{ animation-delay:.6s; }
+  @keyframes rise{ from{ opacity:0; transform:translateY(26px); } }
+  @keyframes rise-3d{ from{ opacity:0; transform:perspective(700px) rotateX(-55deg) translateY(34px); } }
+  .hero h1 em{
+    text-shadow:0 1px 0 #D99A00, 0 2px 0 #C58B00, 0 3px 0 #B07B00, 0 4px 0 #9A6B00, 0 5px 0 #855C00, 0 14px 22px rgba(0,0,0,.6);
+  }
+  .hero-photo{ transform-style:preserve-3d; animation:photo-in 1.2s cubic-bezier(.2,.8,.2,1) backwards; will-change:transform; }
+  @keyframes photo-in{ from{ opacity:0; transform:perspective(900px) rotateY(-24deg) scale(.92); } }
+  .hero-photo .bear-bubble{ translate:0 0 60px; }
+  .hero-photo .price-sticker{ translate:0 0 90px; }
+  .hero-cta{ position:relative; overflow:hidden; }
+  .hero-cta::after{
+    content:''; position:absolute; top:0; bottom:0; width:38%; left:-60%; transform:skewX(-20deg);
+    background:linear-gradient(100deg, transparent, rgba(255,255,255,.5), transparent); animation:cta-shine 3.4s ease-in-out infinite;
+  }
+  @keyframes cta-shine{ 0%,55%{ left:-60%; } 100%{ left:135%; } }
+
+  /* ---------- Cintas cruzadas ---------- */
+  .ribbons{ position:relative; height:112px; overflow:hidden; background:var(--black); }
+  .ribbon{ position:absolute; left:-5%; width:110%; overflow:hidden; white-space:nowrap; padding:.5rem 0; font-weight:900; font-size:.95rem; letter-spacing:.14em; text-transform:uppercase; box-shadow:0 12px 24px -12px rgba(0,0,0,.9); }
+  .ribbon.a{ top:14px; background:var(--yellow); color:var(--ink); transform:rotate(-2.2deg); }
+  .ribbon.b{ top:56px; background:var(--red); color:var(--white); transform:rotate(1.8deg); }
+  .ribbon-track{ display:inline-flex; gap:1.6rem; animation:ribbon-run 28s linear infinite; will-change:transform; }
+  .ribbon.b .ribbon-track{ animation-direction:reverse; animation-duration:34s; }
+  @keyframes ribbon-run{ to{ transform:translateX(-50%); } }
+
+  /* ---------- Carrusel 3D: gira y elige ---------- */
+  .showcase{ position:relative; padding:1.2rem 0 1.6rem; overflow:hidden; text-align:center; }
+  .showcase::before{ content:''; position:absolute; inset:0; background:radial-gradient(60% 55% at 50% 58%, rgba(218,41,28,.28), transparent 70%); pointer-events:none; }
+  .ring-stage{
+    position:relative; height:clamp(325px, 86vw, 365px); margin-top:.4rem; perspective:1050px; perspective-origin:50% 36%;
+    touch-action:pan-y; cursor:grab; user-select:none; -webkit-user-select:none;
+  }
+  .ring-stage.drag{ cursor:grabbing; }
+  .ring{ position:absolute; left:50%; top:18px; width:0; height:0; transform-style:preserve-3d; }
+  .ring-card{
+    position:absolute; top:0; left:calc(var(--cw,200px) / -2); width:var(--cw,200px); padding:0; display:block; text-align:left;
+    font:inherit; color:var(--white); background:var(--black-2); border:3px solid var(--yellow); border-radius:22px; overflow:hidden; cursor:pointer;
+    box-shadow:0 26px 40px -20px rgba(0,0,0,.95), 0 0 0 1px rgba(255,255,255,.06) inset; will-change:transform, opacity;
+  }
+  .ring-card img{ display:block; width:100%; aspect-ratio:1/1; object-fit:cover; object-position:50% 40%; pointer-events:none; background:#000; }
+  .ring-card .rc-body{ display:block; padding:.6rem .8rem .8rem; }
+  .ring-card .rc-tag{ display:block; color:var(--yellow); font-weight:800; font-size:.62rem; letter-spacing:.08em; text-transform:uppercase; }
+  .ring-card .rc-name{ display:block; margin-top:.1rem; font-weight:900; font-size:1.12rem; line-height:1.1; letter-spacing:-.015em; }
+  .ring-card .rc-foot{ display:flex; align-items:center; justify-content:space-between; gap:.4rem; margin-top:.45rem; font-weight:900; color:var(--yellow); font-size:1.05rem; }
+  .ring-card .rc-go{ background:var(--red); color:var(--white); border-radius:999px; font-size:.7rem; letter-spacing:.04em; padding:.32rem .7rem; white-space:nowrap; }
+  .ring-floor{ position:absolute; left:50%; bottom:4px; width:72%; max-width:440px; height:48px; transform:translateX(-50%); background:radial-gradient(ellipse, rgba(218,41,28,.6), transparent 70%); filter:blur(8px); pointer-events:none; }
+  .ring-hint{ margin-top:.2rem; font-size:.8rem; font-weight:700; color:var(--muted); letter-spacing:.04em; }
+
+  /* ---------- Aparición 3D al hacer scroll ---------- */
+  .rv{ opacity:0; transform:perspective(900px) translateY(46px) rotateX(16deg) scale(.96); transition:opacity .7s ease, transform .85s cubic-bezier(.2,.8,.2,1); transition-delay:var(--d,0s); }
+  .rv.in{ opacity:1; transform:none; }
+  @keyframes flash-card{ 0%,100%{ filter:none; } 30%{ filter:drop-shadow(0 0 22px rgba(255,199,44,.95)) brightness(1.12); } }
+  .flash{ animation:flash-card 1.4s ease 1; }
+
+  /* ---------- Tarjetas que se inclinan con el cursor (solo computador) ---------- */
+  @media (hover:hover) and (pointer:fine){
+    .item, .papa-card, .floor{ position:relative; transform:perspective(900px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)); transition:transform .14s ease-out, border-color .2s ease, box-shadow .15s ease; will-change:transform; }
+    .papa-card:hover{ transform:perspective(900px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) translate(-2px,-2px); }
+    .item::after, .papa-card::after, .floor::after{
+      content:''; position:absolute; inset:0; border-radius:inherit; pointer-events:none; opacity:0; transition:opacity .2s ease;
+      background:radial-gradient(260px circle at var(--mx,50%) var(--my,50%), rgba(255,255,255,.22), transparent 60%);
+    }
+    .item:hover::after, .papa-card:hover::after, .floor:hover::after{ opacity:1; }
+  }
 </style>
 </head>
 <body>
@@ -518,6 +609,16 @@
 
   <!-- ============ HERO ============ -->
   <section class="hero" id="inicio">
+    <div class="hero-fx" aria-hidden="true">
+      <span class="fx" data-d="42" style="--x:78%;--y:5%;--s:3.4rem;--o:.55;--t:8s"><i>🥪</i></span>
+      <span class="fx" data-d="22" style="--x:3%;--y:12%;--s:2.3rem;--o:.4;--b:1px;--t:6.5s;--dl:-2s"><i>🍟</i></span>
+      <span class="fx" data-d="30" style="--x:88%;--y:34%;--s:2.1rem;--o:.45;--b:1.5px;--t:7.5s;--dl:-4s"><i>🌶️</i></span>
+      <span class="fx" data-d="16" style="--x:2%;--y:44%;--s:2.6rem;--o:.3;--b:2px;--t:9s;--dl:-1s"><i>🥓</i></span>
+      <span class="fx" data-d="38" style="--x:90%;--y:64%;--s:2.9rem;--o:.5;--t:7s;--dl:-5s"><i>🧀</i></span>
+      <span class="fx" data-d="26" style="--x:5%;--y:78%;--s:3rem;--o:.4;--b:1px;--t:8.5s;--dl:-3s"><i>🔥</i></span>
+      <span class="fx" data-d="14" style="--x:76%;--y:88%;--s:2.2rem;--o:.3;--b:2px;--t:10s;--dl:-6s"><i>🥒</i></span>
+      <span class="fx" data-d="34" style="--x:48%;--y:94%;--s:2.4rem;--o:.35;--b:1px;--t:7s;--dl:-2.5s"><i>🍟</i></span>
+    </div>
     <div class="container hero-inner">
       <div class="hero-text">
         <span class="eyebrow">🥪 Sándwiches artesanales</span>
@@ -552,6 +653,24 @@
         <p class="bear-bubble" aria-hidden="true">👋 ¡Hola! ¿Qué se te antoja hoy?</p>
         <div class="price-sticker" aria-hidden="true"><small>DESDE</small><b id="sticker-price"></b></div>
       </div>
+    </div>
+  </section>
+
+  <!-- ============ CINTAS CRUZADAS (decoración) ============ -->
+  <div class="ribbons" aria-hidden="true">
+    <div class="ribbon a"><div class="ribbon-track" id="ribbon-a"></div></div>
+    <div class="ribbon b"><div class="ribbon-track" id="ribbon-b"></div></div>
+  </div>
+
+  <!-- ============ CARRUSEL 3D: gira y elige ============ -->
+  <section class="showcase" id="showcase" aria-labelledby="showcase-title" hidden>
+    <div class="container">
+      <h2 class="section-title" id="showcase-title">🔥 Gira y elige tu antojo</h2>
+      <p class="section-sub">Desliza para girar · toca el que quieras para pedirlo</p>
+    </div>
+    <div class="ring-stage" id="ring-stage">
+      <div class="ring" id="ring"></div>
+      <div class="ring-floor" aria-hidden="true"></div>
     </div>
   </section>
 
@@ -2149,6 +2268,229 @@
   $('opt-mix-info').textContent = '(máx. ' + CARNITAS_CONFIG.COMMUNITY_MAX + ')';
   $('opt-addon-price').textContent = '(+' + cop(CARNITAS_CONFIG.ADDON_PRICE) + ' cada uno)';
   $('opt-drink-yes').textContent = '🥤 Coca-Cola, +' + cop(CARNITAS_CONFIG.DRINK_PRICE);
+</script>
+
+<!-- ============ CAPA 3D Y MOVIMIENTO: solo decoración; si falla, la tienda sigue funcionando igual ============ -->
+<script>
+(function(){
+  'use strict';
+  const reduce = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+  const fine = !!(window.matchMedia && matchMedia('(hover:hover) and (pointer:fine)').matches);
+  const $$ = id => document.getElementById(id);
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  const norm = d => ((d + 540) % 360) - 180; // ángulo entre -180 y 180
+
+  /* ---------- Cintas cruzadas ---------- */
+  try {
+    const cfg = window.CARNITAS_CONFIG || CARNITAS_CONFIG;
+    const words = ['🔥 BARRIGA LLENA', 'CORAZÓN CONTENTO', '🥪 SÁNDWICHES ARTESANALES', '🛵 TE LO LLEVAMOS'];
+    if (cfg.SHOW_PAPAS) words.push('🍟 PISO 2 · PAPAS');
+    const group = list => list.map(w => '<span>' + w + '</span><span>✦</span>').join('');
+    const fill = list => group(list).repeat(4);
+    $$('ribbon-a').innerHTML = fill(words);
+    $$('ribbon-b').innerHTML = fill(words.slice().reverse());
+  } catch (e) {}
+
+  /* ---------- Carrusel 3D ---------- */
+  try {
+    const cfg = CARNITAS_CONFIG;
+    const cards = [];
+    Object.entries(SANDWICHES).filter(([, s]) => !s.custom || cfg.SHOW_CUSTOM).forEach(([id, s]) =>
+      cards.push({ id, kind: 'sand', name: s.name, tag: s.tag, img: s.img, alt: s.alt || s.name, price: cop(cfg.SANDWICH_PRICE) }));
+    if (cfg.SHOW_PAPAS && !cfg.PAPAS_SOON) {
+      Object.entries(PAPAS).filter(([id]) => !(cfg.HIDDEN_PAPAS || []).includes(id)).forEach(([id, p]) =>
+        cards.push({ id, kind: 'papa', name: p.name, tag: p.tag, img: p.img, alt: p.alt || p.name, price: 'Desde ' + cop(p.prices.P) }));
+    }
+    const stage = $$('ring-stage'), ring = $$('ring'), section = $$('showcase');
+    if (cards.length >= 3 && stage && ring && section) {
+      ring.innerHTML = cards.map((c, i) => `
+        <button type="button" class="ring-card" data-i="${i}" aria-label="${c.name}, ${c.price}. Ir a pedirlo">
+          <img src="${c.img}" width="220" height="220" alt="${c.alt}" decoding="async">
+          <span class="rc-body">
+            <span class="rc-tag">${c.tag}</span>
+            <span class="rc-name">${c.name}</span>
+            <span class="rc-foot"><span>${c.price}</span><span class="rc-go">PEDIR ▸</span></span>
+          </span>
+        </button>`).join('');
+      section.hidden = false;
+      const els = [...ring.querySelectorAll('.ring-card')];
+      const step = 360 / els.length;
+      let R = 170, rot = 0, vel = 0, drag = false, target = null, idleAt = 0, inView = false, raf = 0, last = 0;
+      let sx = 0, lx = 0, lt = 0, moved = 0, st = 0, downCard = null;
+
+      const measure = () => {
+        const w = stage.clientWidth || window.innerWidth;
+        const cw = clamp(w * 0.52, 168, 220);
+        stage.style.setProperty('--cw', cw + 'px');
+        R = clamp(w * 0.42, 120, 250);
+      };
+      const layout = () => {
+        for (let i = 0; i < els.length; i++) {
+          const th = (rot + i * step) * Math.PI / 180, s = Math.sin(th), c = Math.cos(th);
+          const el = els[i];
+          el.style.transform = 'translate3d(' + (R * s).toFixed(1) + 'px,0,' + (R * (c - 1)).toFixed(1) + 'px) rotateY(' + (-s * 26).toFixed(1) + 'deg)';
+          el.style.opacity = (0.4 + 0.6 * (c + 1) / 2).toFixed(2);
+        }
+      };
+      const frame = t => {
+        const dt = Math.min(0.05, (t - last) / 1000 || 0.016); last = t;
+        if (!drag) {
+          if (target !== null) {
+            const d = norm(target - rot);
+            rot += d * Math.min(1, dt * 7); vel = 0;
+            if (Math.abs(d) < 0.2) { rot = target; target = null; idleAt = t + 3000; }
+          } else {
+            rot += (vel + (!reduce && t > idleAt ? 11 : 0)) * dt;
+            vel *= Math.pow(0.05, dt);
+          }
+        }
+        layout();
+        raf = inView ? requestAnimationFrame(frame) : 0;
+      };
+      const start = () => { if (!raf) { last = performance.now(); raf = requestAnimationFrame(frame); } };
+
+      const go = c => {
+        const el = document.querySelector(c.kind === 'papa' ? '.papa-card[data-papa="' + c.id + '"]' : '.item[data-card="' + c.id + '"]');
+        (el || $$('menu')).scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: el ? 'center' : 'start' });
+        if (el) { el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); setTimeout(() => el.classList.remove('flash'), 1600); }
+      };
+      const pick = i => {
+        const th = norm(rot + i * step);
+        if (Math.abs(th) < step / 2) go(cards[i]); else target = rot - th; // el de adelante se abre; los de atrás giran al frente
+      };
+
+      stage.addEventListener('pointerdown', e => {
+        if (e.button > 0) return;
+        drag = true; moved = 0; sx = lx = e.clientX; lt = e.timeStamp; st = performance.now(); vel = 0; target = null; idleAt = Infinity;
+        downCard = e.target.closest ? e.target.closest('.ring-card') : null;
+        try { stage.setPointerCapture(e.pointerId); } catch (x) {}
+        stage.classList.add('drag');
+      });
+      stage.addEventListener('pointermove', e => {
+        if (!drag) return;
+        const dx = e.clientX - lx, dtm = Math.max(8, e.timeStamp - lt) / 1000;
+        lx = e.clientX; lt = e.timeStamp; moved += Math.abs(dx);
+        const dd = dx * 57.3 / R;
+        rot += dd; vel = clamp(0.6 * vel + 0.4 * (dd / dtm), -420, 420);
+      });
+      const endDrag = e => {
+        if (!drag) return;
+        drag = false; stage.classList.remove('drag');
+        const tap = e && e.type === 'pointerup' && moved < 8 && performance.now() - st < 500;
+        if (tap && downCard) { vel = 0; pick(+downCard.dataset.i); idleAt = performance.now() + 3000; }
+        else idleAt = performance.now() + 2500;
+        downCard = null;
+      };
+      stage.addEventListener('pointerup', endDrag);
+      stage.addEventListener('pointercancel', endDrag);
+      stage.addEventListener('click', e => { // teclado (Enter / espacio sobre una tarjeta)
+        if (e.detail !== 0) return;
+        const card = e.target.closest ? e.target.closest('.ring-card') : null;
+        if (card) pick(+card.dataset.i);
+      });
+      stage.addEventListener('keydown', e => {
+        if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+          e.preventDefault(); target = Math.round((rot + (e.key === 'ArrowRight' ? step : -step)) / step) * step; idleAt = performance.now() + 4000;
+        }
+      });
+      measure(); layout();
+      window.addEventListener('resize', () => { measure(); layout(); }, { passive: true });
+      if ('IntersectionObserver' in window) {
+        new IntersectionObserver(en => { inView = en[0].isIntersecting; if (inView) start(); }, { threshold: 0.05 }).observe(section);
+      } else { inView = true; start(); }
+    }
+  } catch (e) { console.warn('Carrusel 3D desactivado', e); }
+
+  if (reduce) return; // quien pide menos movimiento ve la página tranquila
+
+  /* ---------- Hero: profundidad con el cursor, el scroll y el giro del celular ---------- */
+  try {
+    const hero = document.querySelector('.hero'), photo = document.querySelector('.hero-photo'), layer = document.querySelector('.hero-fx');
+    const fxs = [...document.querySelectorAll('.hero-fx .fx')];
+    let nx = 0, ny = 0, tx = 0, ty = 0, queued = false;
+    const paint = () => {
+      queued = false;
+      nx += (tx - nx) * 0.12; ny += (ty - ny) * 0.12;
+      const sy = Math.min(window.scrollY, 1400);
+      fxs.forEach(el => {
+        const d = +el.dataset.d || 20;
+        el.style.transform = 'translate3d(' + (-nx * d).toFixed(1) + 'px,' + (-ny * d - sy * d / 260).toFixed(1) + 'px,0)';
+      });
+      if (photo) {
+        if (fine) photo.style.transform = 'perspective(900px) rotateY(' + (nx * 9).toFixed(2) + 'deg) rotateX(' + (-ny * 7).toFixed(2) + 'deg)';
+        photo.style.translate = '0 ' + Math.min(sy * 0.12, 70).toFixed(1) + 'px';
+      }
+      if (Math.abs(tx - nx) > 0.002 || Math.abs(ty - ny) > 0.002) request();
+    };
+    const request = () => { if (!queued) { queued = true; requestAnimationFrame(paint); } };
+    window.addEventListener('scroll', request, { passive: true });
+    if (hero && fine) {
+      hero.addEventListener('pointermove', e => {
+        const r = hero.getBoundingClientRect();
+        tx = clamp((e.clientX - r.left) / r.width * 2 - 1, -1, 1); ty = clamp((e.clientY - r.top) / r.height * 2 - 1, -1, 1);
+        if (layer) { layer.style.setProperty('--gx', ((e.clientX - r.left) / r.width * 100).toFixed(1) + '%'); layer.style.setProperty('--gy', ((e.clientY - r.top) / r.height * 100).toFixed(1) + '%'); }
+        request();
+      }, { passive: true });
+      hero.addEventListener('pointerleave', () => { tx = 0; ty = 0; request(); });
+    }
+    if (!fine && window.DeviceOrientationEvent && typeof DeviceOrientationEvent.requestPermission !== 'function') {
+      window.addEventListener('deviceorientation', e => {
+        if (typeof e.gamma !== 'number' || typeof e.beta !== 'number') return;
+        tx = clamp(e.gamma / 25, -1, 1); ty = clamp((e.beta - 55) / 25, -1, 1); request();
+      }, { passive: true });
+    }
+    request();
+  } catch (e) {}
+
+  /* ---------- Aparición 3D al hacer scroll ---------- */
+  try {
+    if (!('IntersectionObserver' in window)) return;
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(en => {
+        if (!en.isIntersecting) return;
+        const el = en.target; io.unobserve(el);
+        el.classList.add('in');
+        setTimeout(() => el.classList.remove('rv', 'in'), 1100 + (parseFloat(el.style.getPropertyValue('--d')) || 0) * 1000); // libera el transform para la inclinación con el cursor
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -6% 0px' });
+    const SEL = '.section-title, .section-sub, .delivery, .menu-block-title, .item, .papa-card, .floor, .steps li, .papas-welcome, .elevator-btn, .footer-mascot, .ring-stage';
+    const seen = new WeakSet();
+    const scan = root => {
+      const found = root.matches && root.matches(SEL) ? [root] : [];
+      root.querySelectorAll && root.querySelectorAll(SEL).forEach(n => found.push(n));
+      found.forEach(el => {
+        if (seen.has(el) || el.closest('dialog')) return;
+        seen.add(el);
+        const sibs = el.parentElement ? [...el.parentElement.children] : [];
+        el.style.setProperty('--d', (Math.min(sibs.indexOf(el), 5) * 0.09).toFixed(2) + 's');
+        el.classList.add('rv'); io.observe(el);
+      });
+    };
+    scan(document.body);
+    ['sandwich-list', 'shake-list', 'papas-list'].forEach(id => {
+      const box = $$(id);
+      if (box) new MutationObserver(ms => ms.forEach(m => m.addedNodes.forEach(n => { if (n.nodeType === 1) scan(n); }))).observe(box, { childList: true });
+    });
+  } catch (e) {}
+
+  /* ---------- Inclinación con brillo en tarjetas (solo con mouse) ---------- */
+  if (fine) {
+    let cur = null;
+    const reset = el => { ['--rx', '--ry', '--mx', '--my'].forEach(p => el.style.removeProperty(p)); };
+    document.addEventListener('pointermove', e => {
+      const el = e.target.closest ? e.target.closest('.item, .papa-card, .floor') : null;
+      if (cur && cur !== el) reset(cur);
+      cur = el;
+      if (!el || el.classList.contains('rv')) return;
+      const r = el.getBoundingClientRect(), px = (e.clientX - r.left) / r.width, py = (e.clientY - r.top) / r.height;
+      el.style.setProperty('--ry', ((px - 0.5) * 10).toFixed(2) + 'deg');
+      el.style.setProperty('--rx', ((0.5 - py) * 8).toFixed(2) + 'deg');
+      el.style.setProperty('--mx', (px * 100).toFixed(1) + '%');
+      el.style.setProperty('--my', (py * 100).toFixed(1) + '%');
+    }, { passive: true });
+    document.addEventListener('mouseleave', () => { if (cur) { reset(cur); cur = null; } });
+  }
+})();
 </script>
 
 </body>
