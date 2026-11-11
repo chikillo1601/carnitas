@@ -376,10 +376,10 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&
 
 /* ---------- Menú: 3 productos, todos con la misma bondiola ---------- */
 const PRODUCTS = {
-  texas:   { kind:'sandwich', cat:'sandwiches', name:'Texas BBQ', kicker:'El de la casa', tag:'El de la casa',
+  cheese:  { kind:'sandwich', cat:'sandwiches', name:'Carnitas Cheese', kicker:'El de la casa', tag:'El de la casa',
              img:'img/texas.webp', zoom:true, price:() => P.sandwich, stock:{ cerdo:1 }, addons:true,
              desc:'Pan brioche tostado, 150 g de bondiola glaseada con La Ahumada (nuestra BBQ), queso fundido, cebolla caramelizada y pepinillos.' },
-  picante: { kind:'sandwich', cat:'sandwiches', name:'Llama Picante', kicker:'Para los valientes', tag:'Picante',
+  spicy:   { kind:'sandwich', cat:'sandwiches', name:'Carnitas Cheese Spicy', kicker:'Para los valientes', tag:'Picante',
              img:'img/cheese-spicy.jpg', zoom:true, price:() => P.sandwich, stock:{ cerdo:1 }, addons:true,
              desc:'Pan brioche tostado, 150 g de bondiola, doble queso, jalapeño encurtido, salsa Llama Picante y cebolla caramelizada.' },
   papitas: { kind:'papitas', cat:'papitas', name:'Papitas Llama', kicker:'Para picar', tag:'Nuevo',
@@ -459,7 +459,7 @@ async function reserveStock(need){
 
 /* ---------- Precios y etiquetas ---------- */
 const unitPrice = l => PRODUCTS[l.ref].price() + (l.addons || []).length * P.addon;
-const lineTitle = l => PRODUCTS[l.ref].kind === 'sandwich' ? 'Sándwich ' + PRODUCTS[l.ref].name : PRODUCTS[l.ref].name;
+const lineTitle = l => PRODUCTS[l.ref].name;
 function lineDetail(l){
   const parts = [];
   if (l.ref === 'tacos') parts.push('2 al pastor + 1 picante');
