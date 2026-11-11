@@ -523,6 +523,7 @@ function renderHeader(){
   $('status').classList.toggle('open', st.open);
   const n = count();
   $('cart-n').textContent = n;
+  $('cart-n').classList.toggle('hidden', n === 0);
   $('float-cart').classList.toggle('hidden', n === 0);
   $('float-n').textContent = `Ver mi pedido (${n})`;
   $('float-total').textContent = cop(total());
@@ -665,7 +666,9 @@ $('step-form').addEventListener('submit', async e => {
   if (!LIVE) $('preview-bar').classList.remove('hidden');
   $('wa-text').textContent = '+57 ' + CONFIG.WHATSAPP_NUMBER.slice(2).replace(/(\d{3})(\d{3})(\d{4})/, '$1 $2 $3');
   $('free-text').textContent = cop(CONFIG.FREE_DELIVERY_FROM);
-  renderAll(); loadStock(); markCat();
+  renderAll(); markCat();
+  // En la vista previa con ?abierto no se lee el stock real, para poder probar todo el menú.
+  if (LIVE || !new URLSearchParams(location.search).has('abierto')) loadStock();
   const st = storeState();
   if (st.notice) {
     let seen = false; try { seen = sessionStorage.getItem('carnitas_aviso') === st.notice.title; } catch (e) {}
