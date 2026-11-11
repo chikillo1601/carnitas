@@ -70,35 +70,33 @@
   .status.open i{ background:var(--green) }
   .status.open{ color:#d6f5e3 }
 
-  /* Portada: un producto destacado */
-  .hero{ padding:1.4rem 0 2rem }
-  .kicker{ font-size:.78rem; font-weight:800; letter-spacing:.14em; color:var(--yellow); text-transform:uppercase }
-  .hero h1{ font-size:clamp(2.6rem, 11vw, 4.6rem); margin:.4rem 0 0 }
-  .hero h1 em{ font-style:normal; color:var(--yellow) }
-  .feat{ display:grid; grid-template-columns:minmax(0, 1fr); gap:1.2rem; margin-top:1.2rem }
-  .feat > *{ min-width:0 }
-  .feat-photo{ position:relative; aspect-ratio:4/3; border-radius:var(--r); overflow:hidden; background:var(--bg-2) }
-  .feat-photo img{ width:100%; height:100%; object-fit:cover }
-  .feat-photo .tag{ position:absolute; left:12px; top:12px }
-  .tag{ display:inline-flex; align-items:center; height:26px; padding:0 .65rem; border-radius:6px; background:var(--red); color:#fff; font-size:.72rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase }
-  .tag.y{ background:var(--yellow); color:var(--ink) }
-  .feat-info h2{ font-size:2rem }
-  .feat-info p{ color:var(--muted); margin-top:.35rem; max-width:46ch }
-  .feat-price{ display:flex; align-items:flex-end; justify-content:space-between; gap:1rem; margin-top:.8rem }
-  .feat-price b{ font-family:var(--display); font-weight:400; font-size:2.6rem; color:var(--yellow); line-height:1 }
-  .feat-price small{ color:var(--muted); font-size:.8rem }
-  .feat-cta{ display:grid; grid-template-columns:1fr auto; gap:.6rem; margin-top:1rem }
-  .feat-pick{ display:flex; gap:.5rem; margin-top:1rem; overflow-x:auto; scrollbar-width:none }
-  .feat-pick::-webkit-scrollbar{ display:none }
-  .feat-pick button{ flex:none; min-height:44px; padding:0 .9rem; border-radius:10px; border:1px solid rgba(255,255,255,.18); background:var(--bg-2); font-weight:700; font-size:.88rem; display:flex; gap:.4rem; align-items:center }
-  .feat-pick button b{ color:var(--yellow) }
-  .feat-pick button[aria-pressed="true"]{ border-color:var(--yellow); background:rgba(255,199,44,.12) }
-  @media (min-width:860px){
-    .hero{ padding:2.4rem 0 3rem }
-    .feat{ grid-template-columns:minmax(0, 1.15fr) minmax(0, 1fr); align-items:center; gap:2.4rem }
-    .feat-photo{ aspect-ratio:1/1 }
-  }
-
+  /* Lobby: la entrada al restaurante */
+  .lobby{ position:relative; min-height:calc(100svh - 110px); display:flex; align-items:flex-end; overflow:hidden; isolation:isolate }
+  .lobby-bg{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:30% 50%; z-index:-2 }
+  .lobby::before{ content:""; position:absolute; inset:0; z-index:-1; background:linear-gradient(to top, var(--bg) 32%, rgba(12,11,10,.72) 62%, rgba(12,11,10,.35)) }
+  .lobby-in{ padding-top:2rem; padding-bottom:1.6rem }
+  .sign{ display:inline-flex; align-items:center; gap:.55rem; padding:.45rem .9rem; border-radius:8px; border:2px solid var(--red); color:#fff; font-family:var(--display); text-transform:uppercase; letter-spacing:.08em; font-size:1rem; background:rgba(12,11,10,.6); box-shadow:0 0 18px rgba(218,41,28,.55), inset 0 0 10px rgba(218,41,28,.35) }
+  .sign i{ width:9px; height:9px; border-radius:50%; background:var(--red) }
+  .sign.open{ border-color:var(--green); box-shadow:0 0 18px rgba(61,220,132,.45), inset 0 0 10px rgba(61,220,132,.25) }
+  .sign.open i{ background:var(--green) }
+  .host{ display:flex; align-items:center; gap:.8rem; margin-top:1.4rem; max-width:440px }
+  .host img{ width:56px; height:56px; border-radius:50%; object-fit:cover; border:2px solid var(--yellow); flex:none }
+  .host p{ position:relative; background:#fff; color:var(--ink); padding:.65rem .9rem; border-radius:14px; font-size:.95rem; line-height:1.35 }
+  .host p::before{ content:""; position:absolute; left:-7px; top:50%; margin-top:-7px; border:7px solid transparent; border-left:0; border-right-color:#fff }
+  .lobby h1{ font-size:clamp(2.8rem, 12vw, 5.2rem); margin-top:1rem }
+  .lobby h1 em{ font-style:normal; color:var(--yellow) }
+  .lobby-sub{ color:#E6E0D9; margin-top:.6rem; max-width:42ch }
+  .doors{ display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:.6rem; margin-top:1.4rem; max-width:720px }
+  .door{ position:relative; aspect-ratio:3/4; border-radius:var(--r); overflow:hidden; background:var(--bg-3); border:2px solid rgba(255,255,255,.12); color:#fff; text-decoration:none; display:flex; align-items:flex-end; transition:transform .15s ease, border-color .15s ease }
+  .door:hover{ border-color:var(--yellow); transform:translateY(-3px) }
+  .door img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover }
+  .door svg{ position:absolute; top:22%; left:50%; width:56%; height:auto; aspect-ratio:1; transform:translateX(-50%); color:var(--yellow) }
+  .door::after{ content:""; position:absolute; inset:0; background:linear-gradient(to top, rgba(12,11,10,.95) 15%, rgba(12,11,10,0) 60%) }
+  .door span{ position:relative; z-index:1; padding:.7rem; font-family:var(--display); text-transform:uppercase; font-size:clamp(1.05rem, 4.6vw, 1.6rem); line-height:1 }
+  .door small{ display:block; font-family:var(--font); text-transform:none; font-size:.72rem; font-weight:700; color:var(--yellow); margin-bottom:.25rem }
+  .door small b{ font-weight:800 }
+  .lobby-more{ display:inline-block; margin-top:1.1rem; color:var(--muted); font-size:.88rem }
+  @media (min-width:860px){ .lobby-in{ padding-bottom:3rem } .door span{ padding:1rem } }
   /* Menú por categorías */
   .cat{ padding:1.6rem 0 .6rem; border-top:1px solid var(--line) }
   .cat-head{ display:flex; align-items:baseline; justify-content:space-between; margin-bottom:1rem }
@@ -220,24 +218,23 @@
 </header>
 
 <main id="inicio">
-  <section class="hero" aria-labelledby="hero-title">
-    <div class="wrap">
-      <span class="kicker">Bondiola de cerdo asada lento · Sogamoso</span>
-      <h1 id="hero-title" class="disp">Barriga llena, <em>corazón contento.</em></h1>
-      <div class="feat">
-        <div class="feat-photo" id="feat-photo"></div>
-        <div class="feat-info">
-          <span class="kicker" id="feat-kicker"></span>
-          <h2 class="disp" id="feat-name"></h2>
-          <p id="feat-desc"></p>
-          <div class="feat-price"><b class="num" id="feat-price"></b></div>
-          <div class="feat-cta">
-            <button class="btn btn-y" id="feat-order"></button>
-            <a class="btn btn-o" href="#menu">Ver el menú</a>
-          </div>
-          <div class="feat-pick" id="feat-pick" aria-label="Productos destacados"></div>
-        </div>
+  <!-- Lobby: la entrada al restaurante -->
+  <section class="lobby" aria-labelledby="lobby-title">
+    <img class="lobby-bg" src="img/oso-foodtruck.jpg" alt="" width="960" height="640">
+    <div class="wrap lobby-in">
+      <p class="sign" id="lobby-sign"><i></i><span id="lobby-sign-text">…</span></p>
+      <div class="host">
+        <img src="img/oso-cara.jpg" alt="El oso de Carnitas" width="64" height="64">
+        <p><b>¡Bienvenido a Carnitas!</b> Sigue, siéntate. ¿Qué se te antoja hoy?</p>
       </div>
+      <h1 id="lobby-title" class="disp">Barriga llena, <em>corazón contento.</em></h1>
+      <p class="lobby-sub">Bondiola de cerdo asada lento, hecha en Sogamoso y llevada hasta tu puerta.</p>
+      <nav class="doors" aria-label="Escoge qué quieres comer">
+        <a class="door" href="#sandwiches"><img src="img/texas.webp" alt="" loading="eager"><span><small>Desde <b class="num" id="door-sandwich"></b></small>Sándwiches</span></a>
+        <a class="door" href="#papitas"><img src="img/papas-gringa.webp" alt=""><span><small class="num" id="door-papitas"></small>Papitas Llama</span></a>
+        <a class="door" href="#tacos"><svg aria-hidden="true"><use href="#i-taco"/></svg><span><small class="num" id="door-tacos"></small>Tacos</span></a>
+      </nav>
+      <a class="lobby-more" href="#contacto">Horario, domicilio y pagos</a>
     </div>
   </section>
 
@@ -399,13 +396,11 @@ const CATS = [
   { id:'tacos', title:'Tacos' },
   { id:'bebidas', title:'Bebidas' },
 ];
-const FEATURED = ['texas', 'papitas', 'tacos'];
 const ADDONS = { queso:'Queso extra', jalapenos:'Jalapeños', pepinillos:'Pepinillos', picante:'Salsa extra picante' };
 
 /* ---------- Estado ---------- */
 let cart = [];            // { id, ref, addons:[], qty }
 let stock = { cerdo:null, papas:null, coca:null }; // null = sin límite
-let featured = 'texas';
 const STORE = 'carnitas_cart_v3';
 try { cart = JSON.parse(localStorage.getItem(STORE) || '[]').filter(l => l && PRODUCTS[l.ref] && l.qty > 0); } catch (e) { cart = []; }
 const save = () => { try { localStorage.setItem(STORE, JSON.stringify(cart)); } catch (e) {} };
@@ -487,17 +482,13 @@ function photo(p, eager){
   if (p.img) return `<img src="${p.img}" alt="${esc(p.name)}" ${eager ? '' : 'loading="lazy"'} ${p.zoom ? 'style="transform:scale(1.35);transform-origin:18% 50%"' : ''}>`;
   return `<svg aria-hidden="true"><use href="#${p.icon}"/></svg>`;
 }
-function renderFeatured(){
-  const p = PRODUCTS[featured];
-  $('feat-photo').innerHTML = (p.img ? photo(p, true) : `<div style="height:100%;display:flex;align-items:center;justify-content:center;color:var(--yellow)"><svg style="width:120px;height:120px" aria-hidden="true"><use href="#${p.icon}"/></svg></div>`) + (p.tag ? `<span class="tag y">${p.tag}</span>` : '');
-  $('feat-kicker').textContent = p.kicker;
-  $('feat-name').textContent = p.name;
-  $('feat-desc').textContent = p.desc;
-  $('feat-price').textContent = cop(p.price());
-  const ok = fits(p.stock);
-  $('feat-order').textContent = ok ? 'Pedir ahora' : 'Agotado por hoy';
-  $('feat-order').disabled = !ok;
-  $('feat-pick').innerHTML = FEATURED.map(id => `<button aria-pressed="${id === featured}" data-feat="${id}">${PRODUCTS[id].name} <b class="num">${cop(PRODUCTS[id].price())}</b></button>`).join('');
+function renderLobby(){
+  const st = storeState();
+  $('lobby-sign').classList.toggle('open', st.open);
+  $('lobby-sign-text').textContent = st.open ? 'Abierto' : (CONFIG.CLOSED_UNTIL_NOTICE ? 'Cerrado temporalmente' : 'Cerrado ahora');
+  $('door-sandwich').textContent = cop(P.sandwich);
+  $('door-papitas').textContent = cop(P.papitas);
+  $('door-tacos').textContent = '3 tacos · ' + cop(P.tacos);
 }
 function renderMenu(){
   $('menu').innerHTML = CATS.map(c => {
@@ -550,7 +541,7 @@ function renderCart(){
     .filter(id => !cart.some(l => l.ref === id) && fits(PRODUCTS[id].stock))
     .map(id => `<button data-quick="${id}">+ ${PRODUCTS[id].name} ${cop(PRODUCTS[id].price())}</button>`).join('');
 }
-function renderAll(){ renderHeader(); renderFeatured(); renderMenu(); if (!$('ov-cart').classList.contains('hidden')) renderCart(); }
+function renderAll(){ renderHeader(); renderLobby(); renderMenu(); if (!$('ov-cart').classList.contains('hidden')) renderCart(); }
 
 /* ---------- Ventana de producto ---------- */
 let draft = null;
@@ -584,8 +575,6 @@ document.addEventListener('click', e => {
   const t = e.target.closest('button, [data-close]'); if (!t) return;
   if (t.matches('[data-close]')) { hide(t.closest('.overlay').id); return; }
   if (t.dataset.open) return openItem(t.dataset.open);
-  if (t.dataset.feat) { featured = t.dataset.feat; renderFeatured(); return; }
-  if (t.id === 'feat-order') return openItem(featured);
   if (t.dataset.inc || t.dataset.dec) {
     const l = cart.find(x => x.id === (t.dataset.inc || t.dataset.dec)); if (!l) return;
     if (t.dataset.inc) { if (!fits(lineStock(l))) return toast('No tenemos más por hoy'); l.qty++; } else l.qty--;
@@ -674,7 +663,7 @@ $('step-form').addEventListener('submit', async e => {
     let seen = false; try { seen = sessionStorage.getItem('carnitas_aviso') === st.notice.title; } catch (e) {}
     if (!seen) { $('closed-title').textContent = st.notice.title; $('closed-text').textContent = st.notice.text; show('ov-closed'); try { sessionStorage.setItem('carnitas_aviso', st.notice.title); } catch (e) {} }
   }
-  setInterval(renderHeader, 60000);
+  setInterval(() => { renderHeader(); renderLobby(); }, 60000);
 })();
 </script>
 </body>
