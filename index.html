@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Carnitas Sogamoso | Sándwiches, papitas y tacos de cerdo a domicilio</title>
-<meta name="description" content="Carnitas: sándwiches, Papitas Llama y tacos de bondiola de cerdo asada lento, con Salsa Llama. Pide a domicilio en Sogamoso por WhatsApp.">
+<title>Carnitas Sogamoso | Carnitas Cheese y Cheese Spicy a domicilio</title>
+<meta name="description" content="Carnitas Cheese y Carnitas Cheese Spicy: bondiola asada lento, crema de la casa y queso americano derretido en pan brioche tostado. Domicilios en Sogamoso por WhatsApp.">
 <meta name="theme-color" content="#0C0B0A">
 <meta property="og:title" content="Carnitas · Barriga llena, corazón contento">
-<meta property="og:description" content="Sándwiches, Papitas Llama y tacos de bondiola asada lento. Pide en Sogamoso por WhatsApp.">
-<meta property="og:image" content="https://carnitas.online/img/texas.webp">
+<meta property="og:description" content="Bondiola asada lento, crema de la casa y queso derretido en pan brioche. Pide en Sogamoso por WhatsApp.">
+<meta property="og:image" content="https://carnitas.online/img/oso-foodtruck.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -92,10 +92,40 @@
   .door:hover{ border-color:var(--yellow); transform:translateY(-3px) }
   .door img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover }
   .door svg{ position:absolute; top:22%; left:50%; width:56%; height:auto; aspect-ratio:1; transform:translateX(-50%); color:var(--yellow) }
+  .door-art{ z-index:1 }
   .door::after{ content:""; position:absolute; inset:0; background:linear-gradient(to top, rgba(12,11,10,.95) 15%, rgba(12,11,10,0) 60%) }
-  .door span{ position:relative; z-index:1; padding:.7rem; font-family:var(--display); text-transform:uppercase; font-size:clamp(1.05rem, 4.6vw, 1.6rem); line-height:1 }
+  .door > span:last-child{ position:relative; z-index:1; padding:.7rem; font-family:var(--display); text-transform:uppercase; font-size:clamp(1.15rem, 5vw, 1.7rem); line-height:1 }
   .door small{ display:block; font-family:var(--font); text-transform:none; font-size:.72rem; font-weight:700; color:var(--yellow); margin-bottom:.25rem }
   .door small b{ font-weight:800 }
+  .door-art{ position:absolute; left:0; right:0; top:0; bottom:34%; display:flex; align-items:center; justify-content:center; padding:12% 16% 0; background:radial-gradient(circle at 50% 45%, rgba(255,199,44,.18), rgba(12,11,10,0) 70%) }
+  .door-soon{ border-style:dashed }
+  .door-soon svg{ opacity:.55 }
+  .stack{ width:100%; height:100%; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:2px }
+  .stack i{ display:block; width:100%; border-radius:3px; min-height:2px; flex-basis:0 }
+  .stack i.top{ border-radius:14px 14px 4px 4px; box-shadow:inset 0 0 0 3px rgba(120,60,10,.45), inset 0 -4px 0 rgba(0,0,0,.15) }
+  .stack i.bot{ border-radius:4px 4px 10px 10px; box-shadow:inset 0 0 0 3px rgba(120,60,10,.45), inset 0 4px 0 rgba(0,0,0,.12) }
+  .stack i.melt{ width:106%; border-radius:2px 2px 8px 8px }
+  .stack i.meat{ width:103%; border-radius:6px; background-image:repeating-linear-gradient(170deg, rgba(0,0,0,.18) 0 3px, rgba(0,0,0,0) 3px 9px) !important }
+  .stack i.dots{ background-image:radial-gradient(circle, #D9381E 1.5px, transparent 2px) !important; background-size:8px 4px; background-color:transparent !important }
+  .item .ph .stack{ padding:14px 12px }
+  .art{ height:100%; display:flex; align-items:center; justify-content:center; gap:1.2rem; padding:1.2rem 1.4rem; background:radial-gradient(circle at 35% 50%, rgba(255,199,44,.16), rgba(12,11,10,0) 65%) }
+  .art .stack{ width:46%; height:auto; min-height:170px }
+  .art ul{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:.3rem; font-size:.82rem; color:#E6E0D9 }
+  .art li{ display:flex; align-items:center; gap:.45rem }
+  .art li i{ width:10px; height:10px; border-radius:3px; flex:none }
+  .how{ margin-top:1.6rem; padding:1.6rem 0 .4rem; border-top:1px solid var(--line) }
+  .how h2{ font-size:2rem }
+  .how h2 em{ font-style:normal; color:var(--yellow) }
+  .how ol{ list-style:none; counter-reset:paso; margin:1rem 0 0; padding:0; display:grid; gap:.9rem }
+  @media (min-width:860px){ .how ol{ grid-template-columns:repeat(2, minmax(0, 1fr)); gap:1.2rem 2rem } }
+  .how li{ counter-increment:paso; display:grid; grid-template-columns:44px 1fr; gap:.8rem; color:var(--muted); font-size:.95rem }
+  .how li::before{ content:counter(paso); font-family:var(--display); font-size:2.2rem; line-height:1; color:var(--yellow) }
+  .how li b{ display:block; color:#fff; font-size:1rem; margin-bottom:.15rem }
+  .tag{ display:inline-flex; align-items:center; height:24px; padding:0 .6rem; border-radius:6px; background:var(--red); color:#fff; font-size:.7rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase }
+  .tag.y{ background:var(--yellow); color:var(--ink) }
+  .door-soon svg{ top:14%; width:46% }
+  .item.soon{ opacity:.78 }
+  .item.soon .ph{ border:1px dashed rgba(255,255,255,.2) }
   .lobby-more{ display:inline-block; margin-top:1.1rem; color:var(--muted); font-size:.88rem }
   @media (min-width:860px){ .lobby-in{ padding-bottom:3rem } .door span{ padding:1rem } }
   /* Menú por categorías */
@@ -196,6 +226,7 @@
   <symbol id="i-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.2 7-12a7 7 0 0 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="9" r="2.5"/></symbol>
   <symbol id="i-pay" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18M7 15h3"/></symbol>
   <symbol id="i-taco" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 34a18 18 0 0 1 36 0z"/><path d="M12 26c2-2 4 0 6-2s4 0 6-2 4 0 6-2 4 0 6 2"/><path d="M15 30h2M23 29h2M31 30h2"/></symbol>
+  <symbol id="i-fries" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h24l-3 22H15z"/><path d="M16 20 14 7M21 20l-1-14M27 20l1-14M32 20l2-13"/><path d="M18 30c2 2 10 2 12 0"/></symbol>
   <symbol id="i-can" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 9h18l2 4v24l-2 4H15l-2-4V13z"/><path d="M13 17h22M13 33h22"/><path d="M19 9V6h10v3"/></symbol>
 </svg>
 
@@ -210,9 +241,8 @@
     </div>
     <nav class="cats" id="cats" aria-label="Categorías del menú">
       <a href="#sandwiches" data-cat="sandwiches">Sándwiches</a>
-      <a href="#papitas" data-cat="papitas">Papitas Llama</a>
-      <a href="#tacos" data-cat="tacos">Tacos</a>
       <a href="#bebidas" data-cat="bebidas">Bebidas</a>
+      <a href="#pronto" data-cat="pronto">Muy pronto</a>
     </nav>
   </div>
   <div class="wrap"><p class="status" id="status" role="status"><i></i><span id="status-text">…</span></p></div>
@@ -226,20 +256,32 @@
       <p class="sign" id="lobby-sign"><i></i><span id="lobby-sign-text">…</span></p>
       <div class="host">
         <img src="img/oso-cara.jpg" alt="El oso de Carnitas" width="64" height="64">
-        <p><b>¡Bienvenido a Carnitas!</b> Sigue, siéntate. ¿Qué se te antoja hoy?</p>
+        <p><b>¡Bienvenido a Carnitas!</b> Hoy hay dos sándwiches y los dos chorrean. ¿Cuál te provoca?</p>
       </div>
       <h1 id="lobby-title" class="disp">Barriga llena, <em>corazón contento.</em></h1>
-      <p class="lobby-sub">Bondiola de cerdo asada lento, hecha en Sogamoso y llevada hasta tu puerta.</p>
+      <p class="lobby-sub">Bondiola asada lento, crema hecha con su propio jugo y queso americano derretido, en pan brioche tostado.</p>
       <nav class="doors" aria-label="Escoge qué quieres comer">
-        <a class="door" href="#sandwiches"><img src="img/texas.webp" alt="" loading="eager"><span><small>Desde <b class="num" id="door-sandwich"></b></small>Sándwiches</span></a>
-        <a class="door" href="#papitas"><img src="img/papas-gringa.webp" alt=""><span><small class="num" id="door-papitas"></small>Papitas Llama</span></a>
-        <a class="door" href="#tacos"><svg aria-hidden="true"><use href="#i-taco"/></svg><span><small class="num" id="door-tacos"></small>Tacos</span></a>
+        <a class="door" href="#p-cheese" data-door="cheese"><span id="door-cheese-art" class="door-art" aria-hidden="true"></span><span><small class="num door-price"></small>Cheese</span></a>
+        <a class="door" href="#p-spicy" data-door="spicy"><span id="door-spicy-art" class="door-art" aria-hidden="true"></span><span><small class="num door-price"></small>Spicy</span></a>
+        <a class="door door-soon" href="#pronto"><svg aria-hidden="true"><use href="#i-taco"/></svg><span><small>Muy pronto</small>Papitas y tacos</span></a>
       </nav>
       <a class="lobby-more" href="#contacto">Horario, domicilio y pagos</a>
     </div>
   </section>
 
   <div class="wrap" id="menu"></div>
+
+  <div class="wrap">
+    <section class="how" aria-labelledby="how-title">
+      <h2 id="how-title" class="disp">Así se hace <em>un Carnitas</em></h2>
+      <ol>
+        <li><div><b>12 horas de adobo.</b>La bondiola se adoba desde el día anterior con nuestra mezcla de especias.</div></li>
+        <li><div><b>Horas de horno, a fuego lento.</b>Se asa despacio hasta que queda tierna y suelta su jugo.</div></li>
+        <li><div><b>Su jugo se vuelve crema.</b>Con ese jugo hacemos la crema de la casa. Por eso sabe tanto a carne.</div></li>
+        <li><div><b>Plancha al momento.</b>Cuando pides, doramos la carne, derretimos el queso y tostamos el pan. Nada se arma antes.</div></li>
+      </ol>
+    </section>
+  </div>
 
   <div class="wrap">
     <section class="info" id="contacto" aria-labelledby="info-title">
@@ -374,36 +416,52 @@ const cop = n => '$' + Math.round(n).toLocaleString('es-CO');
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
 
-/* ---------- Menú: 3 productos, todos con la misma bondiola ---------- */
+/* ---------- Menú ----------
+   Por ahora se venden los 2 sándwiches y la Coca-Cola. Papitas y tacos: "muy pronto" (soon:true).
+   Capas: de arriba hacia abajo [nombre, color, alto relativo, forma]. Así se dibuja cada sándwich. */
+const L = {
+  pan:   ['Pan brioche tostado', '#D99A45'],
+  miel:  ['Miel mostaza', '#E9B524'],
+  cebolla:['Cebolla morada encurtida', '#9C3F7C'],
+  pepino:['Pepinillo', '#86A83C'],
+  jala:  ['Jalapeño', '#3E8D3B'],
+  aji:   ['Ají en hojuelas', '#D9381E'],
+  crema: ['Crema de bondiola', '#EAD3A2'],
+  queso: ['Queso americano derretido', '#FFC72C'],
+  carne: ['150 g de bondiola asada lento', '#8A4A2B'],
+};
+const layersOf = picante => [
+  [L.pan, 15, 'top'], [L.miel, 2], [L.cebolla, 4], picante ? [L.jala, 5] : [L.pepino, 5],
+  ...(picante ? [[L.aji, 3, 'dots']] : []), [L.crema, 7], [L.queso, 6, 'melt'], [L.carne, 22, 'meat'], [L.miel, 2], [L.pan, 11, 'bot'],
+];
 const PRODUCTS = {
-  cheese:  { kind:'sandwich', cat:'sandwiches', name:'Carnitas Cheese', kicker:'El de la casa', tag:'El de la casa',
-             img:'img/texas.webp', zoom:true, price:() => P.sandwich, stock:{ cerdo:1 }, addons:true,
-             desc:'Pan brioche tostado, 150 g de bondiola glaseada con La Ahumada (nuestra BBQ), queso fundido, cebolla caramelizada y pepinillos.' },
-  spicy:   { kind:'sandwich', cat:'sandwiches', name:'Carnitas Cheese Spicy', kicker:'Para los valientes', tag:'Picante',
-             img:'img/cheese-spicy.jpg', zoom:true, price:() => P.sandwich, stock:{ cerdo:1 }, addons:true,
-             desc:'Pan brioche tostado, 150 g de bondiola, doble queso, jalapeño encurtido, salsa Llama Picante y cebolla caramelizada.' },
-  papitas: { kind:'papitas', cat:'papitas', name:'Papitas Llama', kicker:'Para picar', tag:'Nuevo',
-             img:'img/papas-gringa.webp', price:() => P.papitas, stock:{ cerdo:1, papas:1 }, addons:true,
-             desc:'Papa corrugada, bondiola de la casa, tocineta crocante, queso fundido, jalapeño y Salsa Llama. Llama Picante aparte.' },
-  tacos:   { kind:'tacos', cat:'tacos', name:'Orden de tacos', kicker:'3 tacos de bondiola', tag:'Nuevo', icon:'i-taco',
+  cheese:  { kind:'sandwich', cat:'sandwiches', name:'Carnitas Cheese', tag:'El de la casa', layers:layersOf(false),
+             price:() => P.sandwich, stock:{ cerdo:1 }, addons:true,
+             desc:'150 g de bondiola asada lento en láminas, queso americano derretido y nuestra crema de bondiola, en pan brioche tostado con miel mostaza. Pepinillo y cebolla morada para cortar.' },
+  spicy:   { kind:'sandwich', cat:'sandwiches', name:'Carnitas Cheese Spicy', tag:'Picante', layers:layersOf(true),
+             price:() => P.sandwich, stock:{ cerdo:1 }, addons:true,
+             desc:'Todo lo del Carnitas Cheese, con jalapeño y ají en hojuelas. Pica rico, no castiga.' },
+  coca:    { kind:'extra', cat:'bebidas', name:'Coca-Cola', icon:'i-can',
+             price:() => P.coca, stock:{ coca:1 }, desc:'Personal, bien fría. La pareja perfecta del Cheese.' },
+  papitas: { kind:'papitas', cat:'pronto', name:'Papitas Llama', soon:true, icon:'i-fries',
+             price:() => P.papitas, stock:{ cerdo:1, papas:1 },
+             desc:'Papa corrugada cargada con bondiola, tocineta, queso y jalapeño.' },
+  tacos:   { kind:'tacos', cat:'pronto', name:'Orden de tacos', soon:true, icon:'i-taco',
              price:() => P.tacos, stock:{ cerdo:1 },
-             desc:'2 al pastor (glaseado de piña, piña asada, cebolla y cilantro) y 1 picante (Llama Picante y jalapeño). Tortilla de maíz y limón aparte.' },
-  coca:    { kind:'extra', cat:'bebidas', name:'Coca-Cola', kicker:'Bien fría', icon:'i-can',
-             price:() => P.coca, stock:{ coca:1 }, desc:'Coca-Cola personal, bien fría.' },
+             desc:'3 tacos de bondiola: 2 al pastor y 1 picante.' },
 };
 const CATS = [
-  { id:'sandwiches', title:'Sándwiches', note:'150 g de bondiola en pan brioche tostado.' },
-  { id:'papitas', title:'Papitas Llama' },
-  { id:'tacos', title:'Tacos' },
+  { id:'sandwiches', title:'Sándwiches', note:'Se arman al momento. Viajan en caja con ventilación para que lleguen crocantes.' },
   { id:'bebidas', title:'Bebidas' },
+  { id:'pronto', title:'Muy pronto', note:'Los estamos probando en cocina. Salen cuando queden perfectos.' },
 ];
-const ADDONS = { queso:'Queso extra', jalapenos:'Jalapeños', pepinillos:'Pepinillos', picante:'Salsa extra picante' };
+const ADDONS = { crema:'Crema de bondiola extra', queso:'Queso americano extra', jalapenos:'Jalapeños', pepinillos:'Pepinillos' };
 
 /* ---------- Estado ---------- */
 let cart = [];            // { id, ref, addons:[], qty }
 let stock = { cerdo:null, papas:null, coca:null }; // null = sin límite
 const STORE = 'carnitas_cart_v3';
-try { cart = JSON.parse(localStorage.getItem(STORE) || '[]').filter(l => l && PRODUCTS[l.ref] && l.qty > 0); } catch (e) { cart = []; }
+try { cart = JSON.parse(localStorage.getItem(STORE) || '[]').filter(l => l && PRODUCTS[l.ref] && !PRODUCTS[l.ref].soon && l.qty > 0); } catch (e) { cart = []; }
 const save = () => { try { localStorage.setItem(STORE, JSON.stringify(cart)); } catch (e) {} };
 
 /* ---------- Horario ---------- */
@@ -479,27 +537,39 @@ function addLine(l){
 }
 
 /* ---------- Pintar ---------- */
-function photo(p, eager){
-  if (p.img) return `<img src="${p.img}" alt="${esc(p.name)}" ${eager ? '' : 'loading="lazy"'} ${p.zoom ? 'style="transform:scale(1.35);transform-origin:18% 50%"' : ''}>`;
+function stack(p){
+  return `<span class="stack" role="img" aria-label="Capas del ${esc(p.name)}">` +
+    p.layers.map(([[, color], h, cls]) => `<i class="${cls || ''}" style="background:${color};flex-grow:${h}"></i>`).join('') + '</span>';
+}
+function photo(p){
+  if (p.layers) return stack(p);
   return `<svg aria-hidden="true"><use href="#${p.icon}"/></svg>`;
+}
+function bigArt(p){
+  if (!p.layers) return `<div class="art" style="color:var(--yellow)"><svg style="width:110px;height:110px" aria-hidden="true"><use href="#${p.icon}"/></svg></div>`;
+  const seen = new Set(), legend = p.layers.map(([[name, color]]) => seen.has(name) ? '' : (seen.add(name), `<li><i style="background:${color}"></i>${name}</li>`)).join('');
+  return `<div class="art">${stack(p).replace('class="stack"', 'class="stack" style="height:190px"')}<ul>${legend}</ul></div>`;
 }
 function renderLobby(){
   const st = storeState();
   $('lobby-sign').classList.toggle('open', st.open);
   $('lobby-sign-text').textContent = st.open ? 'Abierto' : (CONFIG.CLOSED_UNTIL_NOTICE ? 'Cerrado temporalmente' : 'Cerrado ahora');
-  $('door-sandwich').textContent = cop(P.sandwich);
-  $('door-papitas').textContent = cop(P.papitas);
-  $('door-tacos').textContent = '3 tacos · ' + cop(P.tacos);
+  document.querySelectorAll('.door-price').forEach(el => el.textContent = cop(P.sandwich));
+  $('door-cheese-art').innerHTML = stack(PRODUCTS.cheese);
+  $('door-spicy-art').innerHTML = stack(PRODUCTS.spicy);
 }
 function renderMenu(){
   $('menu').innerHTML = CATS.map(c => {
     const items = Object.entries(PRODUCTS).filter(([, p]) => p.cat === c.id);
     return `<section class="cat" id="${c.id}" aria-labelledby="h-${c.id}">
-      <div class="cat-head"><h2 class="disp" id="h-${c.id}">${c.title}</h2><span>${items.length} ${items.length === 1 ? 'producto' : 'productos'}</span></div>
+      <div class="cat-head"><h2 class="disp" id="h-${c.id}">${c.title}</h2><span>${c.id === 'pronto' ? '' : items.length + (items.length === 1 ? ' producto' : ' productos')}</span></div>
       ${c.note ? `<p class="cat-note">${c.note}</p>` : ''}
       <div class="list">${items.map(([id, p]) => {
+        if (p.soon) return `<article class="item soon" id="p-${id}">
+          <div class="ph">${photo(p)}</div>
+          <div><div class="tags"><span class="tag y">Muy pronto</span></div><h3>${p.name}</h3><p>${p.desc}</p></div></article>`;
         const ok = fits(p.stock);
-        return `<article class="item">
+        return `<article class="item" id="p-${id}">
           <div class="ph">${photo(p)}</div>
           <div>
             ${p.tag ? `<div class="tags"><span class="tag">${p.tag}</span></div>` : ''}
@@ -525,7 +595,7 @@ function renderHeader(){
 function renderCart(){
   const lines = $('cart-lines');
   if (!cart.length) {
-    lines.innerHTML = `<div class="empty"><img src="img/oso-cara.jpg" alt="">Tu pedido está vacío.<br>Empieza por un sándwich.</div>`;
+    lines.innerHTML = `<div class="empty"><img src="img/oso-cara.jpg" alt="">Tu pedido está vacío.<br>Empieza por un Carnitas Cheese.</div>`;
     $('cart-extra').classList.add('hidden'); return;
   }
   $('cart-extra').classList.remove('hidden');
@@ -538,8 +608,9 @@ function renderCart(){
   $('ship-text').textContent = t >= free ? '¡Tu domicilio es gratis!' : `Te faltan ${cop(free - t)} para domicilio gratis`;
   $('ship-bar').style.width = Math.min(100, t / free * 100) + '%';
   $('cart-total').textContent = cop(t);
-  $('suggest').innerHTML = ['papitas', 'tacos', 'coca']
+  $('suggest').innerHTML = ['spicy', 'cheese', 'coca']
     .filter(id => !cart.some(l => l.ref === id) && fits(PRODUCTS[id].stock))
+    .slice(0, 2)
     .map(id => `<button data-quick="${id}">+ ${PRODUCTS[id].name} ${cop(PRODUCTS[id].price())}</button>`).join('');
 }
 function renderAll(){ renderHeader(); renderLobby(); renderMenu(); if (!$('ov-cart').classList.contains('hidden')) renderCart(); }
@@ -550,7 +621,7 @@ function openItem(ref){
   draft = { ref, qty:1, addons:[] };
   const p = PRODUCTS[ref];
   $('q-n').textContent = 1;
-  $('item-photo').innerHTML = p.img ? photo(p, true) : `<div style="height:100%;display:flex;align-items:center;justify-content:center;color:var(--yellow)"><svg style="width:110px;height:110px" aria-hidden="true"><use href="#${p.icon}"/></svg></div>`;
+  $('item-photo').innerHTML = bigArt(p);
   $('item-title').textContent = p.name;
   $('item-desc').textContent = p.desc;
   $('item-unit').textContent = cop(p.price());
@@ -573,6 +644,8 @@ $('item-add').onclick = () => { addLine({ ref:draft.ref, addons:draft.addons, qt
 
 /* ---------- Clics generales ---------- */
 document.addEventListener('click', e => {
+  const door = e.target.closest('[data-door]');
+  if (door) { e.preventDefault(); return openItem(door.dataset.door); }
   const t = e.target.closest('button, [data-close]'); if (!t) return;
   if (t.matches('[data-close]')) { hide(t.closest('.overlay').id); return; }
   if (t.dataset.open) return openItem(t.dataset.open);
