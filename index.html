@@ -72,22 +72,23 @@
 
   /* Lobby: la entrada al restaurante */
   .lobby{ position:relative; min-height:calc(100svh - 110px); display:flex; align-items:flex-end; overflow:hidden; isolation:isolate }
-  .lobby-bg{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:30% 50%; z-index:-2 }
+  .lobby-bg{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:12% 45%; z-index:-2 }
   .lobby::before{ content:""; position:absolute; inset:0; z-index:-1; background:linear-gradient(to top, var(--bg) 32%, rgba(12,11,10,.72) 62%, rgba(12,11,10,.35)) }
-  .lobby-in{ padding-top:2rem; padding-bottom:1.6rem }
+  .lobby-in{ padding-top:1.5rem; padding-bottom:1.2rem }
   .sign{ display:inline-flex; align-items:center; gap:.55rem; padding:.45rem .9rem; border-radius:8px; border:2px solid var(--red); color:#fff; font-family:var(--display); text-transform:uppercase; letter-spacing:.08em; font-size:1rem; background:rgba(12,11,10,.6); box-shadow:0 0 18px rgba(218,41,28,.55), inset 0 0 10px rgba(218,41,28,.35) }
   .sign i{ width:9px; height:9px; border-radius:50%; background:var(--red) }
   .sign.open{ border-color:var(--green); box-shadow:0 0 18px rgba(61,220,132,.45), inset 0 0 10px rgba(61,220,132,.25) }
   .sign.open i{ background:var(--green) }
-  .host{ display:flex; align-items:center; gap:.8rem; margin-top:1.4rem; max-width:440px }
+  .host{ display:flex; align-items:center; gap:.8rem; margin-top:1rem; max-width:440px }
   .host img{ width:56px; height:56px; border-radius:50%; object-fit:cover; border:2px solid var(--yellow); flex:none }
   .host p{ position:relative; background:#fff; color:var(--ink); padding:.65rem .9rem; border-radius:14px; font-size:.95rem; line-height:1.35 }
   .host p::before{ content:""; position:absolute; left:-7px; top:50%; margin-top:-7px; border:7px solid transparent; border-left:0; border-right-color:#fff }
-  .lobby h1{ font-size:clamp(2.8rem, 12vw, 5.2rem); margin-top:1rem }
+  .lobby h1{ font-size:clamp(2.3rem, 10vw, 5.2rem); margin-top:.8rem }
   .lobby h1 em{ font-style:normal; color:var(--yellow) }
   .lobby-sub{ color:#E6E0D9; margin-top:.6rem; max-width:42ch }
-  .doors{ display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:.6rem; margin-top:1.4rem; max-width:720px }
-  .door{ position:relative; aspect-ratio:3/4; border-radius:var(--r); overflow:hidden; background:var(--bg-3); border:2px solid rgba(255,255,255,.12); color:#fff; text-decoration:none; display:flex; align-items:flex-end; transition:transform .15s ease, border-color .15s ease }
+  @media (max-width:520px){ .lobby-sub{ display:none } }
+  .doors{ display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:.6rem; margin-top:1.1rem; max-width:720px }
+  .door{ position:relative; aspect-ratio:4/5; border-radius:var(--r); overflow:hidden; background:var(--bg-3); border:2px solid rgba(255,255,255,.12); color:#fff; text-decoration:none; display:flex; align-items:flex-end; transition:transform .15s ease, border-color .15s ease }
   .door:hover{ border-color:var(--yellow); transform:translateY(-3px) }
   .door img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover }
   .door svg{ position:absolute; top:22%; left:50%; width:56%; height:auto; aspect-ratio:1; transform:translateX(-50%); color:var(--yellow) }
