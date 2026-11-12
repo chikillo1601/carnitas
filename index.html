@@ -141,6 +141,7 @@
   .item .ph img{ width:100%; height:100%; object-fit:cover }
   .item .ph svg{ width:52px; height:52px }
   .item h3{ font-family:var(--display); font-weight:400; text-transform:uppercase; font-size:1.35rem; line-height:1.05; letter-spacing:.01em }
+  .item p b, .sheet .sub b{ color:var(--yellow); font-weight:700 }
   .item p{ color:var(--muted); font-size:.86rem; line-height:1.4; margin-top:.25rem }
   .item .tags{ display:flex; gap:.35rem; margin-bottom:.35rem }
   .item .row{ display:flex; align-items:center; justify-content:space-between; gap:.6rem; margin-top:.6rem }
@@ -434,10 +435,10 @@ const layersOf = picante => [
 const PRODUCTS = {
   cheese:  { kind:'sandwich', cat:'sandwiches', name:'Carnitas Cheese', tag:'El de la casa', layers:layersOf(false),
              price:() => P.sandwich, stock:{ cerdo:1 }, addons:true,
-             desc:'Pan brioche tostado con miel mostaza, 150 g de bondiola asada lento en láminas, queso americano derretido, crema de bondiola, pepinillo y cebolla morada encurtida.' },
+             desc:'Pan brioche tostado con miel mostaza, 150 g de bondiola asada lento en láminas, queso americano derretido, crema de bondiola, <b>pepinillo</b> y cebolla morada encurtida.' },
   spicy:   { kind:'sandwich', cat:'sandwiches', name:'Carnitas Cheese Spicy', tag:'Picante', layers:layersOf(true),
              price:() => P.sandwich, stock:{ cerdo:1 }, addons:true,
-             desc:'Pan brioche tostado con miel mostaza, 150 g de bondiola asada lento en láminas, queso americano derretido, crema de bondiola, jalapeño, ají en hojuelas y cebolla morada encurtida. Pica rico, no castiga.' },
+             desc:'Pan brioche tostado con miel mostaza, 150 g de bondiola asada lento en láminas, queso americano derretido, crema de bondiola, <b>jalapeño y ají en hojuelas</b>, y cebolla morada encurtida. Pica rico, no castiga.' },
   coca:    { kind:'extra', cat:'bebidas', name:'Coca-Cola', icon:'i-can',
              price:() => P.coca, stock:{ coca:1 }, desc:'Personal, bien fría. La pareja perfecta del Cheese.' },
   papitas: { kind:'papitas', cat:'pronto', name:'Papitas Llama', soon:true, icon:'i-fries',
@@ -620,7 +621,7 @@ function openItem(ref){
   $('q-n').textContent = 1;
   $('item-photo').innerHTML = bigArt(p);
   $('item-title').textContent = p.name;
-  $('item-desc').textContent = p.desc;
+  $('item-desc').innerHTML = p.desc;
   $('item-unit').textContent = cop(p.price());
   $('item-opts').innerHTML = p.addons ? `<div class="opt-group"><b>Adicionales</b><div class="chips">` +
     Object.entries(ADDONS).map(([id, a]) => `<label class="chip"><input type="checkbox" data-addon="${id}"> ${a} <small>+${cop(P.addon)}</small></label>`).join('') + '</div></div>' : '';
