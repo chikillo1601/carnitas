@@ -434,10 +434,10 @@ const layersOf = picante => [
 const PRODUCTS = {
   cheese:  { kind:'sandwich', cat:'sandwiches', name:'Carnitas Cheese', tag:'El de la casa', layers:layersOf(false),
              price:() => P.sandwich, stock:{ cerdo:1 }, addons:true,
-             desc:'150 g de bondiola asada lento en láminas, queso americano derretido y nuestra crema de bondiola, en pan brioche tostado con miel mostaza. Pepinillo y cebolla morada para cortar.' },
+             desc:'Pan brioche tostado con miel mostaza, 150 g de bondiola asada lento en láminas, queso americano derretido, crema de bondiola, pepinillo y cebolla morada encurtida.' },
   spicy:   { kind:'sandwich', cat:'sandwiches', name:'Carnitas Cheese Spicy', tag:'Picante', layers:layersOf(true),
              price:() => P.sandwich, stock:{ cerdo:1 }, addons:true,
-             desc:'Todo lo del Carnitas Cheese, con jalapeño y ají en hojuelas. Pica rico, no castiga.' },
+             desc:'Pan brioche tostado con miel mostaza, 150 g de bondiola asada lento en láminas, queso americano derretido, crema de bondiola, jalapeño, ají en hojuelas y cebolla morada encurtida. Pica rico, no castiga.' },
   coca:    { kind:'extra', cat:'bebidas', name:'Coca-Cola', icon:'i-can',
              price:() => P.coca, stock:{ coca:1 }, desc:'Personal, bien fría. La pareja perfecta del Cheese.' },
   papitas: { kind:'papitas', cat:'pronto', name:'Papitas Llama', soon:true, icon:'i-fries',
