@@ -288,7 +288,7 @@
       <h2 id="info-title" class="disp">Pedidos y domicilio</h2>
       <dl>
         <div><dt><svg class="i" aria-hidden="true"><use href="#i-wa"/></svg></dt><dd>WhatsApp de pedidos: <b class="num" id="wa-text"></b></dd></div>
-        <div><dt><svg class="i" aria-hidden="true"><use href="#i-clock"/></svg></dt><dd><b>Lunes a sábado, 5:00 p. m. a 11:00 p. m.</b> Domingos descansamos.</dd></div>
+        <div><dt><svg class="i" aria-hidden="true"><use href="#i-clock"/></svg></dt><dd><b>Lunes a sábado, 6:00 p. m. a 11:00 p. m.</b> Domingos descansamos.</dd></div>
         <div><dt><svg class="i" aria-hidden="true"><use href="#i-moto"/></svg></dt><dd>Domicilio en Sogamoso de $5.000 a $6.000 según el barrio. <b>Gratis en pedidos desde <span id="free-text"></span>.</b></dd></div>
         <div><dt><svg class="i" aria-hidden="true"><use href="#i-pay"/></svg></dt><dd>Pagas en efectivo o por Nequi.</dd></div>
         <div><dt><svg class="i" aria-hidden="true"><use href="#i-pin"/></svg></dt><dd>Solo domicilios por ahora. Muy pronto, nuestro primer kiosco en Sogamoso.</dd></div>
@@ -390,7 +390,7 @@ const CONFIG = {
   WHATSAPP_NUMBER: "573219470821",
 
   // Horario (hora de Colombia). 0 = domingo … 6 = sábado.
-  OPEN_TIME: "17:00", CLOSE_TIME: "23:00", CLOSED_WEEKDAYS: [0],
+  OPEN_TIME: "18:00", CLOSE_TIME: "23:00", CLOSED_WEEKDAYS: [0],
 
   // Cerrado hasta nuevo aviso: { title, text }. Para abrir: null.
   CLOSED_UNTIL_NOTICE: {
@@ -476,9 +476,9 @@ function storeState(){
   if (CONFIG.CLOSED_UNTIL_NOTICE) return { open:false, label:CONFIG.CLOSED_UNTIL_NOTICE.title + ' · mira el menú, volvemos muy pronto', notice:CONFIG.CLOSED_UNTIL_NOTICE };
   const n = bogotaNow();
   if (CONFIG.CLOSED_DATES[n.date]) return { open:false, label:'Hoy no abrimos · ' + CONFIG.CLOSED_DATES[n.date], notice:{ title:'Hoy no abrimos', text:CONFIG.CLOSED_DATES[n.date] } };
-  if (CONFIG.CLOSED_WEEKDAYS.includes(n.day)) return { open:false, label:'Hoy descansamos · mañana abrimos a las 5:00 p. m.' };
-  if (n.min < toMin(CONFIG.OPEN_TIME)) return { open:false, label:'Abrimos hoy a las 5:00 p. m. · ve armando tu pedido' };
-  if (n.min >= toMin(CONFIG.CLOSE_TIME)) return { open:false, label:'Por hoy ya cerramos · mañana abrimos a las 5:00 p. m.' };
+  if (CONFIG.CLOSED_WEEKDAYS.includes(n.day)) return { open:false, label:'Hoy descansamos · mañana abrimos a las 6:00 p. m.' };
+  if (n.min < toMin(CONFIG.OPEN_TIME)) return { open:false, label:'Abrimos hoy a las 6:00 p. m. · ve armando tu pedido' };
+  if (n.min >= toMin(CONFIG.CLOSE_TIME)) return { open:false, label:'Por hoy ya cerramos · mañana abrimos a las 6:00 p. m.' };
   return { open:true, label:'Abierto · hasta las 11:00 p. m.' };
 }
 
