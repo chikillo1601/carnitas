@@ -393,12 +393,9 @@ const CONFIG = {
   OPEN_TIME: "18:00", CLOSE_TIME: "23:00", CLOSED_WEEKDAYS: [0],
 
   // Cerrado hasta nuevo aviso: { title, text }. Para abrir: null.
-  CLOSED_UNTIL_NOTICE: {
-    title: "Cerrado temporalmente",
-    text: "Estamos mejorando Carnitas para ti. Disculpa las molestias: volvemos muy pronto con algo mejor. ¡Gracias por tu paciencia!",
-  },
+  CLOSED_UNTIL_NOTICE: null,
   // Días puntuales sin servicio: "AAAA-MM-DD": "mensaje".
-  CLOSED_DATES: {},
+  CLOSED_DATES: { "2026-11-12": "Volvemos mañana viernes a las 6:00 p. m. con el menú nuevo. Ya puedes ver lo que viene." },
 
   // Precios (COP). Papitas y tacos: propuestas F10 y F9, pendientes del sí del fundador.
   PRICES: { sandwich: 16900, papitas: 21900, tacos: 15900, coca: 4000, addon: 3000 },
