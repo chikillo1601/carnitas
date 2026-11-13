@@ -206,6 +206,11 @@
   .empty{ text-align:center; color:var(--muted); padding:1.5rem 0 2rem }
   .empty img{ width:84px; height:84px; border-radius:50%; object-fit:cover; margin:0 auto .8rem }
   .form label{ display:block; font-weight:700; font-size:.9rem; margin:.9rem 0 .35rem }
+  .form label.chip{ display:inline-flex; margin:0 }
+  .tag{ font-family:var(--font) }
+  .sheet h3{ padding-right:52px }
+  .sheet-photo + h3{ padding-right:0 }
+  .tags{ flex-wrap:wrap }
   .form input:not([type="radio"]), .form textarea{ width:100%; min-height:48px; padding:.7rem .9rem; border-radius:var(--r-sm); border:1px solid rgba(255,255,255,.2); background:var(--bg); color:#fff; font:inherit }
   .pay{ display:flex; gap:.5rem }
   .note{ margin-top:.6rem; padding:.7rem .9rem; border-radius:var(--r-sm); background:rgba(255,199,44,.12); color:#FFE7A3; font-size:.88rem }
@@ -435,10 +440,10 @@ const layersOf = picante => [
 const PRODUCTS = {
   cheese:  { kind:'sandwich', cat:'sandwiches', name:'Carnitas Cheese', tag:'Recomendado del chef', layers:layersOf(false),
              price:() => P.sandwich, stock:{ cerdo:1 }, addons:true,
-             desc:'Pan brioche tostado con miel mostaza, 150 g de bondiola asada lento en láminas, queso americano derretido, crema de bondiola, <b>pepinillo</b> y cebolla morada encurtida. <b>Incluye papas corrugadas.</b>' },
+             desc:'Pan brioche tostado con miel mostaza, 150 g de bondiola asada lento en láminas, queso americano derretido, crema de bondiola, <b>pepinillo</b> y cebolla morada encurtida.' },
   spicy:   { kind:'sandwich', cat:'sandwiches', name:'Carnitas Cheese Spicy', tag:'Picante', layers:layersOf(true),
              price:() => P.sandwich, stock:{ cerdo:1 }, addons:true,
-             desc:'Pan brioche tostado con miel mostaza, 150 g de bondiola asada lento en láminas, queso americano derretido, crema de bondiola, <b>jalapeño y ají en hojuelas</b>, y cebolla morada encurtida. Pica rico, no castiga. <b>Incluye papas corrugadas.</b>' },
+             desc:'Pan brioche tostado con miel mostaza, 150 g de bondiola asada lento en láminas, queso americano derretido, crema de bondiola, <b>jalapeño y ají en hojuelas</b>, y cebolla morada encurtida. Pica rico, no castiga.' },
   coca:    { kind:'extra', cat:'bebidas', name:'Coca-Cola', icon:'i-can',
              price:() => P.coca, stock:{ coca:1 }, desc:'Personal, bien fría. La pareja perfecta del Cheese.' },
   papitas: { kind:'papitas', cat:'pronto', name:'Papitas Llama', soon:true, icon:'i-fries',
@@ -547,7 +552,8 @@ function photo(p){
 function bigArt(p){
   if (!p.layers) return `<div class="art" style="color:var(--yellow)"><svg style="width:110px;height:110px" aria-hidden="true"><use href="#${p.icon}"/></svg></div>`;
   const seen = new Set(), legend = p.layers.map(([[name, color]]) => seen.has(name) ? '' : (seen.add(name), `<li><i style="background:${color}"></i>${name}</li>`)).join('');
-  return `<div class="art">${stack(p).replace('class="stack"', 'class="stack" style="height:190px"')}<ul>${legend}</ul></div>`;
+  const papas = p.kind === 'sandwich' ? '<li><svg style="width:14px;height:14px;color:var(--yellow)" aria-hidden="true"><use href="#i-fries"/></svg><b style="color:var(--yellow)">+ Papas corrugadas</b></li>' : '';
+  return `<div class="art">${stack(p).replace('class="stack"', 'class="stack" style="height:190px"')}<ul>${legend}${papas}</ul></div>`;
 }
 function renderLobby(){
   const st = storeState();
@@ -571,7 +577,7 @@ function renderMenu(){
         return `<article class="item" id="p-${id}">
           <div class="ph">${photo(p)}</div>
           <div>
-            ${p.tag ? `<div class="tags"><span class="tag">${p.tag}</span></div>` : ''}
+            ${p.tag || p.kind === 'sandwich' ? `<div class="tags">${p.tag ? `<span class="tag">${p.tag}</span>` : ''}${p.kind === 'sandwich' ? '<span class="tag y">Con papas</span>' : ''}</div>` : ''}
             <h3>${p.name}</h3><p>${p.desc}</p>
             <div class="row"><span class="price num">${cop(p.price())}</span><button class="add" data-open="${id}" ${ok ? '' : 'disabled'} aria-label="${ok ? 'Agregar ' + esc(p.name) : esc(p.name) + ' agotado'}">${ok ? 'Agregar' : 'Agotado'}</button></div>
           </div></article>`;
@@ -623,7 +629,7 @@ function openItem(ref){
   $('item-photo').innerHTML = bigArt(p);
   $('item-title').textContent = p.name;
   $('item-desc').innerHTML = p.desc;
-  $('item-unit').textContent = cop(p.price());
+  $('item-unit').innerHTML = cop(p.price()) + (p.kind === 'sandwich' ? ' <span class="tag y" style="vertical-align:middle;margin-left:.4rem">Incluye papas corrugadas</span>' : '');
   $('item-opts').innerHTML = p.addons ? `<div class="opt-group"><b>Adicionales</b><div class="chips">` +
     Object.entries(ADDONS).map(([id, a]) => `<label class="chip"><input type="checkbox" data-addon="${id}"> ${a} <small>+${cop(P.addon)}</small></label>`).join('') + '</div></div>' : '';
   updateItemPrice(); show('ov-item');
@@ -660,7 +666,7 @@ document.querySelectorAll('.overlay').forEach(o => o.addEventListener('click', e
 document.addEventListener('keydown', e => { if (e.key === 'Escape') document.querySelectorAll('.overlay:not(.hidden)').forEach(o => hide(o.id)); });
 
 let lastFocus = null;
-function show(id){ lastFocus = document.activeElement; $(id).classList.remove('hidden'); document.body.style.overflow = 'hidden'; const f = $(id).querySelector('.x, button, input'); if (f) setTimeout(() => f.focus({ preventScroll:true }), 50); }
+function show(id){ if (id === 'ov-cart') { clearTimeout(toastT); $('toast').classList.add('hidden'); } lastFocus = document.activeElement; $(id).classList.remove('hidden'); document.body.style.overflow = 'hidden'; const f = $(id).querySelector('.x, button, input'); if (f) setTimeout(() => f.focus({ preventScroll:true }), 50); }
 function hide(id){ $(id).classList.add('hidden'); if (!document.querySelector('.overlay:not(.hidden)')) { document.body.style.overflow = ''; if (lastFocus && document.contains(lastFocus)) lastFocus.focus({ preventScroll:true }); } }
 let toastT; function toast(msg){ const t = $('toast'); t.textContent = msg; t.classList.remove('hidden'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.add('hidden'), 1800); }
 
@@ -677,7 +683,7 @@ window.addEventListener('scroll', markCat, { passive:true });
 function stepTo(s){ ['cart', 'form', 'done'].forEach(x => $('step-' + x).classList.toggle('hidden', x !== s)); }
 $('go-form').onclick = () => {
   const st = storeState();
-  if (!st.open) { toast('Aún no recibimos pedidos'); return; }
+  if (!st.open) { toast(CONFIG.CLOSED_UNTIL_NOTICE ? 'Aún no recibimos pedidos' : 'Abrimos a las 6:00 p. m. Tu pedido queda guardado aquí'); return; }
   try { const d = JSON.parse(localStorage.getItem('carnitas_cliente') || '{}'); ['name', 'phone', 'address'].forEach(k => { if (d[k] && !$('f-' + k).value) $('f-' + k).value = d[k]; }); } catch (e) {}
   stepTo('form'); $('f-name').focus();
 };
