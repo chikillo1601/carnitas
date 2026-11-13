@@ -1,0 +1,4 @@
+# Archivos internos: no se publican en carnitas.online
+_respaldo
+*.xlsx
+*.md

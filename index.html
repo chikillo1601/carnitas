@@ -506,8 +506,11 @@ function needOf(lines){
   for (const l of lines) { const s = lineStock(l); for (const k in need) need[k] += (s[k] || 0) * l.qty; }
   return need;
 }
+const MAX_UNITS = 12;           // tope por pedido (protege el stock de pedidos falsos)
+const COOLDOWN_MS = 3 * 60000;  // un pedido cada 3 minutos por celular
 function fits(extraStock, qty = 1){
   const need = needOf(cart);
+  if (cart.reduce((n, l) => n + l.qty, 0) + qty > MAX_UNITS) return false;
   return Object.keys(need).every(k => stock[k] === null || need[k] + (extraStock[k] || 0) * qty <= stock[k]);
 }
 async function reserveStock(need){
@@ -648,7 +651,7 @@ $('item-opts').addEventListener('change', e => {
   updateItemPrice();
 });
 $('q-minus').onclick = () => { draft.qty = Math.max(1, draft.qty - 1); $('q-n').textContent = draft.qty; updateItemPrice(); };
-$('q-plus').onclick = () => { if (fits(lineStock(draft), draft.qty + 1)) { draft.qty++; $('q-n').textContent = draft.qty; updateItemPrice(); } else toast('No tenemos más por hoy'); };
+$('q-plus').onclick = () => { if (fits(lineStock(draft), draft.qty + 1)) { draft.qty++; $('q-n').textContent = draft.qty; updateItemPrice(); } else toast(draft.qty + 1 > MAX_UNITS ? 'Máximo ' + MAX_UNITS + ' por pedido. Para más, escríbenos al WhatsApp' : 'No tenemos más por hoy'); };
 $('item-add').onclick = () => { addLine({ ref:draft.ref, addons:draft.addons, qty:draft.qty }); hide('ov-item'); toast('¡Agregado a tu pedido!'); };
 
 /* ---------- Clics generales ---------- */
@@ -660,7 +663,7 @@ document.addEventListener('click', e => {
   if (t.dataset.open) return openItem(t.dataset.open);
   if (t.dataset.inc || t.dataset.dec) {
     const l = cart.find(x => x.id === (t.dataset.inc || t.dataset.dec)); if (!l) return;
-    if (t.dataset.inc) { if (!fits(lineStock(l))) return toast('No tenemos más por hoy'); l.qty++; } else l.qty--;
+    if (t.dataset.inc) { if (!fits(lineStock(l))) return toast(cart.reduce((n, x) => n + x.qty, 0) >= MAX_UNITS ? 'Máximo ' + MAX_UNITS + ' por pedido. Para más, escríbenos al WhatsApp' : 'No tenemos más por hoy'); l.qty++; } else l.qty--;
     cart = cart.filter(x => x.qty > 0); save(); renderAll(); renderCart(); return;
   }
   if (t.dataset.quick) { addLine({ ref:t.dataset.quick, addons:[], qty:1 }); renderCart(); return; }
@@ -708,11 +711,13 @@ $('step-form').addEventListener('submit', async e => {
   if (!name || !address) return $('form-err').textContent = 'Escribe tu nombre y la dirección con el barrio.';
   if (!/^3\d{9}$/.test(phone)) return $('form-err').textContent = 'Escribe un celular de 10 dígitos (empieza por 3).';
   if (!cart.length) return stepTo('cart');
+  let last = 0; try { last = +localStorage.getItem('carnitas_ultimo') || 0; } catch (err) {}
+  const repeat = Date.now() - last < COOLDOWN_MS;
   $('form-err').textContent = ''; $('send').disabled = true; $('send').textContent = 'Enviando…';
   try { localStorage.setItem('carnitas_cliente', JSON.stringify({ name, phone, address })); } catch (err) {}
 
   const code = newCode(), t = total();
-  if (LIVE) {
+  if (LIVE && !repeat) {
     const ok = await reserveStock(needOf(cart));
     if (!ok) { $('send').disabled = false; $('send').textContent = 'Enviar por WhatsApp'; renderAll(); stepTo('cart'); renderCart(); return toast('Se acabó algo de tu pedido. Revísalo, por favor.'); }
     const lines = cart.map(l => ({ product:lineTitle(l), qty:l.qty, unit:unitPrice(l), drink:l.ref === 'coca', addons:(l.addons || []).map(a => ADDONS[a]), protein:'', label:[lineTitle(l), lineDetail(l)].filter(Boolean).join(' · ') }));
@@ -726,6 +731,7 @@ $('step-form').addEventListener('submit', async e => {
     t >= CONFIG.FREE_DELIVERY_FROM ? '🛵 Domicilio: GRATIS' : '🛵 Domicilio: por confirmar según el barrio',
     '', `👤 ${name}`, `📱 ${phone}`, `📍 ${address}`, `💳 Pago: ${pay}`, notes ? `📝 ${notes}` : '',
   ].filter((x, i, a) => x !== '' || a[i - 1] !== '').join('\n');
+  try { localStorage.setItem('carnitas_ultimo', String(Date.now())); } catch (err) {}
   const link = waLink(msg);
   $('done-code').textContent = '#' + code; $('done-wa').href = link;
   cart = []; save(); renderAll(); stepTo('done');
