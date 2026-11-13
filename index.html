@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Carnitas Sogamoso | Carnitas Cheese y Cheese Spicy a domicilio</title>
-<meta name="description" content="Carnitas Cheese y Carnitas Cheese Spicy: bondiola asada lento, crema de la casa y queso americano derretido en pan brioche tostado. Domicilios en Sogamoso por WhatsApp.">
+<meta name="description" content="Carnitas Cheese y Carnitas Cheese Spicy: bondiola asada lento, crema de la casa y queso americano derretido en pan brioche tostado, con papas incluidas. Domicilios en Sogamoso por WhatsApp.">
 <meta name="theme-color" content="#0C0B0A">
 <meta property="og:title" content="Carnitas · Barriga llena, corazón contento">
 <meta property="og:description" content="Bondiola asada lento, crema de la casa y queso derretido en pan brioche. Pide en Sogamoso por WhatsApp.">
@@ -399,7 +399,7 @@ const CONFIG = {
   CLOSED_DATES: { "2026-11-12": "Volvemos mañana viernes a las 6:00 p. m. con el menú nuevo. Ya puedes ver lo que viene." },
 
   // Precios (COP). Papitas y tacos: propuestas F10 y F9, pendientes del sí del fundador.
-  PRICES: { sandwich: 16900, papitas: 21900, tacos: 15900, coca: 4000, addon: 3000 },
+  PRICES: { sandwich: 17900, papitas: 21900, tacos: 15900, coca: 4000, addon: 3000 },
   FREE_DELIVERY_FROM: 50000,   // domicilio gratis desde este total
 
   NEQUI: "Nequi 312 422 8657",
@@ -435,10 +435,10 @@ const layersOf = picante => [
 const PRODUCTS = {
   cheese:  { kind:'sandwich', cat:'sandwiches', name:'Carnitas Cheese', tag:'Recomendado del chef', layers:layersOf(false),
              price:() => P.sandwich, stock:{ cerdo:1 }, addons:true,
-             desc:'Pan brioche tostado con miel mostaza, 150 g de bondiola asada lento en láminas, queso americano derretido, crema de bondiola, <b>pepinillo</b> y cebolla morada encurtida.' },
+             desc:'Pan brioche tostado con miel mostaza, 150 g de bondiola asada lento en láminas, queso americano derretido, crema de bondiola, <b>pepinillo</b> y cebolla morada encurtida. <b>Incluye papas corrugadas.</b>' },
   spicy:   { kind:'sandwich', cat:'sandwiches', name:'Carnitas Cheese Spicy', tag:'Picante', layers:layersOf(true),
              price:() => P.sandwich, stock:{ cerdo:1 }, addons:true,
-             desc:'Pan brioche tostado con miel mostaza, 150 g de bondiola asada lento en láminas, queso americano derretido, crema de bondiola, <b>jalapeño y ají en hojuelas</b>, y cebolla morada encurtida. Pica rico, no castiga.' },
+             desc:'Pan brioche tostado con miel mostaza, 150 g de bondiola asada lento en láminas, queso americano derretido, crema de bondiola, <b>jalapeño y ají en hojuelas</b>, y cebolla morada encurtida. Pica rico, no castiga. <b>Incluye papas corrugadas.</b>' },
   coca:    { kind:'extra', cat:'bebidas', name:'Coca-Cola', icon:'i-can',
              price:() => P.coca, stock:{ coca:1 }, desc:'Personal, bien fría. La pareja perfecta del Cheese.' },
   papitas: { kind:'papitas', cat:'pronto', name:'Papitas Llama', soon:true, icon:'i-fries',
@@ -449,7 +449,7 @@ const PRODUCTS = {
              desc:'3 tacos de bondiola: 2 al pastor y 1 picante.' },
 };
 const CATS = [
-  { id:'sandwiches', title:'Sándwiches', note:'Se arman al momento. Viajan en caja con ventilación para que lleguen crocantes.' },
+  { id:'sandwiches', title:'Sándwiches', note:'Cada sándwich trae papas corrugadas incluidas. Se arman al momento y viajan en caja con ventilación para que lleguen crocantes.' },
   { id:'bebidas', title:'Bebidas' },
   { id:'pronto', title:'Muy pronto', note:'Los estamos probando en cocina. Salen cuando queden perfectos.' },
 ];
@@ -518,6 +518,7 @@ const unitPrice = l => PRODUCTS[l.ref].price() + (l.addons || []).length * P.add
 const lineTitle = l => PRODUCTS[l.ref].name;
 function lineDetail(l){
   const parts = [];
+  if (PRODUCTS[l.ref].kind === 'sandwich') parts.push('con papas');
   if (l.ref === 'tacos') parts.push('2 al pastor + 1 picante');
   if ((l.addons || []).length) parts.push('+ ' + l.addons.map(a => ADDONS[a]).join(', '));
   return parts.join(' · ');
@@ -552,7 +553,7 @@ function renderLobby(){
   const st = storeState();
   $('lobby-sign').classList.toggle('open', st.open);
   $('lobby-sign-text').textContent = st.open ? 'Abierto' : (CONFIG.CLOSED_UNTIL_NOTICE ? 'Cerrado temporalmente' : 'Cerrado ahora');
-  document.querySelectorAll('.door-price').forEach(el => el.textContent = cop(P.sandwich));
+  document.querySelectorAll('.door-price').forEach(el => el.textContent = cop(P.sandwich) + ' · con papas');
   $('door-cheese-art').innerHTML = stack(PRODUCTS.cheese);
   $('door-spicy-art').innerHTML = stack(PRODUCTS.spicy);
 }
