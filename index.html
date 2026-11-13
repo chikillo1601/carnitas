@@ -402,6 +402,8 @@ const CONFIG = {
   CLOSED_UNTIL_NOTICE: null,
   // Días puntuales sin servicio: "AAAA-MM-DD": "mensaje".
   CLOSED_DATES: { "2026-11-12": "Volvemos mañana viernes a las 6:00 p. m. con el menú nuevo. Ya puedes ver lo que viene." },
+  // Días que abrimos a otra hora: "AAAA-MM-DD": "HH:MM".
+  LATE_OPEN: { "2026-11-13": "18:30" },
 
   // Precios (COP). Papitas y tacos: propuestas F10 y F9, pendientes del sí del fundador.
   PRICES: { sandwich: 17900, papitas: 21900, tacos: 15900, coca: 4000, addon: 3000 },
@@ -473,6 +475,7 @@ function bogotaNow(){
   return { day: d.getUTCDay(), min: d.getUTCHours() * 60 + d.getUTCMinutes(), date: d.toISOString().slice(0, 10) };
 }
 const toMin = t => { const [h, m] = t.split(':').map(Number); return h * 60 + m; };
+function hora(t){ const [h, m] = t.split(':').map(Number); return (h > 12 ? h - 12 : h) + ':' + String(m).padStart(2, '0') + (h >= 12 ? ' p. m.' : ' a. m.'); }
 function storeState(){
   const forceOpen = !LIVE && new URLSearchParams(location.search).has('abierto');
   if (forceOpen) return { open:true, label:'Abierto (prueba) · hasta las 11:00 p. m.' };
@@ -480,7 +483,8 @@ function storeState(){
   const n = bogotaNow();
   if (CONFIG.CLOSED_DATES[n.date]) return { open:false, label:'Hoy no abrimos · ' + CONFIG.CLOSED_DATES[n.date], notice:{ title:'Hoy no abrimos', text:CONFIG.CLOSED_DATES[n.date] } };
   if (CONFIG.CLOSED_WEEKDAYS.includes(n.day)) return { open:false, label:'Hoy descansamos · mañana abrimos a las 6:00 p. m.' };
-  if (n.min < toMin(CONFIG.OPEN_TIME)) return { open:false, label:'Abrimos hoy a las 6:00 p. m. · ve armando tu pedido' };
+  const openAt = (CONFIG.LATE_OPEN || {})[n.date] || CONFIG.OPEN_TIME;
+  if (n.min < toMin(openAt)) return { open:false, label:'Abrimos hoy a las ' + hora(openAt) + ' · ve armando tu pedido', opensAt: hora(openAt) };
   if (n.min >= toMin(CONFIG.CLOSE_TIME)) return { open:false, label:'Por hoy ya cerramos · mañana abrimos a las 6:00 p. m.' };
   return { open:true, label:'Abierto · hasta las 11:00 p. m.' };
 }
@@ -683,7 +687,7 @@ window.addEventListener('scroll', markCat, { passive:true });
 function stepTo(s){ ['cart', 'form', 'done'].forEach(x => $('step-' + x).classList.toggle('hidden', x !== s)); }
 $('go-form').onclick = () => {
   const st = storeState();
-  if (!st.open) { toast(CONFIG.CLOSED_UNTIL_NOTICE ? 'Aún no recibimos pedidos' : 'Abrimos a las 6:00 p. m. Tu pedido queda guardado aquí'); return; }
+  if (!st.open) { toast(CONFIG.CLOSED_UNTIL_NOTICE ? 'Aún no recibimos pedidos' : 'Abrimos a las ' + (st.opensAt || '6:00 p. m.') + ' Tu pedido queda guardado aquí'); return; }
   try { const d = JSON.parse(localStorage.getItem('carnitas_cliente') || '{}'); ['name', 'phone', 'address'].forEach(k => { if (d[k] && !$('f-' + k).value) $('f-' + k).value = d[k]; }); } catch (e) {}
   stepTo('form'); $('f-name').focus();
 };
