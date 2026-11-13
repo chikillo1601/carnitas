@@ -553,7 +553,7 @@ function renderLobby(){
   const st = storeState();
   $('lobby-sign').classList.toggle('open', st.open);
   $('lobby-sign-text').textContent = st.open ? 'Abierto' : (CONFIG.CLOSED_UNTIL_NOTICE ? 'Cerrado temporalmente' : 'Cerrado ahora');
-  document.querySelectorAll('.door-price').forEach(el => el.textContent = cop(P.sandwich) + ' · con papas');
+  document.querySelectorAll('.door-price').forEach(el => el.textContent = cop(P.sandwich));
   $('door-cheese-art').innerHTML = stack(PRODUCTS.cheese);
   $('door-spicy-art').innerHTML = stack(PRODUCTS.spicy);
 }
