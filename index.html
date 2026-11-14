@@ -449,7 +449,7 @@ const PRODUCTS = {
   spicy:   { kind:'sandwich', cat:'sandwiches', name:'Carnitas Cheese Spicy', tag:'Picante', layers:layersOf(true),
              price:() => P.sandwich, stock:{ cerdo:1 }, addons:true,
              desc:'Pan brioche tostado con miel mostaza, 150 g de bondiola asada lento en láminas, queso americano derretido, crema de bondiola, <b>jalapeño y ají en hojuelas</b>, y cebolla morada encurtida. Pica rico, no castiga.' },
-  coca:    { kind:'extra', cat:'bebidas', name:'Coca-Cola', icon:'i-can',
+  coca:    { kind:'extra', cat:'bebidas', name:'Coca-Cola', icon:'i-can', img:'img/coca-cola.jpg',
              price:() => P.coca, stock:{ coca:1 }, desc:'Personal, bien fría. La pareja perfecta del Cheese.' },
   papitas: { kind:'papitas', cat:'pronto', name:'Papitas Llama', soon:true, icon:'i-fries',
              price:() => P.papitas, stock:{ cerdo:1, papas:1 },
@@ -560,13 +560,16 @@ function tempPhoto(p){
   if (!p.layers || !t || !t.dates.includes(bogotaNow().date)) return '';
   return `<img src="${t.src}" alt="${esc(p.name)}" width="1200" height="800" loading="lazy">`;
 }
+const imgTag = p => `<img src="${p.img}" alt="${esc(p.name)}" width="800" height="1067" loading="lazy">`;
 function photo(p){
   if (tempPhoto(p)) return tempPhoto(p);
+  if (p.img) return imgTag(p);
   if (p.layers) return stack(p);
   return `<svg aria-hidden="true"><use href="#${p.icon}"/></svg>`;
 }
 function bigArt(p){
   if (tempPhoto(p)) return tempPhoto(p);
+  if (p.img) return imgTag(p);
   if (!p.layers) return `<div class="art" style="color:var(--yellow)"><svg style="width:110px;height:110px" aria-hidden="true"><use href="#${p.icon}"/></svg></div>`;
   const seen = new Set(), legend = p.layers.map(([[name, color]]) => seen.has(name) ? '' : (seen.add(name), `<li><i style="background:${color}"></i>${name}</li>`)).join('');
   const papas = p.kind === 'sandwich' ? '<li><svg style="width:14px;height:14px;color:var(--yellow)" aria-hidden="true"><use href="#i-fries"/></svg><b style="color:var(--yellow)">+ Papas corrugadas</b></li>' : '';
