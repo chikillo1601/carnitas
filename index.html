@@ -405,6 +405,9 @@ const CONFIG = {
   // Días que abrimos a otra hora: "AAAA-MM-DD": "HH:MM".
   LATE_OPEN: { "2026-11-13": "18:30" },
 
+  // Foto temporal de los 2 sándwiches (pedido del fundador: solo hoy, viernes 13 nov). Pasada la fecha vuelve sola al dibujo por capas.
+  TEMP_PHOTO: { src: "img/sandwich-hoy.jpg", dates: ["2026-11-13"] },
+
   // Precios (COP). Papitas y tacos: propuestas F10 y F9, pendientes del sí del fundador.
   PRICES: { sandwich: 17900, papitas: 21900, tacos: 15900, coca: 4000, addon: 3000 },
   FREE_DELIVERY_FROM: 50000,   // domicilio gratis desde este total
@@ -552,11 +555,18 @@ function stack(p){
   return `<span class="stack" role="img" aria-label="Capas del ${esc(p.name)}">` +
     p.layers.map(([[, color], h, cls]) => `<i class="${cls || ''}" style="background:${color};flex-grow:${h}"></i>`).join('') + '</span>';
 }
+function tempPhoto(p){
+  const t = CONFIG.TEMP_PHOTO;
+  if (!p.layers || !t || !t.dates.includes(bogotaNow().date)) return '';
+  return `<img src="${t.src}" alt="${esc(p.name)}" width="1200" height="800" loading="lazy">`;
+}
 function photo(p){
+  if (tempPhoto(p)) return tempPhoto(p);
   if (p.layers) return stack(p);
   return `<svg aria-hidden="true"><use href="#${p.icon}"/></svg>`;
 }
 function bigArt(p){
+  if (tempPhoto(p)) return tempPhoto(p);
   if (!p.layers) return `<div class="art" style="color:var(--yellow)"><svg style="width:110px;height:110px" aria-hidden="true"><use href="#${p.icon}"/></svg></div>`;
   const seen = new Set(), legend = p.layers.map(([[name, color]]) => seen.has(name) ? '' : (seen.add(name), `<li><i style="background:${color}"></i>${name}</li>`)).join('');
   const papas = p.kind === 'sandwich' ? '<li><svg style="width:14px;height:14px;color:var(--yellow)" aria-hidden="true"><use href="#i-fries"/></svg><b style="color:var(--yellow)">+ Papas corrugadas</b></li>' : '';
@@ -567,8 +577,8 @@ function renderLobby(){
   $('lobby-sign').classList.toggle('open', st.open);
   $('lobby-sign-text').textContent = st.open ? 'Abierto' : (CONFIG.CLOSED_UNTIL_NOTICE ? 'Cerrado temporalmente' : 'Cerrado ahora');
   document.querySelectorAll('.door-price').forEach(el => el.textContent = cop(P.sandwich));
-  $('door-cheese-art').innerHTML = stack(PRODUCTS.cheese);
-  $('door-spicy-art').innerHTML = stack(PRODUCTS.spicy);
+  $('door-cheese-art').innerHTML = tempPhoto(PRODUCTS.cheese) || stack(PRODUCTS.cheese);
+  $('door-spicy-art').innerHTML = tempPhoto(PRODUCTS.spicy) || stack(PRODUCTS.spicy);
 }
 function renderMenu(){
   $('menu').innerHTML = CATS.map(c => {
