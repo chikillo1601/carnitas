@@ -403,7 +403,9 @@ const CONFIG = {
   // Días puntuales sin servicio: "AAAA-MM-DD": "mensaje".
   CLOSED_DATES: { "2026-11-12": "Volvemos mañana viernes a las 6:00 p. m. con el menú nuevo. Ya puedes ver lo que viene." },
   // Días que abrimos a otra hora: "AAAA-MM-DD": "HH:MM".
-  LATE_OPEN: { "2026-11-13": "18:30" },
+  LATE_OPEN: { "2026-11-13": "18:30", "2026-11-16": "21:00" },
+  // Días que cerramos a otra hora: "AAAA-MM-DD": "HH:MM" ("24:00" = medianoche).
+  LATE_CLOSE: { "2026-11-16": "24:00" },
 
   // Foto temporal de los 2 sándwiches (pedido del fundador: solo hoy, viernes 13 nov). Pasada la fecha vuelve sola al dibujo por capas.
   TEMP_PHOTO: { src: "img/sandwich-hoy.jpg", dates: ["2026-11-13"] },
@@ -478,7 +480,7 @@ function bogotaNow(){
   return { day: d.getUTCDay(), min: d.getUTCHours() * 60 + d.getUTCMinutes(), date: d.toISOString().slice(0, 10) };
 }
 const toMin = t => { const [h, m] = t.split(':').map(Number); return h * 60 + m; };
-function hora(t){ const [h, m] = t.split(':').map(Number); return (h > 12 ? h - 12 : h) + ':' + String(m).padStart(2, '0') + (h >= 12 ? ' p. m.' : ' a. m.'); }
+function hora(t){ const [h, m] = t.split(':').map(Number); if (h === 24 || (h === 0 && m === 0)) return '12:00 de la noche'; return (h > 12 ? h - 12 : h) + ':' + String(m).padStart(2, '0') + (h >= 12 ? ' p. m.' : ' a. m.'); }
 function storeState(){
   const forceOpen = !LIVE && new URLSearchParams(location.search).has('abierto');
   if (forceOpen) return { open:true, label:'Abierto (prueba) · hasta las 11:00 p. m.' };
@@ -488,8 +490,9 @@ function storeState(){
   if (CONFIG.CLOSED_WEEKDAYS.includes(n.day)) return { open:false, label:'Hoy descansamos · mañana abrimos a las 6:00 p. m.' };
   const openAt = (CONFIG.LATE_OPEN || {})[n.date] || CONFIG.OPEN_TIME;
   if (n.min < toMin(openAt)) return { open:false, label:'Abrimos hoy a las ' + hora(openAt) + ' · ve armando tu pedido', opensAt: hora(openAt) };
-  if (n.min >= toMin(CONFIG.CLOSE_TIME)) return { open:false, label:'Por hoy ya cerramos · mañana abrimos a las 6:00 p. m.' };
-  return { open:true, label:'Abierto · hasta las 11:00 p. m.' };
+  const closeAt = (CONFIG.LATE_CLOSE || {})[n.date] || CONFIG.CLOSE_TIME;
+  if (n.min >= toMin(closeAt)) return { open:false, label:'Por hoy ya cerramos · mañana abrimos a las 6:00 p. m.' };
+  return { open:true, label:'Abierto · hasta las ' + hora(closeAt) };
 }
 
 /* ---------- Stock (Firebase /stock: cerdo, PAPAS, "Coca-Cola") ---------- */
