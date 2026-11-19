@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Carnitas Sogamoso | Carnitas Cheese y Cheese Spicy a domicilio</title>
-<meta name="description" content="Carnitas Cheese y Carnitas Cheese Spicy: bondiola asada lento, crema de la casa y queso americano derretido en pan brioche tostado, con papas incluidas. Domicilios en Sogamoso por WhatsApp.">
+<meta name="description" content="Carnitas Cheese y Carnitas Cheese Spicy: bondiola asada lento, salsa de la casa y queso americano derretido en pan brioche tostado, con papas incluidas. Domicilios en Sogamoso por WhatsApp.">
 <meta name="theme-color" content="#0C0B0A">
 <meta property="og:title" content="Carnitas · Barriga llena, corazón contento">
-<meta property="og:description" content="Bondiola asada lento, crema de la casa y queso derretido en pan brioche. Pide en Sogamoso por WhatsApp.">
+<meta property="og:description" content="Bondiola asada lento, salsa de la casa y queso derretido en pan brioche. Pide en Sogamoso por WhatsApp.">
 <meta property="og:image" content="https://carnitas.online/img/oso-foodtruck.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -265,7 +265,7 @@
         <p><b>¡Bienvenido a Carnitas!</b> Hoy hay dos sándwiches y los dos chorrean. ¿Cuál te provoca?</p>
       </div>
       <h1 id="lobby-title" class="disp">Barriga llena, <em>corazón contento.</em></h1>
-      <p class="lobby-sub">Bondiola asada lento, crema hecha con su propio jugo y queso americano derretido, en pan brioche tostado.</p>
+      <p class="lobby-sub">Bondiola asada lento, salsa de la casa y queso americano derretido, en pan brioche tostado.</p>
       <nav class="doors" aria-label="Escoge qué quieres comer">
         <a class="door" href="#p-cheese" data-door="cheese"><span id="door-cheese-art" class="door-art" aria-hidden="true"></span><span><small class="num door-price"></small>Cheese</span></a>
         <a class="door" href="#p-spicy" data-door="spicy"><span id="door-spicy-art" class="door-art" aria-hidden="true"></span><span><small class="num door-price"></small>Spicy</span></a>
@@ -283,7 +283,7 @@
       <ol>
         <li><div><b>12 horas de adobo.</b>La bondiola se adoba desde el día anterior con nuestra mezcla de especias.</div></li>
         <li><div><b>Horas de horno, a fuego lento.</b>Se asa despacio hasta que queda tierna y suelta su jugo.</div></li>
-        <li><div><b>Su jugo se vuelve crema.</b>Con ese jugo hacemos la crema de la casa. Por eso sabe tanto a carne.</div></li>
+        <li><div><b>Salsa de la casa.</b>Receta propia de Carnitas, hecha por nosotros. No la vas a encontrar en otro lado.</div></li>
         <li><div><b>Plancha al momento.</b>Cuando pides, doramos la carne, derretimos el queso y tostamos el pan. Nada se arma antes.</div></li>
       </ol>
     </section>
@@ -433,24 +433,24 @@ const L = {
   pan:   ['Pan brioche tostado', '#D99A45'],
   miel:  ['Miel mostaza', '#E9B524'],
   cebolla:['Cebolla morada encurtida', '#9C3F7C'],
-  pepino:['Pepinillo', '#86A83C'],
+  tocineta:['Tocineta crocante', '#B5482E'],
   jala:  ['Jalapeño', '#3E8D3B'],
   aji:   ['Ají en hojuelas', '#D9381E'],
-  crema: ['Crema de bondiola', '#EAD3A2'],
+  crema: ['Salsa de la casa', '#EAD3A2'],
   queso: ['Queso americano derretido', '#FFC72C'],
   carne: ['150 g de bondiola asada lento', '#8A4A2B'],
 };
 const layersOf = picante => [
-  [L.pan, 15, 'top'], [L.miel, 2], [L.cebolla, 4], picante ? [L.jala, 5] : [L.pepino, 5],
+  [L.pan, 15, 'top'], [L.miel, 2], [L.cebolla, 4], picante ? [L.jala, 5] : [L.tocineta, 5, 'meat'],
   ...(picante ? [[L.aji, 3, 'dots']] : []), [L.crema, 7], [L.queso, 6, 'melt'], [L.carne, 22, 'meat'], [L.miel, 2], [L.pan, 11, 'bot'],
 ];
 const PRODUCTS = {
   cheese:  { kind:'sandwich', cat:'sandwiches', name:'Carnitas Cheese', tag:'Recomendado del chef', layers:layersOf(false),
              price:() => P.sandwich, stock:{ cerdo:1 }, addons:true,
-             desc:'Pan brioche tostado con miel mostaza, 150 g de bondiola asada lento en láminas, queso americano derretido, crema de bondiola, <b>pepinillo</b> y cebolla morada encurtida.' },
+             desc:'Pan brioche tostado con miel mostaza, 150 g de bondiola asada lento en láminas, queso americano derretido, <b>tocineta crocante</b>, salsa de la casa y cebolla morada encurtida.' },
   spicy:   { kind:'sandwich', cat:'sandwiches', name:'Carnitas Cheese Spicy', tag:'Picante', layers:layersOf(true),
              price:() => P.sandwich, stock:{ cerdo:1 }, addons:true,
-             desc:'Pan brioche tostado con miel mostaza, 150 g de bondiola asada lento en láminas, queso americano derretido, crema de bondiola, <b>jalapeño y ají en hojuelas</b>, y cebolla morada encurtida. Pica rico, no castiga.' },
+             desc:'Pan brioche tostado con miel mostaza, 150 g de bondiola asada lento en láminas, queso americano derretido, salsa de la casa, <b>jalapeño y ají en hojuelas</b>, y cebolla morada encurtida. Pica rico, no castiga.' },
   coca:    { kind:'extra', cat:'bebidas', name:'Coca-Cola', icon:'i-can', img:'img/coca-cola.jpg',
              price:() => P.coca, stock:{ coca:1 }, desc:'Personal, bien fría. La pareja perfecta del Cheese.' },
   papitas: { kind:'papitas', cat:'pronto', name:'Papitas Llama', soon:true, icon:'i-fries',
@@ -465,13 +465,13 @@ const CATS = [
   { id:'bebidas', title:'Bebidas' },
   { id:'pronto', title:'Muy pronto', note:'Los estamos probando en cocina. Salen cuando queden perfectos.' },
 ];
-const ADDONS = { crema:'Crema de bondiola extra', queso:'Queso americano extra', jalapenos:'Jalapeños', pepinillos:'Pepinillos' };
+const ADDONS = { crema:'Salsa de la casa extra', queso:'Queso americano extra', jalapenos:'Jalapeños' };
 
 /* ---------- Estado ---------- */
 let cart = [];            // { id, ref, addons:[], qty }
 let stock = { cerdo:null, papas:null, coca:null }; // null = sin límite
 const STORE = 'carnitas_cart_v3';
-try { cart = JSON.parse(localStorage.getItem(STORE) || '[]').filter(l => l && PRODUCTS[l.ref] && !PRODUCTS[l.ref].soon && l.qty > 0); } catch (e) { cart = []; }
+try { cart = JSON.parse(localStorage.getItem(STORE) || '[]').filter(l => l && PRODUCTS[l.ref] && !PRODUCTS[l.ref].soon && l.qty > 0); cart.forEach(l => { l.addons = (l.addons || []).filter(a => ADDONS[a]); }); } catch (e) { cart = []; }
 const save = () => { try { localStorage.setItem(STORE, JSON.stringify(cart)); } catch (e) {} };
 
 /* ---------- Horario ---------- */
