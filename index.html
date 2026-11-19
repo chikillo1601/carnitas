@@ -406,6 +406,8 @@ const CONFIG = {
   LATE_OPEN: { "2026-11-13": "18:30", "2026-11-16": "21:00" },
   // Días que cerramos a otra hora: "AAAA-MM-DD": "HH:MM" ("24:00" = medianoche).
   LATE_CLOSE: {},
+  // Agotados a mano (aunque el stock diga otra cosa). Quitar de la lista cuando vuelva a haber.
+  AGOTADO: ["coca"],
 
   // Foto temporal de los 2 sándwiches (pedido del fundador: solo hoy, viernes 13 nov). Pasada la fecha vuelve sola al dibujo por capas.
   TEMP_PHOTO: { src: "img/sandwich-hoy.jpg", dates: ["2026-11-13"] },
@@ -470,8 +472,10 @@ const ADDONS = { crema:'Salsa de la casa extra', queso:'Queso americano extra', 
 /* ---------- Estado ---------- */
 let cart = [];            // { id, ref, addons:[], qty }
 let stock = { cerdo:null, papas:null, coca:null }; // null = sin límite
+const forceSoldOut = () => (CONFIG.AGOTADO || []).forEach(k => { if (k in stock) stock[k] = 0; });
+forceSoldOut();
 const STORE = 'carnitas_cart_v3';
-try { cart = JSON.parse(localStorage.getItem(STORE) || '[]').filter(l => l && PRODUCTS[l.ref] && !PRODUCTS[l.ref].soon && l.qty > 0); cart.forEach(l => { l.addons = (l.addons || []).filter(a => ADDONS[a]); }); } catch (e) { cart = []; }
+try { cart = JSON.parse(localStorage.getItem(STORE) || '[]').filter(l => l && PRODUCTS[l.ref] && !PRODUCTS[l.ref].soon && l.qty > 0 && !Object.keys(PRODUCTS[l.ref].stock).some(k => (CONFIG.AGOTADO || []).includes(k))); cart.forEach(l => { l.addons = (l.addons || []).filter(a => ADDONS[a]); }); } catch (e) { cart = []; }
 const save = () => { try { localStorage.setItem(STORE, JSON.stringify(cart)); } catch (e) {} };
 
 /* ---------- Horario ---------- */
@@ -503,6 +507,7 @@ async function loadStock(){
     if (!r.ok) return;
     const d = await r.json() || {};
     for (const [k, f] of Object.entries(STOCK_FIELDS)) stock[k] = typeof d[f] === 'number' ? d[f] : null;
+    forceSoldOut();
     renderAll();
   } catch (e) {}
 }
