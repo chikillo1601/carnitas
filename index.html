@@ -410,7 +410,7 @@ const CONFIG = {
   AGOTADO: ["coca"],
 
   // Foto temporal de los 2 sándwiches (pedido del fundador: solo hoy, viernes 13 nov). Pasada la fecha vuelve sola al dibujo por capas.
-  TEMP_PHOTO: { src: "img/sandwich-hoy.jpg", dates: ["2026-11-13"] },
+  TEMP_PHOTO: { src: "img/sandwich.jpg", dates: null }, // dates: null = siempre
 
   // Precios (COP). Papitas y tacos: propuestas F10 y F9, pendientes del sí del fundador.
   PRICES: { sandwich: 17900, papitas: 21900, tacos: 15900, coca: 4000, addon: 3000 },
@@ -565,8 +565,8 @@ function stack(p){
 }
 function tempPhoto(p){
   const t = CONFIG.TEMP_PHOTO;
-  if (!p.layers || !t || !t.dates.includes(bogotaNow().date)) return '';
-  return `<img src="${t.src}" alt="${esc(p.name)}" width="1200" height="800" loading="lazy">`;
+  if (!p.layers || !t || (t.dates && !t.dates.includes(bogotaNow().date))) return '';
+  return `<img src="${t.src}" alt="${esc(p.name)}" width="1536" height="1024" loading="lazy">`;
 }
 const imgTag = p => `<img src="${p.img}" alt="${esc(p.name)}" width="800" height="1067" loading="lazy">`;
 function photo(p){
