@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Carnitas Sogamoso | Carnitas Cheese y Cheese Spicy a domicilio</title>
-<meta name="description" content="Carnitas Cheese y Carnitas Cheese Spicy: bondiola asada lento, salsa de la casa y queso americano derretido en pan brioche tostado, con papas incluidas. Domicilios en Sogamoso por WhatsApp.">
+<meta name="description" content="Carnitas Cheese y Carnitas Cheese Spicy: bondiola asada lento, salsa de la casa y queso americano derretido en pan brioche tostado, a $17.900, o $20.000 con papas. Domicilios en Sogamoso por WhatsApp.">
 <meta name="theme-color" content="#0C0B0A">
 <meta property="og:title" content="Carnitas · Barriga llena, corazón contento">
 <meta property="og:description" content="Bondiola asada lento, salsa de la casa y queso derretido en pan brioche. Pide en Sogamoso por WhatsApp.">
@@ -413,7 +413,7 @@ const CONFIG = {
   TEMP_PHOTO: { src: "img/sandwich-2.jpg", dates: null }, // dates: null = siempre
 
   // Precios (COP). Papitas y tacos: propuestas F10 y F9, pendientes del sí del fundador.
-  PRICES: { sandwich: 17900, papitas: 21900, tacos: 15900, coca: 4000, addon: 3000 },
+  PRICES: { sandwich: 17900, papas: 2100, papitas: 21900, tacos: 15900, coca: 4000, addon: 3000 }, // papas: lo que suma "con papas" al sándwich ($20.000)
   FREE_DELIVERY_FROM: 50000,   // domicilio gratis desde este total
 
   NEQUI: "Nequi 312 422 8657",
@@ -463,7 +463,7 @@ const PRODUCTS = {
              desc:'3 tacos de bondiola: 2 al pastor y 1 picante.' },
 };
 const CATS = [
-  { id:'sandwiches', title:'Sándwiches', note:'Cada sándwich trae papas corrugadas incluidas. Se arman al momento y viajan en caja con ventilación para que lleguen crocantes.' },
+  { id:'sandwiches', title:'Sándwiches', note:'Solo $17.900, o con papas corrugadas $20.000. Se arman al momento y viajan en caja con ventilación para que lleguen crocantes.' },
   { id:'bebidas', title:'Bebidas' },
   { id:'pronto', title:'Muy pronto', note:'Los estamos probando en cocina. Salen cuando queden perfectos.' },
 ];
@@ -475,7 +475,7 @@ let stock = { cerdo:null, papas:null, coca:null }; // null = sin límite
 const forceSoldOut = () => (CONFIG.AGOTADO || []).forEach(k => { if (k in stock) stock[k] = 0; });
 forceSoldOut();
 const STORE = 'carnitas_cart_v3';
-try { cart = JSON.parse(localStorage.getItem(STORE) || '[]').filter(l => l && PRODUCTS[l.ref] && !PRODUCTS[l.ref].soon && l.qty > 0 && !Object.keys(PRODUCTS[l.ref].stock).some(k => (CONFIG.AGOTADO || []).includes(k))); cart.forEach(l => { l.addons = (l.addons || []).filter(a => ADDONS[a]); }); } catch (e) { cart = []; }
+try { cart = JSON.parse(localStorage.getItem(STORE) || '[]').filter(l => l && PRODUCTS[l.ref] && !PRODUCTS[l.ref].soon && l.qty > 0 && !Object.keys(PRODUCTS[l.ref].stock).some(k => (CONFIG.AGOTADO || []).includes(k))); cart.forEach(l => { l.addons = (l.addons || []).filter(a => ADDONS[a]); if (PRODUCTS[l.ref].kind === 'sandwich' && typeof l.papas !== 'boolean') l.papas = true; }); } catch (e) { cart = []; }
 const save = () => { try { localStorage.setItem(STORE, JSON.stringify(cart)); } catch (e) {} };
 
 /* ---------- Horario ---------- */
@@ -537,16 +537,16 @@ async function reserveStock(need){
 }
 
 /* ---------- Precios y etiquetas ---------- */
-const unitPrice = l => PRODUCTS[l.ref].price() + (l.addons || []).length * P.addon;
+const unitPrice = l => PRODUCTS[l.ref].price() + (l.papas ? P.papas : 0) + (l.addons || []).length * P.addon;
 const lineTitle = l => PRODUCTS[l.ref].name;
 function lineDetail(l){
   const parts = [];
-  if (PRODUCTS[l.ref].kind === 'sandwich') parts.push('con papas');
+  if (PRODUCTS[l.ref].kind === 'sandwich') parts.push(l.papas ? 'con papas' : 'solo, sin papas');
   if (l.ref === 'tacos') parts.push('2 al pastor + 1 picante');
   if ((l.addons || []).length) parts.push('+ ' + l.addons.map(a => ADDONS[a]).join(', '));
   return parts.join(' · ');
 }
-const lineKey = l => [l.ref, (l.addons || []).join('+')].join('|');
+const lineKey = l => [l.ref, l.papas ? 'papas' : '', (l.addons || []).join('+')].join('|');
 const total = () => cart.reduce((s, l) => s + unitPrice(l) * l.qty, 0);
 const count = () => cart.reduce((s, l) => s + l.qty, 0);
 
@@ -581,7 +581,7 @@ function bigArt(p){
   if (p.img) return imgTag(p);
   if (!p.layers) return `<div class="art" style="color:var(--yellow)"><svg style="width:110px;height:110px" aria-hidden="true"><use href="#${p.icon}"/></svg></div>`;
   const seen = new Set(), legend = p.layers.map(([[name, color]]) => seen.has(name) ? '' : (seen.add(name), `<li><i style="background:${color}"></i>${name}</li>`)).join('');
-  const papas = p.kind === 'sandwich' ? '<li><svg style="width:14px;height:14px;color:var(--yellow)" aria-hidden="true"><use href="#i-fries"/></svg><b style="color:var(--yellow)">+ Papas corrugadas</b></li>' : '';
+  const papas = p.kind === 'sandwich' ? '<li><svg style="width:14px;height:14px;color:var(--yellow)" aria-hidden="true"><use href="#i-fries"/></svg><b style="color:var(--yellow)">Con papas: $20.000</b></li>' : '';
   return `<div class="art">${stack(p).replace('class="stack"', 'class="stack" style="height:190px"')}<ul>${legend}${papas}</ul></div>`;
 }
 function renderLobby(){
@@ -606,7 +606,7 @@ function renderMenu(){
         return `<article class="item" id="p-${id}">
           <div class="ph">${photo(p)}</div>
           <div>
-            ${p.tag || p.kind === 'sandwich' ? `<div class="tags">${p.tag ? `<span class="tag">${p.tag}</span>` : ''}${p.kind === 'sandwich' ? '<span class="tag y">Con papas</span>' : ''}</div>` : ''}
+            ${p.tag || p.kind === 'sandwich' ? `<div class="tags">${p.tag ? `<span class="tag">${p.tag}</span>` : ''}${p.kind === 'sandwich' ? '<span class="tag y">Con papas $20.000</span>' : ''}</div>` : ''}
             <h3>${p.name}</h3><p>${p.desc}</p>
             <div class="row"><span class="price num">${cop(p.price())}</span><button class="add" data-open="${id}" ${ok ? '' : 'disabled'} aria-label="${ok ? 'Agregar ' + esc(p.name) : esc(p.name) + ' agotado'}">${ok ? 'Agregar' : 'Agotado'}</button></div>
           </div></article>`;
@@ -652,15 +652,18 @@ function renderAll(){ renderHeader(); renderLobby(); renderMenu(); if (!$('ov-ca
 /* ---------- Ventana de producto ---------- */
 let draft = null;
 function openItem(ref){
-  draft = { ref, qty:1, addons:[] };
   const p = PRODUCTS[ref];
+  draft = { ref, qty:1, addons:[] };
+  if (p.kind === 'sandwich') draft.papas = true;
   $('q-n').textContent = 1;
   $('item-photo').innerHTML = bigArt(p);
   $('item-title').textContent = p.name;
   $('item-desc').innerHTML = p.desc;
-  $('item-unit').innerHTML = cop(p.price()) + (p.kind === 'sandwich' ? ' <span class="tag y" style="vertical-align:middle;margin-left:.4rem">Incluye papas corrugadas</span>' : '');
-  $('item-opts').innerHTML = p.addons ? `<div class="opt-group"><b>Adicionales</b><div class="chips">` +
-    Object.entries(ADDONS).map(([id, a]) => `<label class="chip"><input type="checkbox" data-addon="${id}"> ${a} <small>+${cop(P.addon)}</small></label>`).join('') + '</div></div>' : '';
+  $('item-unit').innerHTML = cop(p.price()) + (p.kind === 'sandwich' ? ' <span class="tag y" style="vertical-align:middle;margin-left:.4rem">Con papas ' + cop(p.price() + P.papas) + '</span>' : '');
+  $('item-opts').innerHTML = (p.kind === 'sandwich' ? `<div class="opt-group"><b>¿Cómo lo quieres?</b><div class="chips">` +
+    `<label class="chip"><input type="radio" name="papas" data-papas="1" checked> Con papas corrugadas <small>${cop(p.price() + P.papas)}</small></label>` +
+    `<label class="chip"><input type="radio" name="papas" data-papas="0"> Solo el sándwich <small>${cop(p.price())}</small></label></div></div>` : '') + (p.addons ? `<div class="opt-group"><b>Adicionales</b><div class="chips">` +
+    Object.entries(ADDONS).map(([id, a]) => `<label class="chip"><input type="checkbox" data-addon="${id}"> ${a} <small>+${cop(P.addon)}</small></label>`).join('') + '</div></div>' : '');
   updateItemPrice(); show('ov-item');
 }
 function updateItemPrice(){
@@ -669,12 +672,13 @@ function updateItemPrice(){
 }
 $('item-opts').addEventListener('change', e => {
   const t = e.target;
+  if (t.dataset.papas) draft.papas = t.dataset.papas === '1';
   if (t.dataset.addon) draft.addons = t.checked ? [...draft.addons, t.dataset.addon] : draft.addons.filter(a => a !== t.dataset.addon);
   updateItemPrice();
 });
 $('q-minus').onclick = () => { draft.qty = Math.max(1, draft.qty - 1); $('q-n').textContent = draft.qty; updateItemPrice(); };
 $('q-plus').onclick = () => { if (fits(lineStock(draft), draft.qty + 1)) { draft.qty++; $('q-n').textContent = draft.qty; updateItemPrice(); } else toast(draft.qty + 1 > MAX_UNITS ? 'Máximo ' + MAX_UNITS + ' por pedido. Para más, escríbenos al WhatsApp' : 'No tenemos más por hoy'); };
-$('item-add').onclick = () => { addLine({ ref:draft.ref, addons:draft.addons, qty:draft.qty }); hide('ov-item'); toast('¡Agregado a tu pedido!'); };
+$('item-add').onclick = () => { addLine({ ref:draft.ref, papas:draft.papas, addons:draft.addons, qty:draft.qty }); hide('ov-item'); toast('¡Agregado a tu pedido!'); };
 
 /* ---------- Clics generales ---------- */
 document.addEventListener('click', e => {
@@ -688,7 +692,7 @@ document.addEventListener('click', e => {
     if (t.dataset.inc) { if (!fits(lineStock(l))) return toast(cart.reduce((n, x) => n + x.qty, 0) >= MAX_UNITS ? 'Máximo ' + MAX_UNITS + ' por pedido. Para más, escríbenos al WhatsApp' : 'No tenemos más por hoy'); l.qty++; } else l.qty--;
     cart = cart.filter(x => x.qty > 0); save(); renderAll(); renderCart(); return;
   }
-  if (t.dataset.quick) { addLine({ ref:t.dataset.quick, addons:[], qty:1 }); renderCart(); return; }
+  if (t.dataset.quick) { addLine({ ref:t.dataset.quick, papas:PRODUCTS[t.dataset.quick].kind === 'sandwich' ? false : undefined, addons:[], qty:1 }); renderCart(); return; }
 });
 $('open-cart').onclick = $('float-open').onclick = () => { stepTo('cart'); renderCart(); show('ov-cart'); };
 document.querySelectorAll('.overlay').forEach(o => o.addEventListener('click', e => { if (e.target === o) hide(o.id); }));
