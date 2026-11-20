@@ -443,7 +443,7 @@ const L = {
   carne: ['150 g de bondiola asada lento', '#8A4A2B'],
 };
 const layersOf = picante => [
-  [L.pan, 15, 'top'], [L.miel, 2], [L.cebolla, 4], picante ? [L.jala, 5] : [L.tocineta, 5, 'meat'],
+  [L.pan, 15, 'top'], [L.miel, 2], [L.cebolla, 4], ...(picante ? [[L.jala, 5]] : []), [L.tocineta, 5, 'meat'],
   ...(picante ? [[L.aji, 3, 'dots']] : []), [L.crema, 7], [L.queso, 6, 'melt'], [L.carne, 22, 'meat'], [L.miel, 2], [L.pan, 11, 'bot'],
 ];
 const PRODUCTS = {
@@ -452,7 +452,7 @@ const PRODUCTS = {
              desc:'Pan brioche tostado con miel mostaza, 150 g de bondiola asada lento en láminas, queso americano derretido, <b>tocineta crocante</b>, salsa de la casa y cebolla morada encurtida.' },
   spicy:   { kind:'sandwich', cat:'sandwiches', name:'Carnitas Cheese Spicy', tag:'Picante', layers:layersOf(true), photo:['img/spicy.jpg', 1536, 1024, '60% 55%'],
              price:() => P.sandwich, stock:{ cerdo:1 }, addons:true,
-             desc:'Pan brioche tostado con miel mostaza, 150 g de bondiola asada lento en láminas, queso americano derretido, salsa de la casa, <b>jalapeño y ají en hojuelas</b>, y cebolla morada encurtida. Pica rico, no castiga.' },
+             desc:'Pan brioche tostado con miel mostaza, 150 g de bondiola asada lento en láminas, queso americano derretido, tocineta crocante, salsa de la casa, <b>jalapeño y ají en hojuelas</b>, y cebolla morada encurtida. Pica rico, no castiga.' },
   coca:    { kind:'extra', cat:'bebidas', name:'Coca-Cola', icon:'i-can', img:'img/coca-cola.jpg',
              price:() => P.coca, stock:{ coca:1 }, desc:'Personal, bien fría. La pareja perfecta del Cheese.' },
   papitas: { kind:'papitas', cat:'pronto', name:'Papitas Llama', soon:true, icon:'i-fries',
