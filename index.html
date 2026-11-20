@@ -450,7 +450,7 @@ const PRODUCTS = {
   cheese:  { kind:'sandwich', cat:'sandwiches', name:'Carnitas Cheese', tag:'Recomendado del chef', layers:layersOf(false),
              price:() => P.sandwich, stock:{ cerdo:1 }, addons:true,
              desc:'Pan brioche tostado con miel mostaza, 150 g de bondiola asada lento en láminas, queso americano derretido, <b>tocineta crocante</b>, salsa de la casa y cebolla morada encurtida.' },
-  spicy:   { kind:'sandwich', cat:'sandwiches', name:'Carnitas Cheese Spicy', tag:'Picante', layers:layersOf(true),
+  spicy:   { kind:'sandwich', cat:'sandwiches', name:'Carnitas Cheese Spicy', tag:'Picante', layers:layersOf(true), photo:['img/spicy.jpg', 1536, 1024, '60% 55%'],
              price:() => P.sandwich, stock:{ cerdo:1 }, addons:true,
              desc:'Pan brioche tostado con miel mostaza, 150 g de bondiola asada lento en láminas, queso americano derretido, salsa de la casa, <b>jalapeño y ají en hojuelas</b>, y cebolla morada encurtida. Pica rico, no castiga.' },
   coca:    { kind:'extra', cat:'bebidas', name:'Coca-Cola', icon:'i-can', img:'img/coca-cola.jpg',
@@ -566,7 +566,8 @@ function stack(p){
 function tempPhoto(p){
   const t = CONFIG.TEMP_PHOTO;
   if (!p.layers || !t || (t.dates && !t.dates.includes(bogotaNow().date))) return '';
-  return `<img src="${t.src}" alt="${esc(p.name)}" width="1212" height="1297" loading="lazy" style="object-position:50% 58%">`;
+  const [src, w, h, pos] = p.photo || [t.src, 1212, 1297, '50% 58%']; // foto propia del producto o la general
+  return `<img src="${src}" alt="${esc(p.name)}" width="${w}" height="${h}" loading="lazy" style="object-position:${pos}">`;
 }
 const imgTag = p => `<img src="${p.img}" alt="${esc(p.name)}" width="800" height="1067" loading="lazy">`;
 function photo(p){
