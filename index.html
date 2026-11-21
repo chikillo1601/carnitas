@@ -49,6 +49,14 @@
 
   /* Barras de aviso */
   .preview-bar{ background:#1D4ED8; color:#fff; text-align:center; font-size:.8rem; font-weight:700; padding:.4rem 1rem }
+  /* Aviso grande de cierre (CLOSED_DATES con big:true) */
+  #ov-closed.big{ background:rgba(10,9,8,.97); align-items:stretch }
+  #ov-closed.big .sheet{ max-width:none; width:100%; height:100%; max-height:none; border-radius:0; display:flex; flex-direction:column; justify-content:center; align-items:center; padding:24px 16px; background:radial-gradient(120% 70% at 50% 30%, rgba(218,41,28,.28), transparent 70%), var(--ink) }
+  #ov-closed.big .kick{ display:inline-block; font-family:var(--display); text-transform:uppercase; letter-spacing:.12em; font-size:1rem; color:#fff; border:2px solid var(--red); border-radius:8px; padding:.35rem .9rem; box-shadow:0 0 18px rgba(218,41,28,.55); margin-bottom:1rem }
+  #ov-closed.big h3{ font-family:var(--display); font-weight:400; text-transform:uppercase; font-size:clamp(2.8rem, 14vw, 6rem); line-height:.92; color:var(--yellow); margin:0 0 1rem; padding:0 }
+  #ov-closed.big .sub{ font-size:clamp(1.05rem, 4.6vw, 1.4rem); color:#fff; max-width:30ch; margin:0 auto; line-height:1.4 }
+  #ov-closed.big .btn{ max-width:360px }
+  #ov-closed:not(.big) .kick{ display:none }
   .notice-bar{ background:var(--red); color:#fff; text-align:center; font-size:.85rem; font-weight:700; padding:.55rem 1rem }
 
   /* Encabezado fijo: logo, carrito, categorías y estado */
@@ -379,6 +387,7 @@
 <div class="overlay hidden" id="ov-closed" role="dialog" aria-modal="true" aria-labelledby="closed-title">
   <div class="sheet" style="text-align:center;padding-bottom:1.4rem">
     <img src="img/oso-cara.jpg" alt="" style="width:96px;height:96px;border-radius:50%;object-fit:cover;margin:.4rem auto .8rem;border:3px solid var(--yellow)">
+    <span class="kick">Cerrado temporalmente</span>
     <h3 id="closed-title"></h3>
     <p class="sub" id="closed-text"></p>
     <button class="btn btn-y" data-close style="width:100%;margin-top:1.2rem">Ver el menú</button>
@@ -401,7 +410,7 @@ const CONFIG = {
   // Cerrado hasta nuevo aviso: { title, text }. Para abrir: null.
   CLOSED_UNTIL_NOTICE: null,
   // Días puntuales sin servicio: "AAAA-MM-DD": "mensaje".
-  CLOSED_DATES: { "2026-11-20": { title:"Por hoy se acabó todo", text:"Gracias por tus pedidos. Volvemos mañana sábado a las 6:00 p. m." }, "2026-11-16": "Volvemos mañana martes a las 6:00 p. m. ¡Te esperamos!", "2026-11-12": "Volvemos mañana viernes a las 6:00 p. m. con el menú nuevo. Ya puedes ver lo que viene." },
+  CLOSED_DATES: { "2026-11-21": { big:true, title:"Mejorando Carnitas", text:"Volvemos el lunes a las 6:00 p. m., como siempre: más cargados y con más sabor." }, "2026-11-22": { big:true, title:"Mejorando Carnitas", text:"Volvemos mañana lunes a las 6:00 p. m., como siempre: más cargados y con más sabor." }, "2026-11-20": { title:"Por hoy se acabó todo", text:"Gracias por tus pedidos. Volvemos mañana sábado a las 6:00 p. m." }, "2026-11-16": "Volvemos mañana martes a las 6:00 p. m. ¡Te esperamos!", "2026-11-12": "Volvemos mañana viernes a las 6:00 p. m. con el menú nuevo. Ya puedes ver lo que viene." },
   // Días que abrimos a otra hora: "AAAA-MM-DD": "HH:MM".
   LATE_OPEN: { "2026-11-13": "18:30", "2026-11-16": "21:00" },
   // Días que cerramos a otra hora: "AAAA-MM-DD": "HH:MM" ("24:00" = medianoche).
@@ -491,7 +500,7 @@ function storeState(){
   if (CONFIG.CLOSED_UNTIL_NOTICE) return { open:false, label:CONFIG.CLOSED_UNTIL_NOTICE.title + ' · mira el menú, volvemos muy pronto', notice:CONFIG.CLOSED_UNTIL_NOTICE };
   const n = bogotaNow();
   const cd = CONFIG.CLOSED_DATES[n.date]; // texto, o { title, text } para otro título
-  if (cd) { const ct = cd.title || 'Hoy no abrimos', cx = cd.text || cd; return { open:false, label:ct + ' · ' + cx, notice:{ title:ct, text:cx } }; }
+  if (cd) { const ct = cd.title || 'Hoy no abrimos', cx = cd.text || cd; return { open:false, label:ct + ' · ' + cx, notice:{ title:ct, text:cx, big:!!cd.big } }; }
   if (CONFIG.CLOSED_WEEKDAYS.includes(n.day)) return { open:false, label:'Hoy descansamos · mañana abrimos a las 6:00 p. m.' };
   const openAt = (CONFIG.LATE_OPEN || {})[n.date] || CONFIG.OPEN_TIME;
   if (n.min < toMin(openAt)) return { open:false, label:'Abrimos hoy a las ' + hora(openAt) + ' · ve armando tu pedido', opensAt: hora(openAt) };
@@ -777,6 +786,8 @@ $('step-form').addEventListener('submit', async e => {
   const st = storeState();
   if (st.notice) {
     let seen = false; try { seen = sessionStorage.getItem('carnitas_aviso') === st.notice.title; } catch (e) {}
+    $('ov-closed').classList.toggle('big', !!st.notice.big);
+    if (st.notice.big) seen = false; // el aviso grande sale en cada visita
     if (!seen) { $('closed-title').textContent = st.notice.title; $('closed-text').textContent = st.notice.text; show('ov-closed'); try { sessionStorage.setItem('carnitas_aviso', st.notice.title); } catch (e) {} }
   }
   setInterval(() => { renderHeader(); renderLobby(); }, 60000);
