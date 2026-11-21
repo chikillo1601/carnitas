@@ -401,7 +401,7 @@ const CONFIG = {
   // Cerrado hasta nuevo aviso: { title, text }. Para abrir: null.
   CLOSED_UNTIL_NOTICE: null,
   // Días puntuales sin servicio: "AAAA-MM-DD": "mensaje".
-  CLOSED_DATES: { "2026-11-16": "Volvemos mañana martes a las 6:00 p. m. ¡Te esperamos!", "2026-11-12": "Volvemos mañana viernes a las 6:00 p. m. con el menú nuevo. Ya puedes ver lo que viene." },
+  CLOSED_DATES: { "2026-11-20": { title:"Por hoy se acabó todo", text:"Gracias por tus pedidos. Volvemos mañana sábado a las 6:00 p. m." }, "2026-11-16": "Volvemos mañana martes a las 6:00 p. m. ¡Te esperamos!", "2026-11-12": "Volvemos mañana viernes a las 6:00 p. m. con el menú nuevo. Ya puedes ver lo que viene." },
   // Días que abrimos a otra hora: "AAAA-MM-DD": "HH:MM".
   LATE_OPEN: { "2026-11-13": "18:30", "2026-11-16": "21:00" },
   // Días que cerramos a otra hora: "AAAA-MM-DD": "HH:MM" ("24:00" = medianoche).
@@ -490,7 +490,8 @@ function storeState(){
   if (forceOpen) return { open:true, label:'Abierto (prueba) · hasta las 11:00 p. m.' };
   if (CONFIG.CLOSED_UNTIL_NOTICE) return { open:false, label:CONFIG.CLOSED_UNTIL_NOTICE.title + ' · mira el menú, volvemos muy pronto', notice:CONFIG.CLOSED_UNTIL_NOTICE };
   const n = bogotaNow();
-  if (CONFIG.CLOSED_DATES[n.date]) return { open:false, label:'Hoy no abrimos · ' + CONFIG.CLOSED_DATES[n.date], notice:{ title:'Hoy no abrimos', text:CONFIG.CLOSED_DATES[n.date] } };
+  const cd = CONFIG.CLOSED_DATES[n.date]; // texto, o { title, text } para otro título
+  if (cd) { const ct = cd.title || 'Hoy no abrimos', cx = cd.text || cd; return { open:false, label:ct + ' · ' + cx, notice:{ title:ct, text:cx } }; }
   if (CONFIG.CLOSED_WEEKDAYS.includes(n.day)) return { open:false, label:'Hoy descansamos · mañana abrimos a las 6:00 p. m.' };
   const openAt = (CONFIG.LATE_OPEN || {})[n.date] || CONFIG.OPEN_TIME;
   if (n.min < toMin(openAt)) return { open:false, label:'Abrimos hoy a las ' + hora(openAt) + ' · ve armando tu pedido', opensAt: hora(openAt) };
