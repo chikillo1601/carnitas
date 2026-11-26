@@ -53,10 +53,10 @@
   #ov-closed.big{ background:rgba(10,9,8,.97); align-items:stretch }
   #ov-closed.big .sheet{ max-width:none; width:100%; height:100%; max-height:none; border-radius:0; display:flex; flex-direction:column; justify-content:center; align-items:center; padding:24px 16px; background:radial-gradient(120% 70% at 50% 30%, rgba(218,41,28,.28), transparent 70%), var(--ink) }
   #ov-closed.big .kick{ display:inline-block; font-family:var(--display); text-transform:uppercase; letter-spacing:.12em; font-size:1rem; color:#fff; border:2px solid var(--red); border-radius:8px; padding:.35rem .9rem; box-shadow:0 0 18px rgba(218,41,28,.55); margin-bottom:1rem }
-  #ov-closed.big h3{ font-family:var(--display); font-weight:400; text-transform:uppercase; font-size:clamp(2.8rem, 14vw, 6rem); line-height:.92; color:var(--yellow); margin:0 0 1rem; padding:0 }
+  #ov-closed.big h3{ font-family:var(--display); font-weight:400; text-transform:uppercase; font-size:clamp(2.2rem, 9.5vw, 6rem); line-height:.92; color:var(--yellow); margin:0 0 1rem; padding:0; max-width:100% }
   #ov-closed.big .sub{ font-size:clamp(1.05rem, 4.6vw, 1.4rem); color:#fff; max-width:30ch; margin:0 auto; line-height:1.4 }
   #ov-closed.big .btn{ max-width:360px }
-  #ov-closed:not(.big) .kick{ display:none }
+  #ov-closed:not(.big) .kick, #ov-closed.nokick .kick{ display:none }
   .notice-bar{ background:var(--red); color:#fff; text-align:center; font-size:.85rem; font-weight:700; padding:.55rem 1rem }
 
   /* Encabezado fijo: logo, carrito, categorías y estado */
@@ -408,7 +408,7 @@ const CONFIG = {
   OPEN_TIME: "18:00", CLOSE_TIME: "23:00", CLOSED_WEEKDAYS: [0],
 
   // Cerrado hasta nuevo aviso: { title, text }. Para abrir: null.
-  CLOSED_UNTIL_NOTICE: { big:true, title:"Mejorando Carnitas", text:"Cerramos por unos días para volver más cargados y con más sabor. Síguenos en Instagram @carnitas.co y te avisamos cuándo volvemos." },
+  CLOSED_UNTIL_NOTICE: { big:true, kick:false, title:"Cerrado temporalmente", text:"Volvemos pronto. Síguenos en Instagram @carnitas.co y te avisamos cuándo." },
   // Días puntuales sin servicio: "AAAA-MM-DD": "mensaje".
   CLOSED_DATES: { "2026-11-24": { title:"Por hoy cerramos", text:"Gracias por tus pedidos. Volvemos mañana miércoles a las 6:00 p. m." }, "2026-11-21": { big:true, title:"Mejorando Carnitas", text:"Volvemos el lunes a las 6:00 p. m., como siempre: más cargados y con más sabor." }, "2026-11-22": { big:true, title:"Mejorando Carnitas", text:"Volvemos mañana lunes a las 6:00 p. m., como siempre: más cargados y con más sabor." }, "2026-11-20": { title:"Por hoy se acabó todo", text:"Gracias por tus pedidos. Volvemos mañana sábado a las 6:00 p. m." }, "2026-11-16": "Volvemos mañana martes a las 6:00 p. m. ¡Te esperamos!", "2026-11-12": "Volvemos mañana viernes a las 6:00 p. m. con el menú nuevo. Ya puedes ver lo que viene." },
   // Días que abrimos a otra hora: "AAAA-MM-DD": "HH:MM".
@@ -787,6 +787,7 @@ $('step-form').addEventListener('submit', async e => {
   if (st.notice) {
     let seen = false; try { seen = sessionStorage.getItem('carnitas_aviso') === st.notice.title; } catch (e) {}
     $('ov-closed').classList.toggle('big', !!st.notice.big);
+    $('ov-closed').classList.toggle('nokick', st.notice.kick === false);
     if (st.notice.big) seen = false; // el aviso grande sale en cada visita
     if (!seen) { $('closed-title').textContent = st.notice.title; $('closed-text').textContent = st.notice.text; show('ov-closed'); try { sessionStorage.setItem('carnitas_aviso', st.notice.title); } catch (e) {} }
   }
